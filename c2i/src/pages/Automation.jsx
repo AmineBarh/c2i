@@ -6,24 +6,15 @@ const Automation = () => {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]); 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadProjects = async () => {
-      try {
-        const allProjects = await fetchProjects();
-        const AutomationProjects = allProjects.filter(project => project.type === "automation");
-        
-        const uniqueCategories = [...new Set(AutomationProjects.map(project => project.category))];
-        
-        setProjects(AutomationProjects);
-        setCategories(["All", ...uniqueCategories.filter(Boolean)]); 
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      const allProjects = await fetchProjects();
+      const AutomationProjects = allProjects.filter(project => project.type === "automation");
+      const uniqueCategories = [...new Set(AutomationProjects.map(project => project.category))];
+      
+      setProjects(AutomationProjects);
+      setCategories(["All", ...uniqueCategories.filter(Boolean)]); 
     };
     loadProjects();
   }, []);
@@ -31,10 +22,6 @@ const Automation = () => {
   const filteredProjects = selectedCategory === "All" 
     ? projects 
     : projects.filter(project => project.category === selectedCategory);
-
-  if (loading) return <div className="px-8 py-6">Loading projects...</div>;
-  if (error) return <div className="px-8 py-6 text-red-500">Error: {error}</div>;
-
   return (
     <div className="pt-5">
       <section className="relative py-24 bg-gradient-to-br from-orangec2i-100 via-white to-orangec2i-100">
@@ -188,7 +175,7 @@ const Automation = () => {
         </div>
       </div>
 
-      <div className="py-16 bg-gradient-to-r from-orangec2i-500 to-orangec2i-500 rounded-xl">
+      <div className="py-16 bg-gradient-to-r from-orangec2i-500 to-orangec2i-500">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Connect Your Business?

@@ -7,10 +7,9 @@ const projectSchema = new mongoose.Schema({
   technologies: [String],
   results: [String],
   category: String,
-  type: String,
-  createdAt: Date,
-  updatedAt: Date
+  type: String
 }, { timestamps: true });
 
+const Project = mongoose.models.projects || mongoose.model("projects", projectSchema);
 
-module.exports = mongoose.model("projects", projectSchema);
+module.exports = Project;

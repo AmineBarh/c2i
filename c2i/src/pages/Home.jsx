@@ -7,7 +7,7 @@ import { ArrowRight, MoveRight,Cpu, Globe, Cog, Users, Award, TrendingUp, Mail, 
 
 const Home = () => {
   return (
-    <div className="flex flex-col overflow-y-auto no-scrollbar  " >
+    <div className="flex flex-col overflow-y-auto" >
       <div className="herosection text-center items-center flex flex-col gap-2 min-h-screen  justify-center px-4 bg-gradient-to-r from-greenc2i-100 via-bluec2i-100 to-orangec2i-100">
         <div className="title text-7xl sm:text-4xl md:text-6xl font-bold flex flex-col items-center gap-2">
           <div>C2I & Training: Expert Solutions In</div>
@@ -21,10 +21,10 @@ const Home = () => {
         <div className="subtext text-center w-2/3">Transforming businesses through innovative IoT solutions, cutting-edge web development, 
             and intelligent automation systems</div>
         <div className="buttons flex items-center gap-5 justify-center ">
-          <button className='flex items-center hover:shadow-lg hover:shadow-greenc2i-500/50 transition-all duration-300 transform bg-gradient-to-r from-blue-500 to-orange-500/80 px-5 py-2 rounded-md text-white font-semibold'>Explore Our work
-            <ArrowRight className="ml-2 w-5 h-5" />
+          <button className='group flex items-center hover:shadow-lg transition-all duration-300 transform bg-gradient-to-r from-blue-500 to-orange-500/80 px-5 py-2 rounded-md text-white font-semibold  '>Explore Our work
+            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
-          <button className='border-black border-1 border px-5 py-2 rounded-md text-blackc2i-500 font-semibold'>Contact Us</button>
+          <button className='border-black border-1 border px-5 py-2 rounded-md text-blackc2i-500 font-semibold hover:bg-white hover:border-white '>Contact Us</button>
         </div>
       </div>
       <div className="ourexpertise  flex flex-col justify-center min-h-screen bg-white px-4">

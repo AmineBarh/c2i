@@ -6,37 +6,22 @@ const WebDev = () => {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]); 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadProjects = async () => {
-      try {
-        const allProjects = await fetchProjects();
-        const WebDevProjects = allProjects.filter(project => project.type === "web");
-        
-        
-        const uniqueCategories = [...new Set(WebDevProjects.map(project => project.category))];
-        
-        setProjects(WebDevProjects);
-        setCategories(["All", ...uniqueCategories.filter(Boolean)]); 
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      const allProjects = await fetchProjects();
+      const WebDevProjects = allProjects.filter(project => project.type === "web");
+      const uniqueCategories = [...new Set(WebDevProjects.map(project => project.category))];
+      
+      setProjects(WebDevProjects);
+      setCategories(["All", ...uniqueCategories.filter(Boolean)]); 
     };
     loadProjects();
   }, []);
 
- 
   const filteredProjects = selectedCategory === "All" 
     ? projects 
     : projects.filter(project => project.category === selectedCategory);
-
-  if (loading) return <div className="px-8 py-6">Loading projects...</div>;
-  if (error) return <div className="px-8 py-6 text-red-500">Error: {error}</div>;
-
   return (
     <div className="pt-5">
       <section className="relative py-24 bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -64,10 +49,10 @@ const WebDev = () => {
 
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
+          <h2 className="text-4xl font-bold text-blackc2i-500 mb-4">
             Our WebDev <span className="text-bluec2i-900">Capabilities</span>
           </h2>
-          <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
+          <p className="text-xl text-blackc2i-500 max-w-2xl mx-auto">
             We provide end-to-end WebDev solutions from device connectivity to data insights.
           </p>
         </div>
@@ -77,45 +62,45 @@ const WebDev = () => {
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Cpu className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">Edge Computing</h3>
-            <p className="text-blackc2i-600">Process data locally for faster response times and reduced bandwidth usage</p>
+            <h3 className="text-xl font-bold text-blackc2i-500 mb-3">Edge Computing</h3>
+            <p className="text-blackc2i-500">Process data locally for faster response times and reduced bandwidth usage</p>
           </div>
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Wifi className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">Connectivity Solutions</h3>
-            <p className="text-blackc2i-600">Support for various protocols including WiFi, LoRaWAN, Zigbee, and cellular</p>
+            <h3 className="text-xl font-bold text-blackc2i-500 mb-3">Connectivity Solutions</h3>
+            <p className="text-blackc2i-500">Support for various protocols including WiFi, LoRaWAN, Zigbee, and cellular</p>
           </div>
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Shield className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">Security First</h3>
-            <p className="text-blackc2i-600">Enterprise-grade security with encryption and secure device management</p>
+            <h3 className="text-xl font-bold text-blackc2i-500 mb-3">Security First</h3>
+            <p className="text-blackc2i-500">Enterprise-grade security with encryption and secure device management</p>
           </div>
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <BarChart3 className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">Data Analytics</h3>
-            <p className="text-blackc2i-600">Advanced analytics and machine learning for actionable insights</p>
+            <h3 className="text-xl font-bold text-blackc2i-500 mb-3">Data Analytics</h3>
+            <p className="text-blackc2i-500">Advanced analytics and machine learning for actionable insights</p>
           </div>
         </div>
       </div>
 
       <div className="mb-16">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
+          <h2 className="text-4xl font-bold text-blackc2i-500 mb-4 inline-flex items-center gap-5">
             Our WebDev
             <span className="text-transparent bg-clip-text bg-bluec2i-500">
               Portfolio
             </span>
           </h2>
-          <p className="text-xl text-blackc2i-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-blackc2i-500 mb-8 max-w-3xl mx-auto">
             Explore our comprehensive collection of WebDev implementations across various industries.
           </p>
         </div>
@@ -128,7 +113,7 @@ const WebDev = () => {
               className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
                 selectedCategory === category
                   ? 'bg-bluec2i-900 text-white shadow-lg'
-                  : 'bg-white text-blackc2i-600 hover:bg-bluec2i-100 hover:text-bluec2i-900 border border-gray-200'
+                  : 'bg-white text-blackc2i-500 hover:bg-bluec2i-100 hover:text-bluec2i-900 border border-gray-200'
               }`}
             >
               {category}
@@ -146,7 +131,7 @@ const WebDev = () => {
                   className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="mt-3 font-bold text-xl text-blackc2i-900">{project.title}</div>
+              <div className="mt-3 font-bold text-xl text-blackc2i-500">{project.title}</div>
               <p className="text-blackc2i-100 mt-1 text-sm flex-grow">{project.description}</p>
               <div className="mt-3 flex flex-col gap-2">
                 <ul className="flex gap-2 items-start text-sm flex-wrap">
@@ -184,7 +169,7 @@ const WebDev = () => {
         </div>
       </div>
 
-      <div className="py-16 bg-gradient-to-r from-bluec2i-500 to-bluec2i-500 rounded-xl">
+      <div className="py-16 bg-gradient-to-r from-bluec2i-500 to-bluec2i-500">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Connect Your Business?
