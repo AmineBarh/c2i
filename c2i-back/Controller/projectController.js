@@ -1,31 +1,46 @@
-const Project = require('../Models/Projects');
+const Project = require("../Models/Projects");
+const fs = require("fs");
 
 exports.createProject = async (req, res) => {
   try {
     console.log("Request Body:", req.body);
-    console.log("File:", req.file);
+    console.log("Files:", req.files);
 
-    const { title, description, technologies, results, category, type } = req.body;
+    const { title, description, technologies, results, category, type } =
+      req.body;
 
     if (!title || !description || !category || !type) {
+      // Clean up any uploaded files if validation fails
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+          fs.unlinkSync(file.path);
+        });
+      }
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     let parsedTechnologies = [];
     let parsedResults = [];
 
-    // Only parse if it's a string
-    if (typeof technologies === 'string') {
-      parsedTechnologies = technologies.split(',').map(t => t.trim());
+    if (typeof technologies === "string") {
+      parsedTechnologies = technologies.split(",").map((t) => t.trim());
     } else {
       parsedTechnologies = technologies || [];
     }
 
-    if (typeof results === 'string') {
-      parsedResults = results.split(',').map(r => r.trim());
+    if (typeof results === "string") {
+      parsedResults = results.split(",").map((r) => r.trim());
     } else {
       parsedResults = results || [];
     }
+
+    // Create media array with type information
+    const media = req.files
+      ? req.files.map((file) => ({
+          url: `/uploads/${file.filename}`,
+          type: file.mimetype.startsWith("image") ? "image" : "video",
+        }))
+      : [];
 
     const newProject = new Project({
       title,
@@ -34,23 +49,29 @@ exports.createProject = async (req, res) => {
       results: parsedResults,
       category,
       type,
-      image: req.file ? `/uploads/${req.file.filename}` : null
+      media, // Changed from image to media array
     });
 
     await newProject.save();
-    
-    return res.status(201).json(newProject);
 
+    return res.status(201).json(newProject);
   } catch (e) {
     console.error("Error creating project:", e.message);
-    
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
+
+    // Clean up any uploaded files on error
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        try {
+          fs.unlinkSync(file.path);
+        } catch (unlinkError) {
+          console.error("Error deleting file:", unlinkError.message);
+        }
+      });
     }
 
-    return res.status(500).json({ 
-      error: "Failed to create project", 
-      details: e.message 
+    return res.status(500).json({
+      error: "Failed to create project",
+      details: e.message,
     });
   }
 };
@@ -61,9 +82,9 @@ exports.SeeProject = async (req, res) => {
     return res.json(projects);
   } catch (error) {
     console.error("Error fetching projects:", error.message);
-    return res.status(500).json({ 
+    return res.status(500).json({
       message: "Server error",
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -72,7 +93,7 @@ exports.SeeOneProject = async (req, res) => {
   try {
     const projectId = req.params.id;
     const project = await Project.findById(projectId);
-    
+
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -90,15 +111,23 @@ exports.updateProject = async (req, res) => {
     const updateData = req.body;
 
     // Convert technologies/results from string to array if needed
-    if (updateData.technologies && typeof updateData.technologies === 'string') {
+    if (
+      updateData.technologies &&
+      typeof updateData.technologies === "string"
+    ) {
       updateData.technologies = JSON.parse(updateData.technologies);
     }
 
-    if (updateData.results && typeof updateData.results === 'string') {
+    if (updateData.results && typeof updateData.results === "string") {
       updateData.results = JSON.parse(updateData.results);
     }
 
-    const updatedProject = await Project.findByIdAndUpdate(projectId, updateData, { new: true });
+    // Note: Media updates not handled here - you might need to add separate endpoint
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      updateData,
+      { new: true }
+    );
 
     if (!updatedProject) {
       return res.status(404).json({ message: "Project not found" });
@@ -111,18 +140,56 @@ exports.updateProject = async (req, res) => {
   }
 };
 
+const path = require("path"); // ADD THIS AT THE TOP
+
 exports.deleteProject = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const deletedProject = await Project.findByIdAndDelete(projectId);
+    const project = await Project.findById(projectId);
 
-    if (!deletedProject) {
+    if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    return res.json(deletedProject);
+    // Delete associated media files
+    if (project.media && project.media.length > 0) {
+      project.media.forEach((mediaItem) => {
+        try {
+          // Get filename from URL
+          const filename = mediaItem.url.split("/").pop();
+
+          // Construct file path
+          const filePath = path.join(__dirname, "../uploads", filename);
+
+          // Debug logging
+          console.log("Attempting to delete file:", filePath);
+          console.log("File exists:", fs.existsSync(filePath));
+
+          // Delete if exists
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log("Successfully deleted file:", filePath);
+          } else {
+            console.warn("File not found:", filePath);
+          }
+        } catch (fileError) {
+          console.error("File deletion error:", fileError.message);
+        }
+      });
+    }
+
+    // Delete from database
+    await Project.findByIdAndDelete(projectId);
+
+    return res.json({
+      success: true,
+      message: "Project deleted successfully",
+    });
   } catch (error) {
     console.error("Delete error:", error.message);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };

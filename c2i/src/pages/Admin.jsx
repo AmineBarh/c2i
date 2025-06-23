@@ -7,9 +7,9 @@ import {
   Globe,
   MessageSquareDot,
   Plus,
+  X,
 } from "lucide-react";
-import { fetchProjects, createProject, deleteProject } from "../services/api";
-import { color } from "framer-motion";
+import { fetchProjects, deleteProject } from "../services/api";
 
 const Admin = () => {
   const [projects, setProjects] = useState([]);
@@ -49,7 +49,6 @@ const Admin = () => {
     (p) => p.type === "automation"
   ).length;
 
-  // Update the handleAddProject function
   const handleAddProject = async (formData) => {
     try {
       setError(null);
@@ -65,34 +64,34 @@ const Admin = () => {
 
       const newProject = await response.json();
       setProjects((prev) => [...prev, newProject]);
-      setShowAddProject(false); // Close modal on success
+      setShowAddProject(false);
     } catch (err) {
       setError(err.message);
       console.error("Add project error:", err);
-      throw err; // Re-throw to be handled by Addproject
+      throw err;
     }
   };
 
-  // Update your modal rendering:
-  {
-    showAddProject && (
-      <Addproject
-        onClose={() => {
-          setShowAddProject(false);
-          setError(null); // Clear errors when closing
-        }}
-        onSubmit={handleAddProject}
-      />
-    );
-  }
-
   const handleDeleteProject = async (projectId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this project? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
     try {
-      await deleteProject(projectId);
-      setProjects(projects.filter((p) => p._id !== projectId));
+      const response = await deleteProject(projectId);
+
+      if (response.success) {
+        setProjects(projects.filter((p) => p._id !== projectId));
+      } else {
+        setError(response.message || "Failed to delete project");
+      }
     } catch (err) {
-      setError("Failed to delete project");
-      console.error(err);
+      setError(err.message || "Failed to delete project");
+      console.error("Delete error:", err);
     }
   };
 
@@ -140,25 +139,25 @@ const Admin = () => {
               icon={<ChartNoAxesCombined />}
               label="Total Projects"
               count={totalProjects}
-              bgColor="bg-gradient-to-br from-bluec2i-500 via-greenc2i-500 to-orangec2i-500 "
+              bgColor="bg-gradient-to-br from-bluec2i-500 via-greenc2i-500 to-orangec2i-500"
             />
             <SummaryCard
               icon={<Cpu />}
               label="IoT Projects"
               count={iotProjects}
-              bgColor="bg-greenc2i-500"
+              bgColor="bg-green-500"
             />
             <SummaryCard
-              icon={<Cog color="#ffffff" />}
+              icon={<Cog />}
               label="Automation Projects"
               count={automationProjects}
-              bgColor="bg-orangec2i-500"
+              bgColor="bg-orange-500"
             />
             <SummaryCard
               icon={<Globe />}
               label="Web Projects"
               count={webProjects}
-              bgColor="bg-bluec2i-500"
+              bgColor="bg-blue-500"
             />
           </div>
 
@@ -202,9 +201,9 @@ const Admin = () => {
             </div>
             <button
               onClick={() => setShowAddProject(true)}
-              className="font-semibold flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-800 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full md:w-auto"
+              className="font-semibold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full md:w-auto"
             >
-              <Plus /> Add Project
+              <Plus size={16} /> Add Project
             </button>
           </div>
 
@@ -230,11 +229,24 @@ const Admin = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Media
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -243,17 +255,57 @@ const Admin = () => {
                       key={project._id}
                       className="hover:bg-gray-50 cursor-pointer"
                     >
-                      <td className="px-6 py-4">
-                        <img
-                          src={`http://localhost:7000${project.image}`}
-                          sizes={16}
-                          alt=""
-                        />
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {project.media?.length > 0 ? (
+                          project.media[0].type === "image" ? (
+                            <img
+                              src={`http://localhost:7000${project.media[0].url}`}
+                              alt={project.title}
+                              className="w-16 h-16 object-cover rounded"
+                            />
+                          ) : (
+                            <div className="relative">
+                              <video className="w-16 h-16 object-cover rounded">
+                                <source
+                                  src={`http://localhost:7000${project.media[0].url}`}
+                                />
+                              </video>
+                              <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-1 rounded">
+                                Video
+                              </div>
+                            </div>
+                          )
+                        ) : (
+                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                              No Media
+                            </span>
+                          </div>
+                        )}
                       </td>
-
-                      <td className="px-6 py-4">{project.title}</td>
-                      <td className="px-6 py-4">{project.description}</td>
-                      <td className="px-6 py-4 capitalize">{project.type}</td>
+                      <td className="px-6 py-4 max-w-xs">
+                        <div className="font-medium text-gray-900 truncate">
+                          {project.title}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 max-w-xs">
+                        <div className="text-gray-500 truncate">
+                          {project.description}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 capitalize">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            project.type === "web"
+                              ? "bg-blue-100 text-blue-800"
+                              : project.type === "iot"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-orange-100 text-orange-800"
+                          }`}
+                        >
+                          {project.type}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 capitalize">
                         {project.category}
                       </td>
@@ -263,9 +315,9 @@ const Admin = () => {
                             e.stopPropagation();
                             handleDeleteProject(project._id);
                           }}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 flex items-center gap-1"
                         >
-                          Delete
+                          <X size={16} /> Delete
                         </button>
                       </td>
                     </tr>
@@ -284,7 +336,18 @@ const Admin = () => {
           />
         )}
 
-        {/* View Project Modal */}
+        {error && (
+          <div className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg flex items-center gap-2">
+            <X size={20} />
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="ml-4 text-white hover:text-gray-200"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -296,8 +359,8 @@ const SummaryCard = ({ icon, label, count, bgColor }) => (
       {React.cloneElement(icon, { color: "#ffffff", size: 24 })}
     </div>
     <div className="ml-3">
-      <p className="text-blackc2i-500 font-semibold">{label}</p>
-      <p className="font-bold text-xl">{count}</p>
+      <p className="text-gray-600 font-medium">{label}</p>
+      <p className="font-bold text-2xl">{count}</p>
     </div>
   </div>
 );

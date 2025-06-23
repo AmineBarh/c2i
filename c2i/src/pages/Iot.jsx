@@ -230,9 +230,9 @@ const Iot = () => {
                     className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col"
                   >
                     <div className="relative">
-                      {project.image ? (
+                      {project.media ? (
                         <img
-                          src={`http://localhost:7000${project.image}`}
+                          src={`http://localhost:7000${project.media[0].url}`}
                           alt={project.title}
                           className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
                         />
@@ -293,7 +293,7 @@ const Iot = () => {
         )}
       </div>
 
-      <div className="py-16 bg-gradient-to-r from-greenc2i-500 to-greenc2i-600/50">
+      <div className="py-16 bg-gradient-to-r from-greenc2i-500 to-emerald-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Automate Your Business?

@@ -1,15 +1,28 @@
 const mongoose = require("mongoose");
 
-const projectSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  image: String,
-  technologies: [String],
-  results: [String],
-  category: String,
-  type: String
-}, { timestamps: true });
+const mediaSchema = new mongoose.Schema({
+  url: String,
+  type: String,
+});
 
-const Project = mongoose.models.projects || mongoose.model("projects", projectSchema);
+const projectSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    media: [mediaSchema], // Array of media objects
+    technologies: [String],
+    results: [String],
+    category: String,
+    type: String,
+  },
+  { timestamps: true }
+);
+
+// Clear existing model to force schema refresh
+if (mongoose.connection.models["projects"]) {
+  delete mongoose.connection.models["projects"];
+}
+
+const Project = mongoose.model("projects2", projectSchema);
 
 module.exports = Project;

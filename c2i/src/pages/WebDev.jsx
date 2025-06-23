@@ -27,10 +27,8 @@ const WebDev = () => {
         const allProjects = await fetchProjects();
         const webProjects = allProjects
           .filter((project) => project.type === "web")
-          // Add this sort function:
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        // Extract unique categories
         const uniqueCategories = [
           ...new Set(webProjects.map((p) => p.category)),
         ].filter((cat) => cat && cat.trim() !== "");
@@ -55,7 +53,6 @@ const WebDev = () => {
 
   return (
     <div className="pt-5">
-      {/* ViewProject Modal - conditionally rendered */}
       {selectedProject && (
         <ViewProject
           onClose={() => setSelectedProject(null)}
@@ -97,7 +94,6 @@ const WebDev = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Edge Computing */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Cpu className="w-8 h-8" />
@@ -111,7 +107,6 @@ const WebDev = () => {
             </p>
           </div>
 
-          {/* Connectivity Solutions */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Wifi className="w-8 h-8" />
@@ -125,7 +120,6 @@ const WebDev = () => {
             </p>
           </div>
 
-          {/* Security First */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <Shield className="w-8 h-8" />
@@ -139,7 +133,6 @@ const WebDev = () => {
             </p>
           </div>
 
-          {/* Data Analytics */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <BarChart3 className="w-8 h-8" />
@@ -158,7 +151,7 @@ const WebDev = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
             Our web
-            <span className="text-transparent bg-clip-text bg-bluec2i-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-bluec2i-500 to-bluec2i-900">
               Portfolio
             </span>
           </h2>
@@ -169,7 +162,7 @@ const WebDev = () => {
         </div>
 
         {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12 px-44">
+        <div className="flex flex-wrap justify-center gap-3 mb-12 px-4 sm:px-44">
           {categories.map((category) => (
             <button
               key={category}
@@ -229,16 +222,32 @@ const WebDev = () => {
                     key={project._id}
                     className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col"
                   >
-                    <div className="relative">
-                      {project.image ? (
-                        <img
-                          src={`http://localhost:7000${project.image}`}
-                          alt={project.title}
-                          className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
-                        />
+                    <div className="relative rounded-lg overflow-hidden">
+                      {project.media?.length > 0 ? (
+                        project.media[0].type === "image" ? (
+                          <img
+                            src={`http://localhost:7000${project.media[0].url}`}
+                            alt={project.title}
+                            className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="relative">
+                            <video
+                              className="w-full h-48 object-cover rounded"
+                              poster={`http://localhost:7000${project.media[0].url}?thumbnail`}
+                            >
+                              <source
+                                src={`http://localhost:7000${project.media[0].url}`}
+                              />
+                            </video>
+                            <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">
+                              Video
+                            </div>
+                          </div>
+                        )
                       ) : (
                         <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
-                          <span className="text-gray-500">No Image</span>
+                          <span className="text-gray-500">No Media</span>
                         </div>
                       )}
                     </div>

@@ -6,6 +6,79 @@ const VELOCITY_THRESHOLD = 500;
 const GAP = 16;
 const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
 
+// Create a separate component for carousel items
+const CarouselItem = ({
+  item,
+  index,
+  trackItemOffset,
+  itemWidth,
+  round,
+  x,
+}) => {
+  const range = [
+    -(index + 1) * trackItemOffset,
+    -index * trackItemOffset,
+    -(index - 1) * trackItemOffset,
+  ];
+  const outputRange = [90, 0, -90];
+  const rotateY = useTransform(x, range, outputRange, { clamp: false });
+
+  return (
+    <motion.div
+      className={`relative shrink-0 ${
+        round
+          ? "items-center justify-center text-center bg-[#060010] border-0"
+          : "bg-[#222] border border-[#222] rounded-[12px]"
+      } overflow-hidden cursor-grab active:cursor-grabbing`}
+      style={{
+        width: itemWidth,
+        height: round ? itemWidth : "400px",
+        rotateY: rotateY,
+        ...(round && { borderRadius: "50%" }),
+      }}
+      transition={SPRING_OPTIONS}
+    >
+      {item.type === "image" ? (
+        <img
+          src={`http://localhost:7000${item.url}`}
+          alt={`Slide ${index + 1}`}
+          className="w-full h-full object-cover"
+          draggable="false"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.parentNode.innerHTML = `
+              <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                <span class="text-gray-500">Image failed to load</span>
+              </div>
+            `;
+          }}
+        />
+      ) : (
+        <video
+          className="w-full h-full object-cover"
+          controls={true}
+          muted
+          loop
+          playsInline
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.parentNode.innerHTML = `
+              <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                <span class="text-gray-500">Video failed to load</span>
+              </div>
+            `;
+          }}
+        >
+          <source
+            src={`http://localhost:7000${item.url}`}
+            type={`video/${item.url.split(".").pop()}`}
+          />
+        </video>
+      )}
+    </motion.div>
+  );
+};
+
 export default function Carousel({
   items = [],
   baseWidth = 300,
@@ -133,42 +206,17 @@ export default function Carousel({
         transition={effectiveTransition}
         onAnimationComplete={handleAnimationComplete}
       >
-        {carouselItems.map((item, index) => {
-          const range = [
-            -(index + 1) * trackItemOffset,
-            -index * trackItemOffset,
-            -(index - 1) * trackItemOffset,
-          ];
-          const outputRange = [90, 0, -90];
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const rotateY = useTransform(x, range, outputRange, { clamp: false });
-
-          return (
-            <motion.div
-              key={index}
-              className={`relative shrink-0 ${
-                round
-                  ? "items-center justify-center text-center bg-[#060010] border-0"
-                  : "bg-[#222] border border-[#222] rounded-[12px]"
-              } overflow-hidden cursor-grab active:cursor-grabbing`}
-              style={{
-                width: itemWidth,
-                height: round ? itemWidth : "400px",
-                rotateY: rotateY,
-                ...(round && { borderRadius: "50%" }),
-              }}
-              transition={effectiveTransition}
-            >
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt={item.alt || "Project image"}
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </motion.div>
-          );
-        })}
+        {carouselItems.map((item, index) => (
+          <CarouselItem
+            key={index}
+            item={item}
+            index={index}
+            trackItemOffset={trackItemOffset}
+            itemWidth={itemWidth}
+            round={round}
+            x={x}
+          />
+        ))}
       </motion.div>
 
       {/* Indicators */}
