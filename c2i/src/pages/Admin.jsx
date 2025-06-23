@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import Addproject from '../component/Addproject';
+import React, { useState, useEffect } from "react";
+import Addproject from "../component/Addproject";
 import {
   ChartNoAxesCombined,
   Cog,
   Cpu,
   Globe,
   MessageSquareDot,
-  Plus
-} from 'lucide-react';
-import { fetchProjects, createProject, deleteProject } from '../services/api';
+  Plus,
+} from "lucide-react";
+import { fetchProjects, createProject, deleteProject } from "../services/api";
+import { color } from "framer-motion";
 
 const Admin = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddProject, setShowAddProject] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -26,7 +27,7 @@ const Admin = () => {
         const data = await fetchProjects();
         setProjects(data);
       } catch (err) {
-        setError(err.message || 'Failed to load projects');
+        setError(err.message || "Failed to load projects");
       } finally {
         setLoading(false);
       }
@@ -37,57 +38,60 @@ const Admin = () => {
   const filteredProjects = projects.filter(
     (project) =>
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === '' || project.type === selectedType) &&
-      (selectedCategory === '' || project.category === selectedCategory)
+      (selectedType === "" || project.type === selectedType) &&
+      (selectedCategory === "" || project.category === selectedCategory)
   );
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter(p => p.type === 'iot').length;
-  const webProjects = projects.filter(p => p.type === 'web').length;
-  const automationProjects = projects.filter(p => p.type === 'automation').length;
+  const iotProjects = projects.filter((p) => p.type === "iot").length;
+  const webProjects = projects.filter((p) => p.type === "web").length;
+  const automationProjects = projects.filter(
+    (p) => p.type === "automation"
+  ).length;
 
-// Update the handleAddProject function
-const handleAddProject = async (formData) => {
-  try {
-    setError(null);
-    const response = await fetch('http://localhost:7000/Projects/create', {
-      method: 'POST',
-      body: formData
-    });
+  // Update the handleAddProject function
+  const handleAddProject = async (formData) => {
+    try {
+      setError(null);
+      const response = await fetch("http://localhost:7000/Projects/create", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to create project');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create project");
+      }
+
+      const newProject = await response.json();
+      setProjects((prev) => [...prev, newProject]);
+      setShowAddProject(false); // Close modal on success
+    } catch (err) {
+      setError(err.message);
+      console.error("Add project error:", err);
+      throw err; // Re-throw to be handled by Addproject
     }
+  };
 
-    const newProject = await response.json();
-    setProjects(prev => [...prev, newProject]);
-    setShowAddProject(false); // Close modal on success
-  } catch (err) {
-    setError(err.message);
-    console.error('Add project error:', err);
-    throw err; // Re-throw to be handled by Addproject
+  // Update your modal rendering:
+  {
+    showAddProject && (
+      <Addproject
+        onClose={() => {
+          setShowAddProject(false);
+          setError(null); // Clear errors when closing
+        }}
+        onSubmit={handleAddProject}
+      />
+    );
   }
-};
-
-// Update your modal rendering:
-{showAddProject && (
-  <Addproject
-    onClose={() => {
-      setShowAddProject(false);
-      setError(null); // Clear errors when closing
-    }}
-    onSubmit={handleAddProject}
-  />
-)}
-
 
   const handleDeleteProject = async (projectId) => {
     try {
       await deleteProject(projectId);
-      setProjects(projects.filter(p => p._id !== projectId));
+      setProjects(projects.filter((p) => p._id !== projectId));
     } catch (err) {
-      setError('Failed to delete project');
+      setError("Failed to delete project");
       console.error(err);
     }
   };
@@ -113,7 +117,8 @@ const handleAddProject = async (formData) => {
             <div className="flex flex-col sm:flex-row justify-between items-center bg-white border border-gray-200 rounded-xl p-4 w-full">
               <div className="w-full sm:w-3/4 mb-4 sm:mb-0 px-4 border border-gray-100 rounded-lg">
                 <p className="text-gray-500">
-                  From: Foulen ben foulen | Email: gfdlmdfm@gmail.com | Phone: +216 94 320 000
+                  From: Foulen ben foulen | Email: gfdlmdfm@gmail.com | Phone:
+                  +216 94 320 000
                 </p>
                 <p className="text-red-500 mt-2">Message:</p>
                 <p className="text-gray-500">
@@ -131,10 +136,30 @@ const handleAddProject = async (formData) => {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-center mb-6">Projects</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <SummaryCard icon={<ChartNoAxesCombined />} label="Total Projects" count={totalProjects} bgColor="bg-gray-100" />
-            <SummaryCard icon={<Cpu />} label="IoT Projects" count={iotProjects} bgColor="bg-green-100" />
-            <SummaryCard icon={<Cog />} label="Automation Projects" count={automationProjects} bgColor="bg-yellow-100" />
-            <SummaryCard icon={<Globe />} label="Web Projects" count={webProjects} bgColor="bg-blue-100" />
+            <SummaryCard
+              icon={<ChartNoAxesCombined />}
+              label="Total Projects"
+              count={totalProjects}
+              bgColor="bg-gradient-to-br from-bluec2i-500 via-greenc2i-500 to-orangec2i-500 "
+            />
+            <SummaryCard
+              icon={<Cpu />}
+              label="IoT Projects"
+              count={iotProjects}
+              bgColor="bg-greenc2i-500"
+            />
+            <SummaryCard
+              icon={<Cog color="#ffffff" />}
+              label="Automation Projects"
+              count={automationProjects}
+              bgColor="bg-orangec2i-500"
+            />
+            <SummaryCard
+              icon={<Globe />}
+              label="Web Projects"
+              count={webProjects}
+              bgColor="bg-bluec2i-500"
+            />
           </div>
 
           {/* Search & Filters */}
@@ -151,7 +176,7 @@ const handleAddProject = async (formData) => {
                 value={selectedType}
                 onChange={(e) => {
                   setSelectedType(e.target.value);
-                  setSelectedCategory('');
+                  setSelectedCategory("");
                 }}
                 className="border border-gray-300 rounded-md p-2 w-full md:w-1/4"
               >
@@ -166,9 +191,13 @@ const handleAddProject = async (formData) => {
                 className="border border-gray-300 rounded-md p-2 w-full md:w-1/4"
               >
                 <option value="">All Categories</option>
-                {Array.from(new Set(projects.map(p => p.category))).map((cat, idx) => (
-                  <option key={idx} value={cat}>{cat}</option>
-                ))}
+                {Array.from(new Set(projects.map((p) => p.category))).map(
+                  (cat, idx) => (
+                    <option key={idx} value={cat}>
+                      {cat}
+                    </option>
+                  )
+                )}
               </select>
             </div>
             <button
@@ -182,12 +211,14 @@ const handleAddProject = async (formData) => {
           {/* Table */}
           {filteredProjects.length === 0 ? (
             <div className="mt-8 text-center py-12 bg-white rounded-lg shadow">
-              <p className="text-gray-500">No projects found matching your criteria</p>
+              <p className="text-gray-500">
+                No projects found matching your criteria
+              </p>
               <button
                 onClick={() => {
-                  setSearchTerm('');
-                  setSelectedType('');
-                  setSelectedCategory('');
+                  setSearchTerm("");
+                  setSelectedType("");
+                  setSelectedCategory("");
                 }}
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
@@ -212,12 +243,20 @@ const handleAddProject = async (formData) => {
                       key={project._id}
                       className="hover:bg-gray-50 cursor-pointer"
                     >
-                      <td className="px-6 py-4"><img src={`http://localhost:7000${project.image}`} sizes={16} alt="" /></td>
+                      <td className="px-6 py-4">
+                        <img
+                          src={`http://localhost:7000${project.image}`}
+                          sizes={16}
+                          alt=""
+                        />
+                      </td>
 
                       <td className="px-6 py-4">{project.title}</td>
                       <td className="px-6 py-4">{project.description}</td>
                       <td className="px-6 py-4 capitalize">{project.type}</td>
-                      <td className="px-6 py-4 capitalize">{project.category}</td>
+                      <td className="px-6 py-4 capitalize">
+                        {project.category}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={(e) => {
@@ -251,14 +290,13 @@ const handleAddProject = async (formData) => {
   );
 };
 
-
 const SummaryCard = ({ icon, label, count, bgColor }) => (
   <div className="flex items-center bg-white border border-gray-200 rounded-xl p-4 w-full max-w-xs">
     <div className={`${bgColor} p-3 rounded-md`}>
-      {React.cloneElement(icon, { color: '#4B5563', size: 24 })}
+      {React.cloneElement(icon, { color: "#ffffff", size: 24 })}
     </div>
     <div className="ml-3">
-      <p className="text-gray-600">{label}</p>
+      <p className="text-blackc2i-500 font-semibold">{label}</p>
       <p className="font-bold text-xl">{count}</p>
     </div>
   </div>

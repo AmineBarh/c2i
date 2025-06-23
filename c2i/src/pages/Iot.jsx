@@ -271,7 +271,7 @@ const Iot = () => {
                               className="list-none flex gap-2 items-center"
                               key={index}
                             >
-                              <CircleCheckBig size={16} color="#C2410C" />
+                              <CircleCheckBig size={16} color="#8BC445" />
                               <span className="truncate">{result}</span>
                             </li>
                           ))}

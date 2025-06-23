@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { CircleCheckBig, X } from "lucide-react";
 import React from "react";
 import Carousel from "../blocks/Carousel/Carousel";
 
@@ -54,8 +54,12 @@ const ViewProject = ({ onClose, project }) => {
               <h4 className="font-semibold mb-2">Results:</h4>
               <ul className="space-y-2">
                 {project.results.map((result, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="mr-2">•</span>
+                  <li key={index} className="flex items-center">
+                    <CircleCheckBig
+                      size={16}
+                      color="#8BC445"
+                      className="mx-2"
+                    />
                     <span>{result}</span>
                   </li>
                 ))}

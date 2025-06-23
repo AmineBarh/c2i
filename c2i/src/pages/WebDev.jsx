@@ -271,7 +271,7 @@ const WebDev = () => {
                               className="list-none flex gap-2 items-center"
                               key={index}
                             >
-                              <CircleCheckBig size={16} color="#C2410C" />
+                              <CircleCheckBig size={16} color="#2469E4" />
                               <span className="truncate">{result}</span>
                             </li>
                           ))}
