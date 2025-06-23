@@ -1,17 +1,16 @@
 const express = require("express");
-const { 
-  createProject, 
-  SeeProject, 
-  SeeOneProject, 
-  updateProject, 
-  deleteProject 
+const {
+  createProject,
+  SeeProject,
+  SeeOneProject,
+  updateProject,
+  deleteProject,
 } = require("../Controller/projectController");
 const upload = require("../middleware/upload");
 
 const router = express.Router();
 
-
-router.post("/Projects/create", upload.single('image'), createProject);
+router.post("/Projects/create", upload.single("image"), createProject);
 router.get("/projects/", SeeProject);
 router.get("/projects/:id", SeeOneProject);
 router.put("/projects/update/:id", updateProject);

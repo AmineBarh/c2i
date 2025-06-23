@@ -81,6 +81,7 @@ const handleAddProject = async (formData) => {
   />
 )}
 
+
   const handleDeleteProject = async (projectId) => {
     try {
       await deleteProject(projectId);
