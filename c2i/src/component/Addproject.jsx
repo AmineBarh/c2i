@@ -14,6 +14,7 @@ const Addproject = ({ onClose, onSubmit }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,26 +34,33 @@ const Addproject = ({ onClose, onSubmit }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    const projectToSubmit = {
-      ...formData,
-      technologies: formData.technologies.split(',').map((t) => t.trim()),
-      results: formData.results.split(',').map((r) => r.trim())
-    };
+  const formDataToSend = new FormData();
+  formDataToSend.append('title', formData.title);
+  formDataToSend.append('description', formData.description);
+  formDataToSend.append('technologies', formData.technologies);
+  formDataToSend.append('results', formData.results);
+  formDataToSend.append('category', formData.category);
+  formDataToSend.append('type', formData.type);
+  
+  if (image) {
+    formDataToSend.append('image', image);
+  }
 
-    try {
-      setLoading(true);
-      await onSubmit(projectToSubmit, image);
-      onClose();
-    } catch (err) {
-      console.error("Error submitting project:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  try {
+    await onSubmit(formDataToSend);
+    // No need to call onClose here - parent handles it after successful submission
+  } catch (err) {
+    setError(err.message || 'Failed to create project');
+    console.error("Submission error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg relative">
@@ -64,7 +72,7 @@ const Addproject = ({ onClose, onSubmit }) => {
           <X size={24} />
         </button>
         <h3 className="text-xl font-bold mb-4">Add New Project</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
           <div>
             <label className="block text-sm font-medium text-gray-700">Title</label>
             <input
@@ -140,6 +148,7 @@ const Addproject = ({ onClose, onSubmit }) => {
             <label className="block text-sm font-medium text-gray-700">Upload Image</label>
             <input
               type="file"
+              name="image"
               accept="image/*"
               onChange={handleImageChange}
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-green-50 file:text-green-700 file:font-semibold hover:file:bg-green-100"

@@ -132,7 +132,7 @@ const Automation = () => {
             <div key={project._id} className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col">
               <div className="relative">
                 <img
-                  src={project.image}
+                  src={`http://localhost:7000${project.image}`}
                   alt={project.title}
                   className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
                 />

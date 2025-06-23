@@ -7,32 +7,18 @@ export const fetchProjects = async () => {
   return await response.json();
 };
 
-export const createProject = async (projectData, imageFile) => {
-  const formData = new FormData();
-
-  // Append all text fields
-  Object.entries(projectData).forEach(([key, value]) => {
-    if (value !== null && value !== undefined) {
-      formData.append(key, value);
-    }
-  });
-
-  // Append image
-  if (imageFile) {
-    formData.append('image', imageFile);
-  }
-
-  const response = await fetch(`${API_URL}/create`, {
+// In services/api.js
+export const createProject = async (formData) => {
+  const response = await fetch('http://localhost:7000/Projects/create', {
     method: 'POST',
     body: formData
-    // Don't set Content-Type header! Browser handles it automatically
   });
-
+  
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to add project: ${errorText}`);
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to create project');
   }
-
+  
   return await response.json();
 };
 

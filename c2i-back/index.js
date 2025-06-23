@@ -2,31 +2,55 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
+const fs = require('fs');
+const uploadDir = './uploads';
 
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
-
+// Initialize app
 const app = express();
-app.use('/uploads', express.static('uploads'));
 
-app.use(cors());
+// Load environment variables
 dotenv.config();
-app.use(express.json());
 
-const projectRouter = require("./Router/projectRouter");
-app.use(projectRouter);
-
+// Middleware setup
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
 }));
 
-const PORT = process.env.PORT || 7000;
-const MONGOURL = process.env.MONGO_URL 
+// For parsing application/json
+app.use(express.json());
 
+// For parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Routes
+const projectRouter = require("./Router/projectRouter");
+app.use(projectRouter);
+
+// Database connection
+const PORT = process.env.PORT || 7000;
+const MONGOURL = process.env.MONGO_URL;
 
 mongoose.connect(MONGOURL)
   .then(() => console.log("DB connected"))
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("DB connection error:", error));
 
-app.listen(PORT, () => {console.log(`Server running on port ${PORT}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

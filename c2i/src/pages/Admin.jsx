@@ -1,4 +1,3 @@
-// src/pages/Admin.jsx
 import React, { useState, useEffect } from 'react';
 import Addproject from '../component/Addproject';
 import {
@@ -7,8 +6,7 @@ import {
   Cpu,
   Globe,
   MessageSquareDot,
-  Plus,
-  X
+  Plus
 } from 'lucide-react';
 import { fetchProjects, createProject, deleteProject } from '../services/api';
 
@@ -48,15 +46,40 @@ const Admin = () => {
   const webProjects = projects.filter(p => p.type === 'web').length;
   const automationProjects = projects.filter(p => p.type === 'automation').length;
 
-  const handleAddProject = async (projectData, imageFile) => {
-    try {
-      const newProject = await createProject(projectData, imageFile);
-      setProjects(prev => [...prev, newProject]);
-    } catch (err) {
-      setError('Failed to add project');
-      console.error(err);
+// Update the handleAddProject function
+const handleAddProject = async (formData) => {
+  try {
+    setError(null);
+    const response = await fetch('http://localhost:7000/Projects/create', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to create project');
     }
-  };
+
+    const newProject = await response.json();
+    setProjects(prev => [...prev, newProject]);
+    setShowAddProject(false); // Close modal on success
+  } catch (err) {
+    setError(err.message);
+    console.error('Add project error:', err);
+    throw err; // Re-throw to be handled by Addproject
+  }
+};
+
+// Update your modal rendering:
+{showAddProject && (
+  <Addproject
+    onClose={() => {
+      setShowAddProject(false);
+      setError(null); // Clear errors when closing
+    }}
+    onSubmit={handleAddProject}
+  />
+)}
 
   const handleDeleteProject = async (projectId) => {
     try {
@@ -188,6 +211,8 @@ const Admin = () => {
                       key={project._id}
                       className="hover:bg-gray-50 cursor-pointer"
                     >
+                      <td className="px-6 py-4"><img src={`http://localhost:7000${project.image}`} sizes={16} alt="" /></td>
+
                       <td className="px-6 py-4">{project.title}</td>
                       <td className="px-6 py-4">{project.description}</td>
                       <td className="px-6 py-4 capitalize">{project.type}</td>
@@ -220,13 +245,12 @@ const Admin = () => {
         )}
 
         {/* View Project Modal */}
-        {/* Optional: You can keep this or remove */}
       </div>
     </div>
   );
 };
 
-// Helper Component for Summary Cards
+
 const SummaryCard = ({ icon, label, count, bgColor }) => (
   <div className="flex items-center bg-white border border-gray-200 rounded-xl p-4 w-full max-w-xs">
     <div className={`${bgColor} p-3 rounded-md`}>
