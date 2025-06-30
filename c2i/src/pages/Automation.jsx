@@ -3,10 +3,10 @@ import { fetchProjects } from "../services/api";
 import {
   CircleCheckBig,
   MoveRight,
-  Cpu,
-  Wifi,
-  Shield,
   BarChart3,
+  RefreshCw,
+  Clock,
+  TrendingUp,
 } from "lucide-react";
 import ViewProject from "../component/ViewProject";
 
@@ -27,10 +27,8 @@ const Automation = () => {
         const allProjects = await fetchProjects();
         const automationProjects = allProjects
           .filter((project) => project.type === "automation")
-          // Add this sort function:
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        // Extract unique categories
         const uniqueCategories = [
           ...new Set(automationProjects.map((p) => p.category)),
         ].filter((cat) => cat && cat.trim() !== "");
@@ -55,9 +53,16 @@ const Automation = () => {
 
   return (
     <div className="pt-5">
-      {/* ViewProject Modal - conditionally rendered */}
       {selectedProject && (
         <ViewProject
+          theme={{
+            background: "#ffffff", // dark background
+            text: "text-blackc2i-500", // light text
+            badgeBg: "bg-orangec2i-100",
+            badgeText: "text-orangec2i-900",
+            categoryBg: "bg-orangec2i-500",
+            projectTypeBg: "bg-orangec2i-500",
+          }}
           onClose={() => setSelectedProject(null)}
           project={selectedProject}
         />
@@ -72,7 +77,9 @@ const Automation = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-orangec2i-500">Automation Solutions</span>
+              <span className="text-orangec2i-500">
+                automation Dev Solutions
+              </span>
               <br />
               That Transform Industries
             </h1>
@@ -88,20 +95,19 @@ const Automation = () => {
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our Automation{" "}
+            Our automation{" "}
             <span className="text-orangec2i-500">Capabilities</span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
-            We provide end-to-end Automation solutions from device connectivity
+            We provide end-to-end automation solutions from device connectivity
             to data insights.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Edge Computing */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Cpu className="w-8 h-8" />
+              <RefreshCw className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Edge Computing
@@ -112,10 +118,9 @@ const Automation = () => {
             </p>
           </div>
 
-          {/* Connectivity Solutions */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Wifi className="w-8 h-8" />
+              <BarChart3 className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Connectivity Solutions
@@ -126,10 +131,9 @@ const Automation = () => {
             </p>
           </div>
 
-          {/* Security First */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Shield className="w-8 h-8" />
+              <Clock className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Security First
@@ -140,10 +144,9 @@ const Automation = () => {
             </p>
           </div>
 
-          {/* Data Analytics */}
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <BarChart3 className="w-8 h-8" />
+              <TrendingUp className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Data Analytics
@@ -158,19 +161,19 @@ const Automation = () => {
       <div className="mb-16">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
-            Our Automation
-            <span className="text-transparent bg-clip-text bg-orangec2i-500">
+            Our automation
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orangec2i-500 to-orangec2i-900">
               Portfolio
             </span>
           </h2>
           <p className="text-xl text-blackc2i-600 mb-8 max-w-3xl mx-auto">
-            Explore our comprehensive collection of Automation implementations
+            Explore our comprehensive collection of automation implementations
             across various industries.
           </p>
         </div>
 
         {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12 px-44">
+        <div className="flex flex-wrap justify-center gap-3 mb-12 px-4 sm:px-44">
           {categories.map((category) => (
             <button
               key={category}
@@ -230,23 +233,39 @@ const Automation = () => {
                     key={project._id}
                     className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col"
                   >
-                    <div className="relative">
-                      {project.image ? (
-                        <img
-                          src={`http://localhost:7000${project.image}`}
-                          alt={project.title}
-                          className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
-                        />
+                    <div className="relative rounded-lg overflow-hidden">
+                      {project.media?.length > 0 ? (
+                        project.media[0].type === "image" ? (
+                          <img
+                            src={`http://localhost:7000${project.media[0].url}`}
+                            alt={project.title}
+                            className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="relative">
+                            <video
+                              className="w-full h-48 object-cover rounded"
+                              poster={`http://localhost:7000${project.media[0].url}?thumbnail`}
+                            >
+                              <source
+                                src={`http://localhost:7000${project.media[0].url}`}
+                              />
+                            </video>
+                            <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">
+                              Video
+                            </div>
+                          </div>
+                        )
                       ) : (
                         <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
-                          <span className="text-gray-500">No Image</span>
+                          <span className="text-gray-500">No Media</span>
                         </div>
                       )}
                     </div>
                     <div className="mt-3 font-bold text-xl text-blackc2i-900">
                       {project.title}
                     </div>
-                    <p className="text-blackc2i-600 mt-1 text-sm flex-grow line-clamp-3">
+                    <p className="text-blackc2i-600 mt-1 text-sm flex-grow line-clamp-4 h-fit">
                       {project.description}
                     </p>
                     <div className="mt-3 flex flex-col gap-2">
@@ -272,7 +291,7 @@ const Automation = () => {
                               className="list-none flex gap-2 items-center"
                               key={index}
                             >
-                              <CircleCheckBig size={16} color="#C2410C" />
+                              <CircleCheckBig size={16} color="#2469E4" />
                               <span className="truncate">{result}</span>
                             </li>
                           ))}
@@ -305,7 +324,7 @@ const Automation = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-white text-orangec2i-500 px-8 py-3 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
-              Start Your Automation Project
+              Start Your automation Project
               <MoveRight className="ml-2 w-5 h-5" />
             </button>
             <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold text-lg hover:bg-white hover:text-orangec2i-500 transition-all duration-300">

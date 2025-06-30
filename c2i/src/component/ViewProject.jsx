@@ -2,13 +2,30 @@ import { CircleCheckBig, X } from "lucide-react";
 import React from "react";
 import Carousel from "../blocks/Carousel/Carousel";
 
-const ViewProject = ({ onClose, project }) => {
-  // Ensure media is always an array
+const ViewProject = ({ onClose, project, theme }) => {
+  // Fallback media array
   const mediaItems = project.media || [];
+
+  // Default theme values
+  const currentTheme = {
+    background: theme?.background || "#ffffff",
+    text: theme?.text || "#111827",
+    badgeBg: theme?.badgeBg || "bg-bluec2i-100",
+    badgeText: theme?.badgeText || "text-bluec2i-800",
+    categoryBg: theme?.categoryBg || "bg-bluec2i-900",
+    categoryText: theme?.categoryText || "text-white",
+    projectTypeBg: theme?.projectTypeBg || "bg-bluec2i-700",
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg p-6 w-full max-w-6xl shadow-lg relative">
+      <div
+        className="rounded-lg p-6 w-full max-w-6xl shadow-lg relative"
+        style={{
+          backgroundColor: currentTheme.background,
+          color: currentTheme.text,
+        }}
+      >
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10"
@@ -24,7 +41,7 @@ const ViewProject = ({ onClose, project }) => {
               <Carousel
                 items={mediaItems}
                 baseWidth={600}
-                autoplay={true}
+                autoplay={false}
                 autoplayDelay={5000}
                 pauseOnHover={true}
                 loop={false}
@@ -41,11 +58,9 @@ const ViewProject = ({ onClose, project }) => {
 
           {/* Project Details */}
           <div className="lg:w-1/2 ms-9 project-details">
-            <h3 className="text-3xl font-bold text-bluec2i-900 mb-4">
-              {project.title}
-            </h3>
+            <h3 className="text-3xl font-bold mb-4">{project.title}</h3>
 
-            <p className="text-gray-700 mb-6 text-lg">{project.description}</p>
+            <p className="mb-6 text-lg">{project.description}</p>
 
             <div className="mb-6">
               <h4 className="font-semibold text-xl mb-3">Technologies:</h4>
@@ -53,7 +68,7 @@ const ViewProject = ({ onClose, project }) => {
                 {project.technologies.map((tech, index) => (
                   <span
                     key={index}
-                    className="bg-bluec2i-100 text-bluec2i-800 px-4 py-2 rounded-full text-sm font-medium"
+                    className={`px-4 py-2 rounded-full text-sm font-medium ${currentTheme.badgeBg} ${currentTheme.badgeText}`}
                   >
                     {tech}
                   </span>
@@ -68,25 +83,29 @@ const ViewProject = ({ onClose, project }) => {
                   <li key={index} className="flex items-start">
                     <CircleCheckBig
                       size={20}
-                      className="text-green-500 flex-shrink-0 mt-1 mr-3"
+                      className={`${currentTheme.badgeText} flex-shrink-0 mt-1 mr-3`}
                     />
-                    <span className="text-gray-700">{result}</span>
+                    <span>{result}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-10">
               <div>
                 <h4 className="font-semibold text-lg mb-2">Category:</h4>
-                <span className="inline-block bg-bluec2i-900 text-white rounded-full px-4 py-2">
+                <span
+                  className={`inline-block rounded-full px-4 py-2 ${currentTheme.categoryBg} ${currentTheme.categoryText}`}
+                >
                   {project.category}
                 </span>
               </div>
 
               <div>
                 <h4 className="font-semibold text-lg mb-2">Project Type:</h4>
-                <span className="inline-block bg-bluec2i-700 text-white rounded-full px-4 py-2">
+                <span
+                  className={`inline-block rounded-full px-4 py-2 ${currentTheme.projectTypeBg} ${currentTheme.categoryText}`}
+                >
                   {project.type}
                 </span>
               </div>

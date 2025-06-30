@@ -31,6 +31,9 @@ app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+// partener
+const partnerRouter = require("./Router/partnerRouter");
+app.use("/api/partners", partnerRouter);
 // Serve static files from uploads directory
 
 const uploadsPath = path.join(__dirname, "uploads");

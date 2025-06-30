@@ -349,7 +349,7 @@ const Addproject = ({ onClose, onSubmit }) => {
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 bg-gradient-to-r from-bluec2i-600 to-bluec2i-800 text-white rounded-md hover:from-bluec2i-700 hover:to-bluec2i-900 transition-colors flex items-center justify-center ${
+              className={`px-4 py-2 bg-gradient-to-r from-bluec2i-900 to-bluec2i-500 text-white rounded-md hover:from-bluec2i-500 hover:to-bluec2i-900 transition-colors flex items-center justify-center ${
                 loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >

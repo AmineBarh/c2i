@@ -3,10 +3,10 @@ import { fetchProjects } from "../services/api";
 import {
   CircleCheckBig,
   MoveRight,
-  Cpu,
-  Wifi,
-  Shield,
-  BarChart3,
+  Globe,
+  Smartphone,
+  Zap,
+  Search,
 } from "lucide-react";
 import ViewProject from "../component/ViewProject";
 
@@ -55,6 +55,14 @@ const WebDev = () => {
     <div className="pt-5">
       {selectedProject && (
         <ViewProject
+          theme={{
+            background: "#ffffff", // dark background
+            text: "text-blackc2i-500", // light text
+            badgeBg: "bg-bluec2i-100",
+            badgeText: "text-bluec2i-900",
+            categoryBg: "bg-bluec2i-500",
+            projectTypeBg: "bg-bluec2i-500",
+          }}
           onClose={() => setSelectedProject(null)}
           project={selectedProject}
         />
@@ -96,7 +104,7 @@ const WebDev = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Cpu className="w-8 h-8" />
+              <Globe className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Edge Computing
@@ -109,7 +117,7 @@ const WebDev = () => {
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Wifi className="w-8 h-8" />
+              <Smartphone className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Connectivity Solutions
@@ -122,7 +130,7 @@ const WebDev = () => {
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Shield className="w-8 h-8" />
+              <Zap className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Security First
@@ -135,7 +143,7 @@ const WebDev = () => {
 
           <div className="text-center group">
             <div className="w-20 h-20 bg-gradient-to-br from-bluec2i-500 to-bluec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <BarChart3 className="w-8 h-8" />
+              <Search className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
               Data Analytics

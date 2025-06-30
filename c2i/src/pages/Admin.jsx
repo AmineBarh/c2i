@@ -12,6 +12,77 @@ import {
 import { fetchProjects, deleteProject } from "../services/api";
 
 const Admin = () => {
+  // Add these states to your Admin component:
+  const [partners, setPartners] = useState([]);
+  const [partnerType, setPartnerType] = useState("trusted");
+  const [partnerFile, setPartnerFile] = useState(null);
+
+  // Add this useEffect for fetching partners:
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch("http://localhost:7000/api/partners");
+        const data = await response.json();
+        setPartners(data);
+      } catch (err) {
+        console.error("Error fetching partners:", err);
+      }
+    };
+    fetchPartners();
+  }, []);
+
+  // Add these functions:
+  const handleAddPartner = async (e) => {
+    e.preventDefault();
+    if (!partnerFile) {
+      alert("Please select an image");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("type", partnerType);
+    formData.append("image", partnerFile);
+
+    try {
+      const response = await fetch("http://localhost:7000/api/partners", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to add partner");
+
+      const newPartner = await response.json();
+      setPartners([...partners, newPartner]);
+      setPartnerFile(null);
+      // Reset file input
+      e.target.reset();
+    } catch (err) {
+      console.error("Add partner error:", err);
+      setError(err.message);
+    }
+  };
+
+  const handleDeletePartner = async (partnerId) => {
+    if (!window.confirm("Are you sure you want to delete this partner?"))
+      return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:7000/api/partners/${partnerId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to delete partner");
+
+      setPartners(partners.filter((p) => p._id !== partnerId));
+    } catch (err) {
+      console.error("Delete partner error:", err);
+      setError(err.message);
+    }
+  };
+
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -96,10 +167,87 @@ const Admin = () => {
   };
 
   return (
-    <div className="bg-[#F9FAFB] min-h-screen py-8 px-4 sm:px-8">
+    <div className="bg-[#F9FAFB] min-h-screen py-8 px-4 sm:px-8 mt-10">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-8">Admin Panel</h1>
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-center mb-6">Partners</h2>
 
+          <div className="mb-6 bg-white rounded-md border border-gray-200 p-4">
+            <h3 className="text-lg font-medium mb-4">Add New Partner</h3>
+            <form
+              onSubmit={handleAddPartner}
+              className="flex flex-wrap items-center gap-4"
+            >
+              <select
+                value={partnerType}
+                onChange={(e) => setPartnerType(e.target.value)}
+                className="border border-gray-300 rounded-md p-2"
+              >
+                <option value="trusted">Trusted By</option>
+                <option value="partner">Our Partner</option>
+              </select>
+
+              <input
+                type="file"
+                onChange={(e) => setPartnerFile(e.target.files[0])}
+                className="border border-gray-300 rounded-md p-2"
+                required
+              />
+
+              <button
+                type="submit"
+                className="bg-bluec2i-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Add Partner
+              </button>
+            </form>
+          </div>
+
+          <div className="overflow-x-auto bg-white rounded-lg shadow">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Logo
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {partners.map((partner) => (
+                  <tr key={partner._id}>
+                    <td className="px-6 py-4 whitespace-nowrap capitalize">
+                      {partner.type === "trusted"
+                        ? "Trusted By"
+                        : "Our Partner"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <img
+                        src={`http://localhost:7000/uploads/${partner.img}`}
+                        alt="Partner logo"
+                        className="h-16 object-contain"
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => handleDeletePartner(partner._id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
         {/* Messages Section */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-center mb-4">Messages</h2>
@@ -289,7 +437,7 @@ const Admin = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <div className="text-gray-500 truncate">
+                        <div className="text-gray-500 text-wrap">
                           {project.description}
                         </div>
                       </td>

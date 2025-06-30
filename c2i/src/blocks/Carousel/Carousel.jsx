@@ -83,7 +83,7 @@ export default function Carousel({
   items = [],
   baseWidth = 300,
   autoplay = false,
-  autoplayDelay = 3000,
+  autoplayDelay = 1000,
   pauseOnHover = false,
   loop = false,
   round = false,

@@ -55,9 +55,16 @@ const Iot = () => {
 
   return (
     <div className="pt-5">
-      {/* ViewProject Modal - conditionally rendered */}
       {selectedProject && (
         <ViewProject
+          theme={{
+            background: "#ffffff", // dark background
+            text: "text-blackc2i-500", // light text
+            badgeBg: "bg-greenc2i-100",
+            badgeText: "text-greenc2i-600",
+            categoryBg: "bg-greenc2i-500",
+            projectTypeBg: "bg-greenc2i-500",
+          }}
           onClose={() => setSelectedProject(null)}
           project={selectedProject}
         />
