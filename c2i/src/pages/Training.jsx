@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BookOpen,
   Users,
@@ -27,11 +27,23 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+// Import API functions
+import {
+  fetchtrainings,
+  createtraining,
+  updatetraining,
+  deletetraining,
+  createProject, // Not used here but available if needed
+} from "../services/api";
+
 const Training = () => {
   const [trainings, setTrainings] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const categories = ["All", "IoT", "Web Development", "Automation"];
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Quote modal state
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState(null);
   const [quoteRequest, setQuoteRequest] = useState({
@@ -54,97 +66,17 @@ const Training = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Initialize sample training data
-  const initializeSampleTrainings = () => {
-    return [
-      {
-        _id: "1",
-        title: "IoT Fundamentals & Implementation",
-        description:
-          "Master the basics of Internet of Things, from sensor integration to cloud connectivity and data analytics. This comprehensive course covers everything from hardware selection to cloud deployment.",
-        media:
-          "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800",
-        technologies: [
-          "MQTT",
-          "LoRaWAN",
-          "AWS IoT",
-          "Node-RED",
-          "InfluxDB",
-          "Grafana",
-        ],
-        category: "IoT",
-        locations: "Our Training Center, Your Facility",
-        instructor: "Dr. Sarah Chen",
-        duration: "3 Days",
-        rating: 4.9,
-        students: 245,
-        modules: [
-          "IoT Architecture & Protocols",
-          "Sensor Integration & Data Collection",
-          "Cloud Connectivity (AWS IoT, Azure)",
-          "Real-time Analytics & Dashboards",
-          "Security Best Practices",
-          "Hands-on Project Development",
-        ],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        _id: "2",
-        title: "Advanced Web Development Bootcamp",
-        description:
-          "Comprehensive full-stack development training covering modern frameworks, APIs, and deployment strategies. Build production-ready applications from scratch.",
-        media:
-          " https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800",
-        technologies: [
-          "React",
-          "Node.js",
-          "PostgreSQL",
-          "Docker",
-          "AWS",
-          "TypeScript",
-        ],
-        category: "Web Development",
-        locations: "Our Training Center, Your Office",
-        instructor: "Michael Rodriguez",
-        duration: "5 Days",
-        rating: 4.8,
-        students: 892,
-        modules: [
-          "React & Next.js Mastery",
-          "Node.js & Express Backend",
-          "Database Design & Management",
-          "API Development & Integration",
-          "DevOps & Deployment",
-          "Performance Optimization",
-        ],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      // Add other trainings similarly...
-    ];
-  };
-
-  // Load trainings from localStorage or initialize with sample data
+  // Fetch trainings on load
   useEffect(() => {
-    const loadTrainings = () => {
+    const loadTrainings = async () => {
       try {
         setLoading(true);
-        const savedTrainings = localStorage.getItem("c2i-trainings");
-        if (savedTrainings) {
-          setTrainings(JSON.parse(savedTrainings));
-        } else {
-          const sampleTrainings = initializeSampleTrainings();
-          setTrainings(sampleTrainings);
-          localStorage.setItem(
-            "c2i-trainings",
-            JSON.stringify(sampleTrainings)
-          );
-        }
+        const data = await fetchtrainings(); // From API
+        setTrainings(data || []);
         setError(null);
       } catch (err) {
-        setError("Failed to load trainings");
         console.error("Error loading trainings:", err);
+        setError("Failed to load training programs. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -153,22 +85,22 @@ const Training = () => {
   }, []);
 
   // Filter trainings based on category
-  const filteredTrainings = useMemo(() => {
-    return trainings.filter((training) => {
-      const matchesCategory =
-        selectedCategory === "All" || training.category === selectedCategory;
-      return matchesCategory;
-    });
-  }, [trainings, selectedCategory]);
+  const filteredTrainings = trainings.filter((training) =>
+    selectedCategory === "All" ? true : training.category === selectedCategory
+  );
 
-  // Calculate statistics
-  const stats = useMemo(() => {
+  // Calculate stats
+  const stats = (() => {
     const totalStudents = trainings.reduce(
       (sum, t) => sum + (t.students || 0),
       0
     );
     const avgRating =
-      trainings.reduce((sum, t) => sum + (t.rating || 0), 0) / trainings.length;
+      trainings.length > 0
+        ? trainings.reduce((sum, t) => sum + (t.rating || 0), 0) /
+          trainings.length
+        : 0;
+
     return [
       {
         icon: <Users className="w-6 h-6" />,
@@ -191,9 +123,7 @@ const Training = () => {
         label: "Career Advancement",
       },
     ];
-  }, [trainings]);
-
-  const categories = ["All", "IoT", "Web Development", "Automation"];
+  })();
 
   const features = [
     {
@@ -234,7 +164,7 @@ const Training = () => {
       text: "The IoT training program gave me the practical skills I needed to advance my career. The hands-on approach was exactly what I was looking for.",
       rating: 5,
       image:
-        " https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150",
+        "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150",
     },
     {
       name: "Lisa Rodriguez",
@@ -280,6 +210,9 @@ const Training = () => {
   };
 
   const parseLocations = (locations) => {
+    if (!locations || typeof locations !== "string") {
+      return [];
+    }
     return locations.split(",").map((loc) => loc.trim());
   };
 
@@ -312,22 +245,26 @@ const Training = () => {
 
   const handleSubmitQuote = async () => {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    // Save to localStorage (simulating database save)
-    const existingQuotes = JSON.parse(
-      localStorage.getItem("c2i-quote-requests") || "[]"
-    );
-    const newQuote = {
-      ...quoteRequest,
-      id: Date.now().toString(),
-      submittedAt: new Date().toISOString(),
-      status: "pending",
-    };
-    existingQuotes.push(newQuote);
-    localStorage.setItem("c2i-quote-requests", JSON.stringify(existingQuotes));
-    setIsSubmitting(false);
-    setSubmitSuccess(true);
+    try {
+      const response = await fetch("http://localhost:7000/quotes/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quoteRequest),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit quote");
+      }
+
+      setSubmitSuccess(true);
+    } catch (err) {
+      alert(err.message || "Failed to submit quote. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const closeModal = () => {
@@ -382,86 +319,6 @@ const Training = () => {
 
   return (
     <div className="pt-16">
-      {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-br from-purple-50 via-white to-blue-50">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Professional Training
-              </span>
-              <br />
-              <span className="text-gray-900">Programs</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Accelerate your team's expertise with our comprehensive in-person
-              training programs. Learn from industry experts at our facility or
-              yours, with hands-on experience in IoT, Web Development, and
-              Automation.
-            </p>
-            <button className="mx-auto mt-8 bg-gradient-to-r from-purple-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
-              <Phone className="mr-2 w-5 h-5" />
-              Get Custom Quote
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  {stat.icon}
-                </div>
-                <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Our <span className="text-purple-600">Training</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We provide comprehensive, practical training that prepares your
-              team for real-world challenges.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center group">
-                <div
-                  className={`w-20 h-20 ${feature.color} rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                >
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Training Programs Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -473,7 +330,6 @@ const Training = () => {
               Choose from our comprehensive selection of professional
               development courses.
             </p>
-
             {/* Category Filter */}
             <div className="flex flex-wrap justify-center gap-3 mb-12">
               {categories.map((category) => (
@@ -501,7 +357,13 @@ const Training = () => {
               >
                 <div className="relative">
                   <img
-                    src={training.media}
+                    src={
+                      training.media
+                        ? training.media.startsWith("http")
+                          ? training.media
+                          : `http://localhost:7000/${training.media}`
+                        : "https://via.placeholder.com/800x400?text=No+Image"
+                    }
                     alt={training.title}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -515,7 +377,6 @@ const Training = () => {
                     In-Person
                   </div>
                 </div>
-
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
@@ -526,11 +387,9 @@ const Training = () => {
                       Quote
                     </div>
                   </div>
-
                   <p className="text-gray-600 mb-4 leading-relaxed">
                     {training.description}
                   </p>
-
                   <div className="flex items-center justify-between mb-4">
                     {training.duration && (
                       <div className="flex items-center text-sm text-gray-500">
@@ -551,7 +410,6 @@ const Training = () => {
                       </div>
                     )}
                   </div>
-
                   {training.modules && training.modules.length > 0 && (
                     <div className="mb-4">
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">
@@ -575,7 +433,6 @@ const Training = () => {
                       </div>
                     </div>
                   )}
-
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-1">
                       {training.technologies.slice(0, 3).map((tech, index) => (
@@ -593,7 +450,6 @@ const Training = () => {
                       )}
                     </div>
                   </div>
-
                   <div className="border-t border-gray-100 pt-4 mb-4">
                     <div className="text-sm text-gray-600 mb-2">
                       <span className="font-medium">Available Locations:</span>
@@ -616,7 +472,6 @@ const Training = () => {
                       <span className="font-medium">{training.instructor}</span>
                     </div>
                   </div>
-
                   <button
                     onClick={() => handleGetQuote(training)}
                     className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
@@ -666,7 +521,6 @@ const Training = () => {
                 <X className="w-6 h-6 text-gray-500" />
               </button>
             </div>
-
             {/* Progress Steps */}
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -876,7 +730,7 @@ const Training = () => {
                               )
                             }
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            placeholder="Next month, Q2 2026, Flexible"
+                            placeholder="Next month, Q2 2025, Flexible"
                           />
                         </div>
                         <div>
@@ -1042,291 +896,6 @@ const Training = () => {
           </div>
         </div>
       )}
-
-      {/* Location Options Section */}
-      <section className="py-24 bg-gradient-to-r from-purple-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Training <span className="text-purple-600">Locations</span>
-            </h2>
-            <p className="text-xl text-gray-600">
-              Choose the training location that works best for your team.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-6">
-                <Building className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Our Training Center
-              </h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                State-of-the-art training facility equipped with the latest
-                technology and hands-on lab environments. Perfect for immersive
-                learning experiences with all necessary equipment provided.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Modern lab equipment and workstations
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  High-speed internet and presentation systems
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Catering and comfortable learning environment
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Dedicated support staff and technical assistance
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
-                <Factory className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Your Facility
-              </h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                On-site training at your location for maximum convenience and
-                context-specific learning. We bring our expertise directly to
-                your team, using your existing systems and environment.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Training on your actual systems and processes
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  No travel costs or time away from office
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Customized content for your specific needs
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                  Immediate implementation opportunities
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Our <span className="text-purple-600">Students Say</span>
-            </h2>
-            <p className="text-xl text-gray-600">
-              Real success stories from professionals who transformed their
-              careers.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100"
-              >
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-lg mb-6 leading-relaxed italic">
-                  "{testimonial.text}"
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <div className="font-semibold text-gray-900">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-purple-600 text-sm">
-                      {testimonial.role}
-                    </div>
-                    <div className="text-gray-500 text-xs">
-                      {testimonial.company}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Ready to Get <span className="text-purple-600">Started?</span>
-            </h2>
-            <p className="text-xl text-gray-600">
-              Contact us today to discuss your training needs and get a
-              customized quote.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Get in Touch
-              </h3>
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mr-4">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">Phone</div>
-                    <div className="text-gray-600">+1 (555) 123-4567</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-4">
-                    <Mail className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">Email</div>
-                    <div className="text-gray-600">training@c2i.agency</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mr-4">
-                    <MessageCircle className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">Live Chat</div>
-                    <div className="text-gray-600">
-                      Available 9 AM - 6 PM EST
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
-                Quick Contact
-              </h3>
-              <form className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="John"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Doe"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Your Company"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="john@company.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Training Interest
-                  </label>
-                  <select className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                    <option value="">Select a category</option>
-                    <option value="IoT">IoT Solutions</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="Automation">Automation</option>
-                    <option value="Custom">Custom Training</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Tell us about your training needs..."
-                  />
-                </div>
-                <button className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                  Send Message
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-purple-600 to-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Upskill Your Team?
-          </h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Contact us today to discuss your training needs and get a customized
-            quote for your organization.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
-              <Phone className="mr-2 w-5 h-5" />
-              Get Training Quote
-            </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-purple-600 transition-all duration-300">
-              Schedule Consultation
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

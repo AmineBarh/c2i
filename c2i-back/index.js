@@ -52,6 +52,17 @@ app.use(trainingRouter);
 const PORT = process.env.PORT || 7000;
 const MONGOURL = process.env.MONGO_URL;
 
+// Example Express route for POST /quotes/create
+app.post("/quotes/create", async (req, res) => {
+  try {
+    const quote = new QuoteModel(req.body);
+    await quote.save();
+    res.status(201).json({ message: "Quote submitted successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to submit quote", error: err });
+  }
+});
+
 mongoose
   .connect(MONGOURL)
   .then(() => console.log("DB connected"))
