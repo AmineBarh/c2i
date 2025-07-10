@@ -52,7 +52,7 @@ const WebDev = () => {
       : projects.filter((project) => project.category === selectedCategory);
 
   return (
-    <div className="pt-5">
+    <div className="pt-16">
       {selectedProject && (
         <ViewProject
           theme={{
@@ -68,7 +68,7 @@ const WebDev = () => {
         />
       )}
 
-      <section className="relative py-24 bg-gradient-to-br from-bluec2i-100 via-white to-bluec2i-100">
+      <section className="relative py-36 bg-gradient-to-br from-bluec2i-100 via-white to-bluec2i-100">
         <div className="absolute inset-0">
           <div className="absolute top-20 right-20 w-64 h-64 bg-bluec2i-500/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-80 h-80 bg-bluec2i-500/10 rounded-full blur-3xl"></div>

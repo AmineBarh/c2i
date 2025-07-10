@@ -7,7 +7,7 @@ import WebDev from "./pages/WebDev";
 import Automation from "./pages/Automation";
 import Admin from "./pages/Admin";
 import ScrollToTop from "./component/ScrollToTop";
-import ContactForm from "./pages/ContactForm";
+import Training from "./pages/Training";
 
 function App() {
   return (
@@ -19,8 +19,8 @@ function App() {
         <Route path="/iot" element={<Iot />} />
         <Route path="/web-dev" element={<WebDev />} />
         <Route path="/automation" element={<Automation />} />
-        <Route path="/c2i-2025" element={<Admin />} />
-        <Route path="/form" element={<ContactForm />} />
+        <Route path="/c2i-2025-admin" element={<Admin />} />
+        <Route path="/training" element={<Training />} />
       </Routes>
     </>
   );

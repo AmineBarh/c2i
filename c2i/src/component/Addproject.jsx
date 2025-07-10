@@ -111,6 +111,7 @@ const Addproject = ({ onClose, onSubmit }) => {
 
     try {
       await onSubmit(formDataToSend);
+      onClose();
     } catch (err) {
       // Handle specific error messages
       let errorMessage = "Failed to create project";

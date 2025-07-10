@@ -52,7 +52,7 @@ const Automation = () => {
       : projects.filter((project) => project.category === selectedCategory);
 
   return (
-    <div className="pt-5">
+    <div className="pt-16">
       {selectedProject && (
         <ViewProject
           theme={{
@@ -68,7 +68,7 @@ const Automation = () => {
         />
       )}
 
-      <section className="relative py-24 bg-gradient-to-br from-orangec2i-100 via-white to-orangec2i-100">
+      <section className="relative py-36 bg-gradient-to-br from-orangec2i-100 via-white to-orangec2i-100">
         <div className="absolute inset-0">
           <div className="absolute top-20 right-20 w-64 h-64 bg-orangec2i-500/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-80 h-80 bg-orangec2i-500/10 rounded-full blur-3xl"></div>
@@ -77,9 +77,7 @@ const Automation = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-orangec2i-500">
-                automation Dev Solutions
-              </span>
+              <span className="text-orangec2i-500">Automation Solutions</span>
               <br />
               That Transform Industries
             </h1>
@@ -110,11 +108,10 @@ const Automation = () => {
               <RefreshCw className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Edge Computing
+              Process Automation
             </h3>
             <p className="text-blackc2i-600">
-              Process data locally for faster response times and reduced
-              bandwidth usage
+              Streamline repetitive tasks and workflows for maximum efficiency.
             </p>
           </div>
 
@@ -291,7 +288,7 @@ const Automation = () => {
                               className="list-none flex gap-2 items-center"
                               key={index}
                             >
-                              <CircleCheckBig size={16} color="#2469E4" />
+                              <CircleCheckBig size={16} color="#F8B74C" />
                               <span className="truncate">{result}</span>
                             </li>
                           ))}

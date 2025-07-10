@@ -39,10 +39,14 @@ app.use("/api/partners", partnerRouter);
 const uploadsPath = path.join(__dirname, "uploads");
 console.log(`Serving static files from: ${uploadsPath}`);
 app.use("/uploads", express.static(uploadsPath));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 const projectRouter = require("./Router/projectRouter");
 app.use(projectRouter);
+
+const trainingRouter = require("./Router/trainingRouter");
+app.use(trainingRouter);
 
 // Database connection
 const PORT = process.env.PORT || 7000;

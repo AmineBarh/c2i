@@ -9,7 +9,7 @@ const projectSchema = new mongoose.Schema(
   {
     title: String,
     description: String,
-    media: [mediaSchema], // Array of media objects
+    media: [mediaSchema],
     technologies: [String],
     results: [String],
     category: String,
@@ -23,6 +23,6 @@ if (mongoose.connection.models["projects"]) {
   delete mongoose.connection.models["projects"];
 }
 
-const Project = mongoose.model("projects2", projectSchema);
+const Project = mongoose.model("projects", projectSchema);
 
 module.exports = Project;

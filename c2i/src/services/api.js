@@ -42,3 +42,72 @@ export const deleteProject = async (projectId) => {
     throw error;
   }
 };
+// Add these to your existing api.js
+export const fetchtrainings = async () => {
+  const response = await fetch("http://localhost:7000/training");
+  if (!response.ok) throw new Error("Failed to fetch trainings");
+  return await response.json();
+};
+
+export const createtraining = async (trainingData) => {
+  const formData = new FormData();
+  Object.entries(trainingData).forEach(([key, value]) => {
+    if (key === "media" && value) {
+      formData.append("media", value);
+    } else if (Array.isArray(value)) {
+      formData.append(key, value.join(",")); // ✅ This creates "value1,value2,value3"
+    } else {
+      formData.append(key, value);
+    }
+  });
+
+  const response = await fetch("http://localhost:7000/training/create", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to create training");
+  }
+
+  return await response.json();
+};
+
+export const updatetraining = async (id, trainingData) => {
+  const formData = new FormData();
+  Object.entries(trainingData).forEach(([key, value]) => {
+    if (key === "media" && value) {
+      formData.append("media", value);
+    } else if (Array.isArray(value)) {
+      formData.append(key, value.join(",")); // ✅ This creates "value1,value2,value3"
+    } else {
+      formData.append(key, value);
+    }
+  });
+
+  const response = await fetch(`http://localhost:7000/training/update/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to update training");
+  }
+
+  return await response.json();
+};
+
+export const deletetraining = async (id) => {
+  const response = await fetch(`http://localhost:7000/training/delete/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to delete training");
+  }
+
+  return await response.json();
+};

@@ -105,41 +105,6 @@ exports.SeeOneProject = async (req, res) => {
   }
 };
 
-exports.updateProject = async (req, res) => {
-  try {
-    const projectId = req.params.id;
-    const updateData = req.body;
-
-    // Convert technologies/results from string to array if needed
-    if (
-      updateData.technologies &&
-      typeof updateData.technologies === "string"
-    ) {
-      updateData.technologies = JSON.parse(updateData.technologies);
-    }
-
-    if (updateData.results && typeof updateData.results === "string") {
-      updateData.results = JSON.parse(updateData.results);
-    }
-
-    // Note: Media updates not handled here - you might need to add separate endpoint
-    const updatedProject = await Project.findByIdAndUpdate(
-      projectId,
-      updateData,
-      { new: true }
-    );
-
-    if (!updatedProject) {
-      return res.status(404).json({ message: "Project not found" });
-    }
-
-    return res.json(updatedProject);
-  } catch (error) {
-    console.error("Update error:", error.message);
-    return res.status(500).json({ message: "Server error" });
-  }
-};
-
 const path = require("path"); // ADD THIS AT THE TOP
 
 exports.deleteProject = async (req, res) => {
