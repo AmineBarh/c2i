@@ -177,7 +177,6 @@ const AddTraining = ({
               </label>
               <input
                 type="text"
-                required
                 value={formData.instructor}
                 onChange={(e) =>
                   setFormData((prev) => ({

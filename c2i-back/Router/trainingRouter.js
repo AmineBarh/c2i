@@ -5,10 +5,14 @@ const Training = require("../Models/training");
 const {
   deleteTraining,
   updateTraining,
+  getCategories,
 } = require("../Controller/trainingController");
 
 // @desc    Create a new training program
 // @route   POST /training/create
+
+router.get("/training/categories", getCategories);
+
 router.post("/training/create", upload.single("media"), async (req, res) => {
   try {
     const {
@@ -19,10 +23,6 @@ router.post("/training/create", upload.single("media"), async (req, res) => {
       locations,
       technologies,
     } = req.body;
-
-    // Debug logs (check terminal output)
-    console.log("REQ BODY:", req.body);
-    console.log("REQ FILE:", req.file);
 
     const newTraining = new Training({
       title,

@@ -222,3 +222,13 @@ exports.deleteTraining = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
+// Get unique training categories
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await Training.distinct("category");
+    res.json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error.message);
+    res.status(500).json({ error: "Failed to fetch categories" });
+  }
+};

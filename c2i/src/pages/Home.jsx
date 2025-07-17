@@ -17,16 +17,19 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import emailjs from "emailjs-com";
-
 const Home = () => {
   const [trustedPartners, setTrustedPartners] = useState([]);
   const [ourPartners, setOurPartners] = useState([]);
 
-  // Initialize EmailJS
-  useEffect(() => {
-    emailjs.init("3hPUSBblupmxQk9Wg"); // Your public key
-  }, []);
+  // Form data and submission
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch partners from API
   useEffect(() => {
@@ -45,36 +48,50 @@ const Home = () => {
     fetchPartners();
   }, []);
 
-  // EmailJS configuration
-  const SERVICE_ID = "service_3570rmk"; // Replace with your actual Service ID
-  const TEMPLATE_ID = "template_28ffssr"; // Replace with your actual Template ID
-
-  // Handle form submission
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-
-    const btn = document.getElementById("button");
-    btn.disabled = true;
-    btn.textContent = "Sending...";
-
-    emailjs
-      .sendForm(SERVICE_ID, TEMPLATE_ID, e.target)
-      .then(() => {
-        alert("Message sent successfully!");
-        e.target.reset(); // Reset form fields
-      })
-      .catch((error) => {
-        console.error("EmailJS Error:", error.text);
-        alert(`Failed to send message. Error: ${error.text}`);
-      })
-      .finally(() => {
-        btn.disabled = false;
-        btn.textContent = "Send Message";
-      });
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("http://localhost:7000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit form");
+      }
+
+      alert("Message sent successfully!");
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert(error.message || "Failed to send message");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  // Update your inputs to use the controlled form:
+
   return (
-    <div className="pt-16">
+    <div className="">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
@@ -357,7 +374,7 @@ const Home = () => {
               Ready to start your next project? We'd love to hear from you.
             </p>
           </div>
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-12" id="contact">
             {/* Contact Info */}
             <div className="contact-info flex items-start flex-col justify-center gap-5">
               <div className="contactinfotext text-2xl font-bold text-gray-900 mb-6">
@@ -365,7 +382,7 @@ const Home = () => {
               </div>
               {/* Email */}
               <div className="email flex gap-8 items-center">
-                <div className="boxemail bg-greenc2i-100 p-2 rounded-md">
+                <div className="boxemail bg-green-100 p-2 rounded-md">
                   <Mail color="#8EC64C" />
                 </div>
                 <div className="mails flex items-start flex-col">
@@ -375,7 +392,7 @@ const Home = () => {
               </div>
               {/* Phone */}
               <div className="contact1 flex gap-10 items-center">
-                <div className="boxemail bg-bluec2i-100 p-2 rounded-md">
+                <div className="boxemail bg-blue-100 p-2 rounded-md">
                   <Phone color="#2379BA" />
                 </div>
                 <div className="mails flex flex-col">
@@ -385,7 +402,7 @@ const Home = () => {
               </div>
               {/* Location */}
               <div className="place flex gap-10 items-center">
-                <div className="boxemail bg-orangec2i-100 p-2 rounded-md">
+                <div className="boxemail bg-orange-100 p-2 rounded-md">
                   <MapPin color="#F8B74C" />
                 </div>
                 <div className="mails flex flex-col">
@@ -394,81 +411,94 @@ const Home = () => {
               </div>
             </div>
             {/* Contact Form */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <form onSubmit={handleOnSubmit} className="space-y-6">
-                <div>
-                  <label
-                    className="block text-sm font-semibold text-gray-900 mb-2"
-                    htmlFor="name"
-                  >
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Name/Company name"
-                  />
-                </div>
-                <div>
-                  <label
-                    className="block text-sm font-semibold text-gray-900 mb-2"
-                    htmlFor="phone_numb"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    id="phone_numb"
-                    name="phone_numb"
-                    type="text"
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-                    placeholder="+216 12 345 678"
-                  />
-                </div>
-                <div>
-                  <label
-                    className="block text-sm font-semibold text-gray-900 mb-2"
-                    htmlFor="email"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-                    placeholder="name@c2i.com"
-                  />
-                </div>
-                <div>
-                  <label
-                    className="block text-sm font-semibold text-gray-900 mb-2"
-                    htmlFor="message"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Tell us about your project..."
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  id="button"
-                  className="w-full bg-gradient-to-r from-greenc2i-600 via-bluec2i-900 to-greenc2i-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-greenc2i-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
+            <form onSubmit={handleOnSubmit} className="space-y-6">
+              <div>
+                <label
+                  className="block text-sm font-semibold text-gray-900 mb-2"
+                  htmlFor="name"
                 >
-                  Send Message
-                </button>
-              </form>
-            </div>
+                  Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3  outline-none border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                  placeholder="Name/Company name"
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-semibold text-gray-900 mb-2"
+                  htmlFor="phone"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3  outline-none border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                  placeholder="+216 12 345 678"
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-semibold text-gray-900 mb-2"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3  outline-none border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                  placeholder="name@c2i.com"
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-semibold text-gray-900 mb-2"
+                  htmlFor="message"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3  outline-none border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                  placeholder="Tell us about your project..."
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-greenc2i-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                    Sending...
+                  </>
+                ) : (
+                  "Send Message"
+                )}
+              </button>
+            </form>
           </div>
         </div>
       </section>

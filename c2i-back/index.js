@@ -38,7 +38,7 @@ app.use("/api/partners", partnerRouter);
 
 const uploadsPath = path.join(__dirname, "uploads");
 console.log(`Serving static files from: ${uploadsPath}`);
-app.use("/uploads", express.static(uploadsPath));
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
@@ -53,15 +53,12 @@ const PORT = process.env.PORT || 7000;
 const MONGOURL = process.env.MONGO_URL;
 
 // Example Express route for POST /quotes/create
-app.post("/quotes/create", async (req, res) => {
-  try {
-    const quote = new QuoteModel(req.body);
-    await quote.save();
-    res.status(201).json({ message: "Quote submitted successfully!" });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to submit quote", error: err });
-  }
-});
+const quoteRoutes = require("./Router/quoteRouter");
+const sendEmail = require("./utils/sendEmail");
+app.use("/quotes", quoteRoutes);
+
+const contactRouter = require("./Router/contactRouter");
+app.use("/api/contact", contactRouter);
 
 mongoose
   .connect(MONGOURL)

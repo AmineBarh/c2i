@@ -9,8 +9,25 @@ import {
   TrendingUp,
 } from "lucide-react";
 import ViewProject from "../component/ViewProject";
+import { useNavigate } from "react-router-dom";
 
 const Automation = () => {
+  const navigate = useNavigate();
+  const goToAndScrollToBottom = () => {
+    navigate("/");
+
+    setTimeout(() => {
+      const element = document.getElementById("contact"); // Or 'footer' or whatever your bottom section ID is
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 300); // Delay ensures page has time to load
+  };
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -320,12 +337,12 @@ const Automation = () => {
             Let's discuss your automation needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-orangec2i-500 px-8 py-3 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
+            <button
+              onClick={goToAndScrollToBottom}
+              className="bg-white text-orangec2i-500 px-8 py-3 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center"
+            >
               Start Your automation Project
               <MoveRight className="ml-2 w-5 h-5" />
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold text-lg hover:bg-white hover:text-orangec2i-500 transition-all duration-300">
-              Schedule a Call
             </button>
           </div>
         </div>

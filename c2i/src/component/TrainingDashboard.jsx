@@ -16,17 +16,12 @@ import {
   BookOpen,
   Award,
   Calendar,
-  BarChart3,
-  Users,
-  Upload,
-  Save,
-  X,
 } from "lucide-react";
 import Dashboard from "./Dashboard";
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);
-  const [projects, setProjects] = useState([]);
+  const [setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -245,8 +240,13 @@ const TrainingDashboard = () => {
                       <tr key={training._id}>
                         <td className="px-6 py-4 flex items-center">
                           <img
-                            src={`http://localhost:7000${training.media}`}
-                            alt={training.title}
+                            src={
+                              training.media
+                                ? training.media.startsWith("http")
+                                  ? training.media
+                                  : `http://localhost:7000${training.media}`
+                                : "https://via.placeholder.com/800x400?text=No+Image"
+                            }
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
 

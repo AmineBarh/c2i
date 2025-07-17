@@ -8,9 +8,12 @@ const trainingSchema = new mongoose.Schema(
     instructor: String,
     locations: String,
     technologies: [String],
-    media: String,
+    media: {
+      type: String,
+      default: "",
+    },
   },
-  { timestamps: true } // adds createdAt, updatedAt
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Training", trainingSchema);
