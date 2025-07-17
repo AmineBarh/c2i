@@ -379,7 +379,7 @@ const Training = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3 ">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 text-blackc2i-600 mt-1 text-sm line-clamp-3 overflow-hidden break-words">
+                <p className="text-gray-600 text-blackc2i-600 mt-1 text-sm line-clamp-2 overflow-hidden break-words">
                   {feature.description}
                 </p>
               </div>
@@ -389,15 +389,12 @@ const Training = () => {
       </section>
       {selectedTraining && (
         <ViewTraining
-          theme={{
-            background: "#ffffff",
-            text: "text-black",
-            badgeBg: "bg-blue-100",
-            badgeText: "text-blue-600",
-            categoryBg: "bg-blue-500",
-          }}
-          onClose={() => setSelectedTraining(null)}
           training={selectedTraining}
+          onClose={() => setSelectedTraining(null)}
+          onRequestInfo={(training) => {
+            setSelectedTraining(null);
+            handleGetQuote(training);
+          }}
         />
       )}
       <div className="pt-16">
@@ -467,7 +464,7 @@ const Training = () => {
                             ? training.media.startsWith("http")
                               ? training.media
                               : `http://localhost:7000${training.media}`
-                            : " https://via.placeholder.com/800x400?text=No+Image"
+                            : "https://via.placeholder.com/800x400?text=No+Image"
                         }
                         alt={training.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
@@ -482,24 +479,16 @@ const Training = () => {
                         In-Person
                       </div>
                     </div>
+
                     <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-purplec2i-500 transition-colors">
-                          {training.title}
-                        </h3>
-                        <div
-                          onClick={() => handleGetQuote(training)}
-                          className="text-lg font-bold text-purplec2i-500 flex items-center cursor-pointer"
-                        >
-                          <Phone className="w-4 h-4 mr-1" />
-                          Quote
-                        </div>
-                      </div>
-                      <p className="text-gray-600 mb-4 leading-relaxed">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-purplec2i-500 transition-colors mb-3">
+                        {training.title}
+                      </h3>
+                      <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
                         {training.description}
                       </p>
-                      <div className="flex items-center justify-between mb-4"></div>
-                      <div className="mb-4">
+
+                      <div className="mb-4 ">
                         <div className="flex flex-wrap gap-1">
                           {training.technologies
                             .slice(0, 3)
@@ -518,6 +507,7 @@ const Training = () => {
                           )}
                         </div>
                       </div>
+
                       <div className="border-t border-gray-100 pt-4 mb-4">
                         <div className="text-sm text-gray-600 mb-2">
                           <span className="font-medium">
@@ -544,22 +534,14 @@ const Training = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="mt-6 flex space-x-3">
-                        <button
-                          onClick={() => handleGetQuote(training)}
-                          className="flex-1 bg-gradient-to-r from-purplec2i-500/70 to-purplec2i-900 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center"
-                        >
-                          <Ticket className="mr-2 w-4 h-4" />
-                          Get Quote
-                        </button>
-                        <button
-                          onClick={() => setSelectedTraining(training)}
-                          className="flex-1 bg-white border border-purplec2i-500/70 text-purplec2i-500 py-2 rounded-lg font-medium hover:bg-purplec2i-500/5 transition-all duration-300 flex items-center justify-center"
-                        >
-                          <BookOpen className="mr-2 w-4 h-4" />
-                          View Training
-                        </button>
-                      </div>
+
+                      <button
+                        onClick={() => setSelectedTraining(training)}
+                        className="flex-grow mt-auto w-full bg-gradient-to-r from-purplec2i-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center"
+                      >
+                        <BookOpen className="mr-2 w-4 h-4" />
+                        View Training Details
+                      </button>
                     </div>
                   </div>
                 ))}

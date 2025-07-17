@@ -97,6 +97,7 @@ exports.getTrainingById = async (req, res) => {
 };
 
 // Update one training by ID
+// Update the updateTraining function
 exports.updateTraining = async (req, res) => {
   try {
     const { id } = req.params;
@@ -107,28 +108,27 @@ exports.updateTraining = async (req, res) => {
       category,
       locations,
       instructor,
-      modules,
     } = req.body;
 
-    // Find the existing training
+    // Find existing training
     const existingTraining = await Training.findById(id);
     if (!existingTraining) {
       return res.status(404).json({ error: "Training not found" });
     }
 
-    // Parse array fields
+    // Parse technologies array
     const parseArray = (field) =>
       Array.isArray(field)
         ? field
         : field.split(",").map((item) => item.trim());
 
-    // Handle file uploads if any
+    // Handle file upload
     let media = existingTraining.media;
-    if (req.files && req.files.length > 0) {
-      // Delete old media files
-      existingTraining.media.forEach((mediaItem) => {
+    if (req.file) {
+      // Delete old media file
+      if (existingTraining.media) {
         try {
-          const filename = mediaItem.url.split("/").pop();
+          const filename = existingTraining.media.split("/").pop();
           const filePath = path.join(__dirname, "../uploads", filename);
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
@@ -136,13 +136,10 @@ exports.updateTraining = async (req, res) => {
         } catch (fileError) {
           console.error("File deletion error:", fileError.message);
         }
-      });
+      }
 
-      // Add new media files
-      media = req.files.map((file) => ({
-        url: `/uploads/${file.filename}`,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
+      // Add new media file
+      media = `/uploads/${req.file.filename}`;
     }
 
     // Update training
@@ -152,30 +149,24 @@ exports.updateTraining = async (req, res) => {
         title,
         description,
         technologies: parseArray(technologies),
-        locations: parseArray(locations),
-        modules: parseArray(modules),
+        locations,
         instructor,
         category,
         media,
       },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     res.status(200).json(updatedTraining);
   } catch (e) {
     console.error("Update error:", e.message);
-
-    // Clean up uploaded files if error occurs
-    if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        try {
-          fs.unlinkSync(file.path);
-        } catch (unlinkError) {
-          console.error("Error deleting file:", unlinkError.message);
-        }
-      });
+    if (req.file) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.error("Error deleting file:", unlinkError.message);
+      }
     }
-
     res.status(500).json({ error: "Failed to update training" });
   }
 };

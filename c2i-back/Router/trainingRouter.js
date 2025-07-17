@@ -53,6 +53,11 @@ router.get("/training", async (req, res) => {
   }
 });
 router.delete("/training/delete/:id", deleteTraining);
-router.put("/training/update/:id", updateTraining);
+// Add upload middleware to update route
+router.put(
+  "/training/update/:id",
+  upload.single("media"), // Add this middleware
+  updateTraining
+);
 
 module.exports = router;

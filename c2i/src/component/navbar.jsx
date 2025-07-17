@@ -83,20 +83,13 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const goToAndScrollToBottom = () => {
-    navigate("/");
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+      delay: 300,
+    });
+  }; // Delay ensures page has time to load
 
-    setTimeout(() => {
-      const element = document.getElementById("contact"); // Or 'footer' or whatever your bottom section ID is
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: "smooth",
-        });
-      }
-    }, 300); // Delay ensures page has time to load
-  };
   return (
     <>
       <nav
@@ -156,12 +149,21 @@ const Navbar = () => {
 
             {/* Desktop CTA Button */}
             <div className="hidden lg:flex items-center space-x-4">
-              <button className="relative bg-gradient-to-r from-greenc2i-600 to-bluec2i-900 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 group overflow-hidden">
+              <button
+                onClick={goToAndScrollToBottom}
+                className={`relative ${
+                  location.pathname === "/training"
+                    ? "bg-gradient-to-r from-purplec2i-500 to-orangec2i-500"
+                    : "bg-gradient-to-r from-greenc2i-600 to-bluec2i-900"
+                } text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 group overflow-hidden`}
+              >
                 <span className="relative z-10 flex items-center">
-                  Get Started
+                  {location.pathname === "/training"
+                    ? "Get Training"
+                    : "Get Started"}
                   <ChevronDown className="ml-2 w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-greenc2i-600 to-bluec2i-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
             </div>
 
@@ -241,13 +243,22 @@ const Navbar = () => {
               ))}
 
               {/* Mobile CTA Button */}
+              {/* Mobile CTA Button */}
               <div className="pt-4 border-t border-gray-100 mt-4">
                 <button
-                  onClick={() => setIsOpen(false)}
-                  onDoubleClick={goToAndScrollToBottom}
-                  className="w-full bg-gradient-to-r from-greenc2i-600 to-bluec2i-900 text-white px-6 py-3 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                  onClick={() => {
+                    setIsOpen(false);
+                    goToAndScrollToBottom();
+                  }}
+                  className={`w-full ${
+                    location.pathname === "/training"
+                      ? "bg-gradient-to-r from-purplec2i-500 to-orangec2i-500"
+                      : "bg-gradient-to-r from-greenc2i-600 to-bluec2i-900"
+                  } text-white px-6 py-3 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5`}
                 >
-                  Get Started
+                  {location.pathname === "/training"
+                    ? "Get Training"
+                    : "Get Started"}
                 </button>
               </div>
             </div>

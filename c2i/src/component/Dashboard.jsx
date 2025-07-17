@@ -9,27 +9,19 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
   AreaChart,
   Area,
   LineChart,
   Line,
+  Cell,
 } from "recharts";
 import {
   TrendingUp,
   TrendingDown,
-  Activity,
-  Calendar,
-  Users,
-  Award,
-  Clock,
   Target,
+  Clock,
   BookOpen,
-  Cpu,
-  Code,
-  Cog,
-  Star,
-  MapPin,
+  Users,
 } from "lucide-react";
 import {
   format,
@@ -103,11 +95,21 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
       };
     });
 
-    const trainingsByCategory = {
-      iot: trainings.filter((t) => t.category === "IoT").length,
-      web: trainings.filter((t) => t.category === "Web Development").length,
-      automation: trainings.filter((t) => t.category === "Automation").length,
-    };
+    const categoryMap = {};
+    trainings.forEach((training) => {
+      const category = training.category;
+      if (category) {
+        if (!categoryMap[category]) categoryMap[category] = 0;
+        categoryMap[category] += 1;
+      }
+    });
+
+    const trainingCategories = Object.entries(categoryMap).map(
+      ([name, value]) => ({
+        name,
+        value,
+      })
+    );
 
     const totalTrainings = trainings.length;
     const totalStudents = trainings.reduce(
@@ -117,108 +119,11 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
 
     return {
       dailyActivity,
-      trainingsByCategory,
+      trainingCategories,
       totalTrainings,
       totalStudents,
     };
   }, [trainings]);
-  const dashboardData = useMemo(() => {
-    const now = new Date();
-    const thirtyDaysAgo = subDays(now, 60);
-    const sevenDaysAgo = subDays(now, 7);
-
-    // Projects by type
-    const projectsByType = {
-      iot: projects.filter((p) => p.type === "iot").length,
-      web: projects.filter((p) => p.type === "web").length,
-      automation: projects.filter((p) => p.type === "automation").length,
-    };
-
-    // Recent projects (last 7 days)
-    const recentProjects = projects.filter((project) => {
-      const createdDate = new Date(project.createdAt);
-      return createdDate >= sevenDaysAgo;
-    });
-
-    // Monthly projects (last 30 days)
-    const monthlyProjects = projects.filter((project) => {
-      const createdDate = new Date(project.createdAt);
-      return createdDate >= thirtyDaysAgo;
-    });
-
-    // Daily activity for the last 30 days (GitHub-style)
-    const dailyActivity = eachDayOfInterval({
-      start: thirtyDaysAgo,
-      end: now,
-    }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
-      return {
-        date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
-        iot: projectsOnDay.filter((p) => p.type === "iot").length,
-        web: projectsOnDay.filter((p) => p.type === "web").length,
-        automation: projectsOnDay.filter((p) => p.type === "automation").length,
-      };
-    });
-
-    // Weekly summary for the last 4 weeks
-    const weeklyData = [];
-    for (let i = 3; i >= 0; i--) {
-      const weekStart = subDays(now, (i + 1) * 7);
-      const weekEnd = subDays(now, i * 7);
-      const weekProjects = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, {
-          start: weekStart,
-          end: weekEnd,
-        });
-      });
-      weeklyData.push({
-        week: `Week ${4 - i}`,
-        projects: weekProjects.length,
-        iot: weekProjects.filter((p) => p.type === "iot").length,
-        web: weekProjects.filter((p) => p.type === "web").length,
-        automation: weekProjects.filter((p) => p.type === "automation").length,
-      });
-    }
-
-    // Category distribution
-    const categories = [...new Set(projects.map((p) => p.category))];
-    const categoryData = categories.map((category) => ({
-      name: category,
-      value: projects.filter((p) => p.category === category).length,
-      type: projects.find((p) => p.category === category)?.type || "web",
-    }));
-
-    // Technology usage
-    const allTechnologies = projects.flatMap((p) => p.technologies);
-    const techCount = allTechnologies.reduce((acc, tech) => {
-      acc[tech] = (acc[tech] || 0) + 1;
-      return acc;
-    }, {});
-
-    const topTechnologies = Object.entries(techCount)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 8)
-      .map(([name, count]) => ({ name, count }));
-
-    return {
-      projectsByType,
-      recentProjects: recentProjects.length,
-      monthlyProjects: monthlyProjects.length,
-      dailyActivity,
-      weeklyData,
-      categoryData,
-      topTechnologies,
-      totalProjects: projects.length,
-      avgProjectsPerWeek: Math.round(monthlyProjects.length / 4),
-    };
-  }, [projects]);
 
   const typeColors = {
     iot: "#8EC64C", // emerald
@@ -241,7 +146,7 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-gradient-to-r from-greenc2i-500 to-bluec2i-500 rounded-lg flex items-center justify-center text-white">
+          <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center text-white">
             {icon}
           </div>
           <div className="ml-4">
@@ -271,8 +176,6 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
       </div>
     </div>
   );
-
-  // REUSABLE COMPONENTS
 
   return (
     <div className="space-y-8 p-6">
@@ -348,6 +251,7 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
                 outerRadius={100}
                 paddingAngle={5}
                 dataKey="value"
+                nameKey="name"
               >
                 {[
                   { color: "#8EC64C" },
@@ -404,41 +308,36 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
         {/* Training Categories Distribution */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <h3 className="text-lg font-semibold mb-4">Training Categories</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={[
-                  {
-                    name: "IoT",
-                    value: trainingDashboardData.trainingsByCategory.iot,
-                  },
-                  {
-                    name: "Web",
-                    value: trainingDashboardData.trainingsByCategory.web,
-                  },
-                  {
-                    name: "Automation",
-                    value: trainingDashboardData.trainingsByCategory.automation,
-                  },
-                ]}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {[
-                  { color: "#10b981" },
-                  { color: "#3b82f6" },
-                  { color: "#f97316" },
-                ].map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          {trainingDashboardData.trainingCategories.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={trainingDashboardData.trainingCategories}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                  nameKey="name"
+                >
+                  {trainingDashboardData.trainingCategories.map(
+                    (entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={pieColors[index % pieColors.length]}
+                      />
+                    )
+                  )}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-60 flex items-center justify-center text-gray-500">
+              No training categories available
+            </div>
+          )}
         </div>
       </div>
     </div>

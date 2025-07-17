@@ -113,7 +113,7 @@ const Iot = () => {
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our iot <span className="text-greenc2i-500">Capabilities</span>
+            Our IoT <span className="text-greenc2i-500">Capabilities</span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
             We provide end-to-end iot solutions from device connectivity to data
@@ -181,8 +181,8 @@ const Iot = () => {
 
       <div className="mb-16">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
-            Our iot
+          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
+            Our IoT
             <span className="text-transparent bg-clip-text bg-greenc2i-500">
               Portfolio
             </span>

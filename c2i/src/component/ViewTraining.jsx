@@ -3,126 +3,213 @@ import {
   BookOpen,
   Users,
   Clock,
+  Star,
   MapPin,
-  ChevronLeft,
   CheckCircle,
-  BarChart2,
+  X,
+  Calendar,
+  User,
+  Target,
+  ChevronLeft,
 } from "lucide-react";
 
-const ViewTraining = ({ onClose, training, theme }) => {
+const ViewTraining = ({ onClose, training, onRequestInfo }) => {
   if (!training) return null;
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case "IoT":
+        return "bg-emerald-100 text-emerald-800";
+      case "Web Development":
+        return "bg-blue-100 text-blue-800";
+      case "Automation":
+        return "bg-orange-100 text-orange-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getLevelColor = (level) => {
+    switch (level) {
+      case "Beginner":
+        return "bg-green-100 text-green-800";
+      case "Intermediate":
+        return "bg-yellow-100 text-yellow-800";
+      case "Advanced":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const renderDescriptionWithLinks = (text) => {
+    if (!text) return null;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white p-6 border-b border-gray-200 flex items-center justify-between">
+        <div className="relative">
+          <img
+            src={
+              training.media
+                ? training.media.startsWith("http")
+                  ? training.media
+                  : `http://localhost:7000${training.media}`
+                : "https://via.placeholder.com/800x400?text=No+Image"
+            }
+            alt={training.title}
+            className="w-full h-64 object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
           <button
             onClick={onClose}
-            className="flex items-center text-gray-600 hover:text-gray-900"
+            className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-colors"
           >
-            <ChevronLeft className="mr-2" />
-            Back to Trainings
+            <X className="w-6 h-6" />
           </button>
-          <div className="flex items-center space-x-2">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                theme?.categoryBg || "bg-blue-500"
-              } text-white`}
-            >
-              {training.category}
-            </span>
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="flex items-center gap-3 mb-4">
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(
+                  training.category
+                )}`}
+              >
+                {training.category}
+              </span>
+              {training.level && (
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(
+                    training.level
+                  )}`}
+                >
+                  {training.level}
+                </span>
+              )}
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {training.title}
+            </h1>
+            <div className="flex items-center text-white/90 text-sm">
+              <User className="w-4 h-4 mr-1" />
+              <span className="mr-4">{training.instructor}</span>
+              {training.duration && (
+                <>
+                  <Clock className="w-4 h-4 mr-1" />
+                  <span className="mr-4">{training.duration}</span>
+                </>
+              )}
+              {training.rating && (
+                <div className="flex items-center">
+                  <Star className="w-4 h-4 mr-1 text-yellow-400 fill-current" />
+                  <span>{training.rating.toFixed(1)}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {/* Main Image */}
-          <div className="mb-8 rounded-xl overflow-hidden">
-            <img
-              src={
-                training.media
-                  ? training.media.startsWith("http")
-                    ? training.media
-                    : `http://localhost:7000${training.media}`
-                  : "https://via.placeholder.com/1200x600?text=No+Image"
-              }
-              alt={training.title}
-              className="w-full h-96 object-cover"
-            />
-          </div>
-
-          {/* Title and Basic Info */}
+        <div className="p-8">
+          {/* Description */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {training.title}
-            </h1>
-            <p className="text-xl text-gray-600 mb-6">{training.description}</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              About This Training
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {renderDescriptionWithLinks(training.description)}
+            </p>
+          </div>
 
-            <div className="flex flex-wrap gap-4 mb-6">
-              <div className="flex items-center text-gray-700">
-                <Users className="w-5 h-5 mr-2" />
-                <span>Instructor: {training.instructor}</span>
-              </div>
-              {training.duration && (
-                <div className="flex items-center text-gray-700">
-                  <Clock className="w-5 h-5 mr-2" />
-                  <span>Duration: {training.duration}</span>
-                </div>
-              )}
-              {training.locations && (
-                <div className="flex items-center text-gray-700">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  <span>Locations: {training.locations}</span>
-                </div>
-              )}
+          {/* Technologies */}
+          <div className="mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Technologies Covered
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {training.technologies?.map((tech, index) => (
+                <span
+                  key={index}
+                  className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800 px-4 py-2 rounded-lg font-medium border border-purple-200"
+                >
+                  {tech}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* Two Column Layout */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Left Column - Main Content */}
-            <div className="md:col-span-2">
-              {/* Technologies */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
-                  <BarChart2 className="mr-2" />
-                  Technologies Covered
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {training.technologies?.map((tech, index) => (
-                    <span
-                      key={index}
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        theme?.badgeBg || "bg-blue-100"
-                      } ${theme?.badgeText || "text-blue-600"}`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
+          {/* Instructor & Location */}
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Instructor
+              </h3>
+              <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  {training.instructor
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">
+                    {training.instructor}
+                  </div>
+                  <div className="text-sm text-gray-600">Expert Instructor</div>
                 </div>
               </div>
-
-              {/* Modules */}
-              {training.modules?.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
-                    <BookOpen className="mr-2" />
-                    Training Modules
-                  </h2>
-                  <ul className="space-y-3">
-                    {training.modules.map((module, index) => (
-                      <li key={index} className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-gray-700">{module}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Full Description */}
             </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Training Locations
+              </h3>
+              <div className="space-y-2">
+                {training.locations?.split(",").map((location, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center p-3 bg-gray-50 rounded-lg"
+                  >
+                    <MapPin className="w-5 h-5 text-gray-400 mr-3" />
+                    <span className="text-gray-700">{location.trim()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+              <Calendar className="w-5 h-5 mr-2" />
+              Enroll Now
+            </button>
+            <button
+              onClick={() => onRequestInfo && onRequestInfo(training)}
+              className="flex-1 border-2 border-purple-600 text-purple-600 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300 flex items-center justify-center"
+            >
+              <Target className="w-5 h-5 mr-2" />
+              Request Info
+            </button>
           </div>
         </div>
       </div>

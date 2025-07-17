@@ -110,7 +110,7 @@ const Automation = () => {
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our automation{" "}
+            Our Automation{" "}
             <span className="text-orangec2i-500">Capabilities</span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
@@ -174,8 +174,8 @@ const Automation = () => {
 
       <div className="mb-16">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
-            Our automation
+          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
+            Our Automation
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orangec2i-500 to-orangec2i-900">
               Portfolio
             </span>

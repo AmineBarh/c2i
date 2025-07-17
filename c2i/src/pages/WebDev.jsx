@@ -110,7 +110,8 @@ const WebDev = () => {
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our web <span className="text-bluec2i-500">Capabilities</span>
+            Our Web Development{" "}
+            <span className="text-bluec2i-500">Capabilities</span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
             We provide end-to-end web solutions from device connectivity to data
@@ -174,8 +175,8 @@ const WebDev = () => {
 
       <div className="mb-16">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-5">
-            Our web
+          <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
+            Our Web Development
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-bluec2i-500 to-bluec2i-900">
               Portfolio
             </span>
