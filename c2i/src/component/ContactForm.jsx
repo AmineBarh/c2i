@@ -83,8 +83,8 @@ const ContactForm = () => {
                 <Phone color="#2379BA" />
               </div>
               <div className="mails flex flex-col">
-                <div>+216 55 405 940</div>
                 <div>+216 53 258 794</div>
+                <div>+216 55 405 940</div>
               </div>
             </div>
             {/* Location */}

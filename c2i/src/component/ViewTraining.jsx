@@ -199,10 +199,6 @@ const ViewTraining = ({ onClose, training, onRequestInfo }) => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center">
-              <Calendar className="w-5 h-5 mr-2" />
-              Enroll Now
-            </button>
             <button
               onClick={() => onRequestInfo && onRequestInfo(training)}
               className="flex-1 border-2 border-purple-600 text-purple-600 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300 flex items-center justify-center"

@@ -30,7 +30,10 @@ const Admin = () => {
   const [selectedType, setSelectedType] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // In Admin.jsx, add this state near your other state declarations
+
+  const [partnerType, setPartnerType] = useState("trusted"); // default to "trusted"
+  const [partnerFile, setPartnerFile] = useState(null);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -92,7 +95,21 @@ const Admin = () => {
             trainings={trainings} // ✅ NOW PASSED CORRECTLY
           />
         );
+      // Replace your current Trust component rendering with this:
       case "partners":
+        return (
+          <Trust
+            partners={partners}
+            partnerType={partnerType}
+            setPartnerType={setPartnerType}
+            partnerFile={partnerFile}
+            setPartnerFile={setPartnerFile}
+            handleAddPartner={handleAddPartner}
+            handleDeletePartner={(id) =>
+              setPartners(partners.filter((p) => p._id !== id))
+            }
+          />
+        );
         return (
           <Trust
             partners={partners}
@@ -121,6 +138,37 @@ const Admin = () => {
         return <TrainingDashboard />;
       default:
         return <Dashboard projects={projects} trainings={trainings} />;
+    }
+  };
+
+  // Add this function to your Admin component
+  const handleAddPartner = async (e) => {
+    e.preventDefault();
+
+    if (!partnerFile) {
+      setError("Please select an image file");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("type", partnerType);
+      formData.append("image", partnerFile);
+
+      const response = await fetch("http://localhost:7000/api/partners", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add partner");
+      }
+
+      const newPartner = await response.json();
+      setPartners([...partners, newPartner]);
+      setPartnerFile(null); // Reset file input
+    } catch (err) {
+      setError(err.message);
     }
   };
 

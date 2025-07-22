@@ -35,11 +35,11 @@ const Navbar = () => {
   }, [isOpen]);
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "IoT Solutions", href: "/iot" },
-    { name: "Web Development", href: "/web-dev" },
-    { name: "Automation", href: "/automation" },
-    { name: "Training", href: "/training" },
+    { name: "HOME", href: "/" },
+    { name: "AUTOMATION", href: "/automation" },
+    { name: "WEB DEVELOPMENT", href: "/web-dev" },
+    { name: "IOT SOLUTIONS", href: "/iot" },
+    { name: "TRAINING", href: "/training" },
   ];
 
   const getActiveClass = (isActive, route) => {
@@ -48,13 +48,13 @@ const Navbar = () => {
 
     switch (route) {
       case "/":
-        return "bg-gradient-to-r from-purplec2i-500 to-greenc2i-500 text-white";
-      case "/web-dev":
-        return "bg-gradient-to-r from-bluec2i-500 to-orangec2i-500 text-white";
-      case "/automation":
-        return "bg-gradient-to-r from-orangec2i-500 to-purplec2i-500 text-white";
-      case "/iot":
         return "bg-gradient-to-r from-greenc2i-500 to-bluec2i-500 text-white";
+      case "/web-dev":
+        return "bg-gradient-to-r from-bluec2i-500 to-greenc2i-500 text-white";
+      case "/automation":
+        return "bg-gradient-to-r from-orangec2i-500 to-bluec2i-500 text-white";
+      case "/iot":
+        return "bg-gradient-to-r to-purplec2i-500 from-greenc2i-500 text-white";
       case "/training":
         return "bg-purplec2i-500 text-white";
       default:
@@ -125,7 +125,7 @@ const Navbar = () => {
                     `${getActiveClass(
                       isActive,
                       item.href
-                    )} relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 group`
+                    )} relative px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 group`
                   }
                 >
                   {({ isActive }) => (
@@ -208,7 +208,7 @@ const Navbar = () => {
                   key={item.name}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block px-4 py-3 text-base font-medium rounded-xl transition-all duration-300 transform ${
+                    `block px-4 py-3 text-base font-bold rounded-xl transition-all duration-300 transform ${
                       isActive
                         ? `${getActiveClass(isActive, item.href)}`
                         : "text-gray-700 hover:text-greenc2i-600 hover:bg-gray-50"
@@ -254,7 +254,7 @@ const Navbar = () => {
                     location.pathname === "/training"
                       ? "bg-gradient-to-r from-purplec2i-500 to-orangec2i-500"
                       : "bg-gradient-to-r from-greenc2i-600 to-bluec2i-900"
-                  } text-white px-6 py-3 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5`}
+                  } text-white px-6 py-3  rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5`}
                 >
                   {location.pathname === "/training"
                     ? "Get Training"
