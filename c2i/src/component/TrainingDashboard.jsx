@@ -244,7 +244,7 @@ const TrainingDashboard = () => {
                               training.media
                                 ? training.media.startsWith("http")
                                   ? training.media
-                                  : `http://localhost:7000${training.media}`
+                                  : `${process.env.REACT_APP_API_URL}${training.media}`
                                 : "https://via.placeholder.com/800x400?text=No+Image"
                             }
                             className="w-12 h-12 rounded-lg object-cover mr-4"

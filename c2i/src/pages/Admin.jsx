@@ -59,7 +59,9 @@ const Admin = () => {
 
     const loadPartners = async () => {
       try {
-        const response = await fetch("http://localhost:7000/api/partners");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/partners`
+        );
         const data = await response.json();
         setPartners(data);
       } catch (err) {
@@ -155,10 +157,13 @@ const Admin = () => {
       formData.append("type", partnerType);
       formData.append("image", partnerFile);
 
-      const response = await fetch("http://localhost:7000/api/partners", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/partners`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to add partner");

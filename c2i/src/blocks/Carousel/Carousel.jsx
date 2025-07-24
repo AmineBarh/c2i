@@ -6,7 +6,6 @@ const VELOCITY_THRESHOLD = 500;
 const GAP = 16;
 const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
 
-// Create a separate component for carousel items
 const CarouselItem = ({
   item,
   index,
@@ -40,7 +39,7 @@ const CarouselItem = ({
     >
       {item.type === "image" ? (
         <img
-          src={`http://localhost:7000${item.url}`}
+          src={`${process.env.REACT_APP_API_URL}${item.url}`}
           alt={`Slide ${index + 1}`}
           className="w-full h-full object-cover"
           draggable="false"
@@ -70,7 +69,7 @@ const CarouselItem = ({
           }}
         >
           <source
-            src={`http://localhost:7000${item.url}`}
+            src={`${process.env.REACT_APP_API_URL}${item.url}`}
             type={`video/${item.url.split(".").pop()}`}
           />
         </video>
@@ -81,24 +80,41 @@ const CarouselItem = ({
 
 export default function Carousel({
   items = [],
-  baseWidth = 300,
   autoplay = false,
   autoplayDelay = 1000,
   pauseOnHover = false,
   loop = false,
   round = false,
 }) {
-  const containerPadding = 16;
-  const itemWidth = baseWidth - containerPadding * 2;
-  const trackItemOffset = itemWidth + GAP;
-
-  const carouselItems = loop ? [...items, items[0]] : items;
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
   const x = useMotionValue(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
-  const containerRef = useRef(null);
+  // Measure container width responsively
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  const itemWidth = containerWidth - 32; // 16px padding on each side
+  const trackItemOffset = itemWidth + GAP;
+  const carouselItems = loop ? [...items, items[0]] : items;
 
   useEffect(() => {
     if (pauseOnHover && containerRef.current) {
@@ -118,12 +134,8 @@ export default function Carousel({
     if (autoplay && (!pauseOnHover || !isHovered)) {
       const timer = setInterval(() => {
         setCurrentIndex((prev) => {
-          if (prev === items.length - 1 && loop) {
-            return prev + 1;
-          }
-          if (prev === carouselItems.length - 1) {
-            return loop ? 0 : prev;
-          }
+          if (prev === items.length - 1 && loop) return prev + 1;
+          if (prev === carouselItems.length - 1) return loop ? 0 : prev;
           return prev + 1;
         });
       }, autoplayDelay);
@@ -153,6 +165,7 @@ export default function Carousel({
   const handleDragEnd = (_, info) => {
     const offset = info.offset.x;
     const velocity = info.velocity.x;
+
     if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
       if (loop && currentIndex === items.length - 1) {
         setCurrentIndex(currentIndex + 1);
@@ -181,11 +194,12 @@ export default function Carousel({
     <div
       ref={containerRef}
       className={`relative overflow-hidden p-4 ${
-        round ? "rounded-full  border-white" : "rounded-[24px]  border-[#222]"
-      }`}
+        round ? "rounded-full border-white" : "rounded-[24px] border-[#222]"
+      } 
+  scale-90 sm:scale-95 md:scale-100 mx-auto transition-transform duration-300`}
       style={{
-        width: `${baseWidth}px`,
-        ...(round && { height: `${baseWidth}px` }),
+        width: `600px`,
+        ...(round && { height: `600px` }),
       }}
     >
       <motion.div
@@ -193,7 +207,6 @@ export default function Carousel({
         drag="x"
         {...dragProps}
         style={{
-          width: itemWidth,
           gap: `${GAP}px`,
           perspective: 1000,
           perspectiveOrigin: `${
@@ -220,7 +233,7 @@ export default function Carousel({
       </motion.div>
 
       {/* Indicators */}
-      <div className={`flex w-full justify-center mt-4`}>
+      <div className="flex w-full justify-center mt-4">
         <div className="flex gap-2">
           {items.map((_, index) => (
             <motion.div

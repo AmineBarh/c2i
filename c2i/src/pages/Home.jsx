@@ -4,7 +4,7 @@ import CountUp from "../blocks/CountUp/CountUp";
 import GradientText from "../blocks/GradientText/GradientText";
 import { Link } from "react-router-dom";
 import Marquee from "react-fast-marquee";
-// import c2o from "../images/c2o.png";
+import bglanding from "../images/bglanding.png";
 import {
   ArrowRight,
   Cpu,
@@ -35,7 +35,9 @@ const Home = () => {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const response = await fetch("http://localhost:7000/api/partners");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/partners`
+        );
         const data = await response.json();
         setTrustedPartners(
           data.filter((partner) => partner.type === "trusted")
@@ -60,13 +62,16 @@ const Home = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:7000/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
@@ -90,13 +95,17 @@ const Home = () => {
   };
   // Update your inputs to use the controlled form:
 
+  const scrollToContact = () => {
+    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080"
+            src={bglanding}
             alt="Modern technology workspace with IoT devices and digital solutions"
             className="w-full h-full object-cover"
           />
@@ -105,25 +114,27 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="title text-white text-7xl sm:text-4xl md:text-6xl font-bold flex flex-col items-center gap-2">
-            <div>Expert Solutions In</div>
-            <div className="py-5 text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-600">
+          <div className="title text-white font-bold flex flex-col items-center gap-4">
+            <div className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+              Expert Solutions In
+            </div>
+            <div className="py-2 xs:py-3 sm:py-4 md:py-5 text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-600">
               <ReactRotatingText
                 items={["Automation!", "IoT Engineering!", "Web Development!"]}
                 pause={1500}
               />
             </div>
           </div>
-          <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-white mb-6 sm:mb-8 max-w-2xl xs:max-w-3xl mx-auto leading-relaxed">
             Transforming businesses through innovative IoT solutions,
             cutting-edge web development, and intelligent automation systems.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
+          <div className="flex flex-col sm:flex-row gap-3 xs:gap-4 justify-center items-center">
+            <button className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
               Explore Our Work
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight className="ml-2 w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
             </button>
-            <button className="border-2 border-gray-300 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300">
+            <button className="border-2 border-gray-300 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300">
               Get In Touch
             </button>
           </div>
@@ -155,7 +166,7 @@ const Home = () => {
             {trustedPartners.map((partner, index) => (
               <img
                 key={index}
-                src={`http://localhost:7000/uploads/${partner.img}`}
+                src={`${process.env.REACT_APP_API_URL}/uploads/${partner.img}`}
                 alt={`Partner ${index + 1}`}
                 className="mx-16 h-16 object-contain"
               />
@@ -304,7 +315,7 @@ const Home = () => {
           </div>
         </div>
         {/* Partners Component */}
-        <section className="py-16">
+        <section className=" my-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -331,7 +342,7 @@ const Home = () => {
             {ourPartners.map((partner, index) => (
               <img
                 key={index}
-                src={`http://localhost:7000/uploads/${partner.img}`}
+                src={`${process.env.REACT_APP_API_URL}/uploads/${partner.img}`}
                 alt="Partner"
                 className="mx-16 h-16 object-contain"
               />
@@ -339,8 +350,12 @@ const Home = () => {
           </Marquee>
         </div>
         {/* CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-emerald-600 via-blue-600 to-orange-600">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-blue-600 to-orange-600 animate-gradient-x"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-orange-600 to-emerald-600 animate-gradient-x-reverse opacity-70"></div>
+          </div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Ready to Transform Your Business?
             </h2>
@@ -349,23 +364,62 @@ const Home = () => {
               forward in the digital age.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <button
+                onClick={scrollToContact}
+                className="bg-white text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
                 Start Your Project
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300">
+              <button
+                onClick={scrollToContact}
+                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
+              >
                 Schedule Consultation
               </button>
             </div>
           </div>
+          <style jsx>{`
+            @keyframes gradient-x {
+              0%,
+              100% {
+                background-size: 200% 200%;
+                background-position: left center;
+              }
+              50% {
+                background-size: 200% 200%;
+                background-position: right center;
+              }
+            }
+
+            @keyframes gradient-x-reverse {
+              0%,
+              100% {
+                background-size: 200% 200%;
+                background-position: right center;
+              }
+              50% {
+                background-size: 200% 200%;
+                background-position: left center;
+              }
+            }
+
+            .animate-gradient-x {
+              animation: gradient-x 12s ease infinite;
+            }
+
+            .animate-gradient-x-reverse {
+              animation: gradient-x-reverse 18s ease infinite;
+            }
+          `}</style>
         </section>
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 bg-gray-50">
+      <section id="contactform" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Get In{" "}
+              Get In
               <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
                 Touch
               </span>

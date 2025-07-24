@@ -1,17 +1,5 @@
 import React from "react";
-import {
-  BookOpen,
-  Users,
-  Clock,
-  Star,
-  MapPin,
-  CheckCircle,
-  X,
-  Calendar,
-  User,
-  Target,
-  ChevronLeft,
-} from "lucide-react";
+import { Clock, Star, MapPin, X, User, Target } from "lucide-react";
 
 const ViewTraining = ({ onClose, training, onRequestInfo }) => {
   if (!training) return null;
@@ -74,7 +62,7 @@ const ViewTraining = ({ onClose, training, onRequestInfo }) => {
               training.media
                 ? training.media.startsWith("http")
                   ? training.media
-                  : `http://localhost:7000${training.media}`
+                  : `${process.env.REACT_APP_API_URL}${training.media}`
                 : "https://via.placeholder.com/800x400?text=No+Image"
             }
             alt={training.title}

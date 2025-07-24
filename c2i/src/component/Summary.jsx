@@ -50,7 +50,7 @@ const Summary = ({
           <Addproject
             onClose={() => setShowAddProject(false)}
             onSubmit={(formData) =>
-              fetch("http://localhost:7000/Projects/create", {
+              fetch(`${process.env.REACT_APP_API_URL}/Projects/create`, {
                 method: "POST",
                 body: formData,
               })
@@ -186,7 +186,7 @@ const Summary = ({
                         {project.media?.length > 0 ? (
                           project.media[0].type === "image" ? (
                             <img
-                              src={`http://localhost:7000${project.media[0].url}`}
+                              src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                               alt={project.title}
                               className="w-16 h-16 object-cover rounded"
                             />
@@ -194,7 +194,7 @@ const Summary = ({
                             <div className="relative">
                               <video className="w-16 h-16 object-cover rounded">
                                 <source
-                                  src={`http://localhost:7000${project.media[0].url}`}
+                                  src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                                 />
                               </video>
                               <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-1 rounded">

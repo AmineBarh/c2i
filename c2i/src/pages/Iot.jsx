@@ -88,16 +88,19 @@ const Iot = () => {
         />
       )}
 
-      <section className="relative py-36 bg-gradient-to-br from-greenc2i-100 via-white to-greenc2i-100">
+      <section className="relative py-36 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-greenc2i-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-greenc2i-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-10 right-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-float-1"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-float-2"></div>
+          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-green-400/5 rounded-full blur-3xl animate-float-3"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-green-300/8 rounded-full blur-3xl animate-float-4"></div>
+          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-green-600/5 rounded-full blur-3xl animate-float-5"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-greenc2i-500">IoT Solutions</span>
+              <span className="text-green-500">IoT Solutions</span>
               <br />
               That Transform Industries
             </h1>
@@ -108,6 +111,128 @@ const Iot = () => {
             </p>
           </div>
         </div>
+
+        <style jsx global>{`
+          @keyframes float-1 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50px, 20px) scale(0.9);
+              opacity: 0.7;
+            }
+            75% {
+              transform: translate(-30px, 40px) scale(1.05);
+              opacity: 0.4;
+            }
+          }
+
+          @keyframes float-2 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(40px, -20px) scale(1.15);
+              opacity: 0.6;
+            }
+            50% {
+              transform: translate(20px, -40px) scale(0.85);
+              opacity: 0.4;
+            }
+            75% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.7;
+            }
+          }
+
+          @keyframes float-3 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.2;
+            }
+            25% {
+              transform: translate(20px, 30px) scale(1.1);
+              opacity: 0.4;
+            }
+            50% {
+              transform: translate(-20px, 10px) scale(0.9);
+              opacity: 0.3;
+            }
+            75% {
+              transform: translate(30px, -20px) scale(1.05);
+              opacity: 0.5;
+            }
+          }
+
+          @keyframes float-4 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.25;
+            }
+            25% {
+              transform: translate(-40px, 20px) scale(0.95);
+              opacity: 0.45;
+            }
+            50% {
+              transform: translate(30px, -10px) scale(1.1);
+              opacity: 0.35;
+            }
+            75% {
+              transform: translate(10px, 40px) scale(0.9);
+              opacity: 0.55;
+            }
+          }
+
+          @keyframes float-5 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.2;
+            }
+            25% {
+              transform: translate(30px, -40px) scale(1.1);
+              opacity: 0.35;
+            }
+            50% {
+              transform: translate(-10px, 30px) scale(0.95);
+              opacity: 0.25;
+            }
+            75% {
+              transform: translate(-40px, -10px) scale(1.05);
+              opacity: 0.4;
+            }
+          }
+
+          .animate-float-1 {
+            animation: float-1 2s ease-in-out infinite;
+          }
+
+          .animate-float-2 {
+            animation: float-2 2s ease-in-out infinite;
+          }
+
+          .animate-float-3 {
+            animation: float-3 2s ease-in-out infinite;
+          }
+
+          .animate-float-4 {
+            animation: float-4 2s ease-in-out infinite;
+          }
+
+          .animate-float-5 {
+            animation: float-5 2s ease-in-out infinite;
+          }
+        `}</style>
       </section>
 
       <div className="py-16 mb-16 bg-white">
@@ -257,7 +382,7 @@ const Iot = () => {
                     <div className="relative">
                       {project.media ? (
                         <img
-                          src={`http://localhost:7000${project.media[0].url}`}
+                          src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                           alt={project.title}
                           className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
                         />

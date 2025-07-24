@@ -24,7 +24,6 @@ import {
   FileText,
   ChevronRight,
   Play,
-  Ticket,
 } from "lucide-react";
 import ViewTraining from "../component/ViewTraining";
 
@@ -217,13 +216,16 @@ const Training = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:7000/quotes/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(quoteRequest),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/quotes/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(quoteRequest),
+        }
+      );
 
       const data = await response.json(); // Now data is properly defined
 
@@ -272,7 +274,7 @@ const Training = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          "http://localhost:7000/training/categories"
+          `${process.env.REACT_APP_API_URL}/training/categories`
         );
         const data = await response.json();
         setCategories(["All", ...data]);
@@ -463,7 +465,7 @@ const Training = () => {
                           training.media
                             ? training.media.startsWith("http")
                               ? training.media
-                              : `http://localhost:7000${training.media}`
+                              : `${process.env.REACT_APP_API_URL}${training.media}`
                             : "https://via.placeholder.com/800x400?text=No+Image"
                         }
                         alt={training.title}

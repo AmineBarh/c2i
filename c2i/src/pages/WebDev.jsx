@@ -94,7 +94,9 @@ const WebDev = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-bluec2i-500">Web Dev Solutions</span>
+              <span className="text-bluec2i-500 uppercase">
+                Web Dev Solutions
+              </span>
               <br />
               That Transform Industries
             </h1>
@@ -252,7 +254,7 @@ const WebDev = () => {
                       {project.media?.length > 0 ? (
                         project.media[0].type === "image" ? (
                           <img
-                            src={`http://localhost:7000${project.media[0].url}`}
+                            src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                             alt={project.title}
                             className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
                           />
@@ -260,10 +262,10 @@ const WebDev = () => {
                           <div className="relative">
                             <video
                               className="w-full h-48 object-cover rounded"
-                              poster={`http://localhost:7000${project.media[0].url}?thumbnail`}
+                              poster={`${process.env.REACT_APP_API_URL}${project.media[0].url}?thumbnail`}
                             >
                               <source
-                                src={`http://localhost:7000${project.media[0].url}`}
+                                src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                               />
                             </video>
                             <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">

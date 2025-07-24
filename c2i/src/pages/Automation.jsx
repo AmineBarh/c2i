@@ -17,7 +17,7 @@ const Automation = () => {
     navigate("/");
 
     setTimeout(() => {
-      const element = document.getElementById("contact"); // Or 'footer' or whatever your bottom section ID is
+      const element = document.getElementById("contact");
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       } else {
@@ -26,8 +26,9 @@ const Automation = () => {
           behavior: "smooth",
         });
       }
-    }, 300); // Delay ensures page has time to load
+    }, 300);
   };
+
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -73,8 +74,8 @@ const Automation = () => {
       {selectedProject && (
         <ViewProject
           theme={{
-            background: "#ffffff", // dark background
-            text: "text-blackc2i-500", // light text
+            background: "#ffffff",
+            text: "text-blackc2i-500",
             badgeBg: "bg-orangec2i-100",
             badgeText: "text-orangec2i-900",
             categoryBg: "bg-orangec2i-500",
@@ -85,16 +86,23 @@ const Automation = () => {
         />
       )}
 
-      <section className="relative py-36 bg-gradient-to-br from-orangec2i-100 via-white to-orangec2i-100">
+      {/* Hero Section */}
+      <section className="relative py-36 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orangec2i-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-orangec2i-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-10 right-10 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-float-1"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-float-2"></div>
+          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-orange-400/15 rounded-full blur-3xl animate-float-3"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-orange-300/10 rounded-full blur-3xl animate-float-4"></div>
+          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-orange-600/15 rounded-full blur-3xl animate-float-5"></div>
+          <div className="absolute inset-0 bg-gradient-to-bl from-orange-200/30 via-transparent to-orange-200/30 animate-gradient-move"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-orangec2i-500">Automation Solutions</span>
+              <span className="text-orange-500 uppercase">
+                Automation Solutions
+              </span>
               <br />
               That Transform Industries
             </h1>
@@ -105,8 +113,145 @@ const Automation = () => {
             </p>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes float-1 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50px, 20px) scale(0.9);
+              opacity: 0.7;
+            }
+            75% {
+              transform: translate(-30px, 40px) scale(1.05);
+              opacity: 0.4;
+            }
+          }
+
+          @keyframes float-2 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(40px, -20px) scale(1.15);
+              opacity: 0.6;
+            }
+            50% {
+              transform: translate(20px, -40px) scale(0.85);
+              opacity: 0.4;
+            }
+            75% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.7;
+            }
+          }
+
+          @keyframes float-3 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.2;
+            }
+            25% {
+              transform: translate(20px, 30px) scale(1.1);
+              opacity: 0.4;
+            }
+            50% {
+              transform: translate(-20px, 10px) scale(0.9);
+              opacity: 0.3;
+            }
+            75% {
+              transform: translate(30px, -20px) scale(1.05);
+              opacity: 0.5;
+            }
+          }
+
+          @keyframes float-4 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.25;
+            }
+            25% {
+              transform: translate(-40px, 20px) scale(0.95);
+              opacity: 0.45;
+            }
+            50% {
+              transform: translate(30px, -10px) scale(1.1);
+              opacity: 0.35;
+            }
+            75% {
+              transform: translate(10px, 40px) scale(0.9);
+              opacity: 0.55;
+            }
+          }
+
+          @keyframes float-5 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.2;
+            }
+            25% {
+              transform: translate(30px, -40px) scale(1.1);
+              opacity: 0.35;
+            }
+            50% {
+              transform: translate(-10px, 30px) scale(0.95);
+              opacity: 0.25;
+            }
+            75% {
+              transform: translate(-40px, -10px) scale(1.05);
+              opacity: 0.4;
+            }
+          }
+
+          @keyframes gradient-move {
+            0% {
+              background-position: 100% 0%;
+            }
+            100% {
+              background-position: 0% 100%;
+            }
+          }
+
+          .animate-float-1 {
+            animation: float-1 12s ease-in-out infinite;
+          }
+
+          .animate-float-2 {
+            animation: float-2 14s ease-in-out infinite;
+          }
+
+          .animate-float-3 {
+            animation: float-3 10s ease-in-out infinite;
+          }
+
+          .animate-float-4 {
+            animation: float-4 16s ease-in-out infinite;
+          }
+
+          .animate-float-5 {
+            animation: float-5 18s ease-in-out infinite;
+          }
+
+          .animate-gradient-move {
+            animation: gradient-move 20s ease-in-out infinite alternate;
+            background-size: 200% 200%;
+          }
+        `}</style>
       </section>
 
+      {/* Capabilities */}
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
@@ -120,58 +265,42 @@ const Automation = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <RefreshCw className="w-8 h-8" />
+          {[
+            {
+              icon: <RefreshCw />,
+              title: "Process Automation",
+              desc: "Streamline repetitive tasks and workflows for maximum efficiency.",
+            },
+            {
+              icon: <BarChart3 />,
+              title: "Connectivity Solutions",
+              desc: "Support for various protocols including WiFi, LoRaWAN, Zigbee, and cellular",
+            },
+            {
+              icon: <Clock />,
+              title: "Security First",
+              desc: "Enterprise-grade security with encryption and secure device management",
+            },
+            {
+              icon: <TrendingUp />,
+              title: "Data Analytics",
+              desc: "Advanced analytics and machine learning for actionable insights",
+            },
+          ].map((item, idx) => (
+            <div key={idx} className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                {item.icon}
+              </div>
+              <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
+                {item.title}
+              </h3>
+              <p className="text-blackc2i-600">{item.desc}</p>
             </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Process Automation
-            </h3>
-            <p className="text-blackc2i-600">
-              Streamline repetitive tasks and workflows for maximum efficiency.
-            </p>
-          </div>
-
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <BarChart3 className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Connectivity Solutions
-            </h3>
-            <p className="text-blackc2i-600">
-              Support for various protocols including WiFi, LoRaWAN, Zigbee, and
-              cellular
-            </p>
-          </div>
-
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Clock className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Security First
-            </h3>
-            <p className="text-blackc2i-600">
-              Enterprise-grade security with encryption and secure device
-              management
-            </p>
-          </div>
-
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-br from-orangec2i-500 to-orangec2i-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <TrendingUp className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Data Analytics
-            </h3>
-            <p className="text-blackc2i-600">
-              Advanced analytics and machine learning for actionable insights
-            </p>
-          </div>
+          ))}
         </div>
       </div>
 
+      {/* Portfolio */}
       <div className="mb-16">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
@@ -186,7 +315,7 @@ const Automation = () => {
           </p>
         </div>
 
-        {/* Category Filter Buttons */}
+        {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-3 mb-12 px-4 sm:px-44">
           {categories.map((category) => (
             <button
@@ -203,17 +332,15 @@ const Automation = () => {
           ))}
         </div>
 
-        {/* Loading and Error States */}
-        {loading && (
+        {/* Loading/Error */}
+        {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orangec2i-500 mx-auto"></div>
             <p className="mt-4 text-lg text-blackc2i-600">
               Loading projects...
             </p>
           </div>
-        )}
-
-        {error && (
+        ) : error ? (
           <div className="text-center py-12">
             <p className="text-red-500 text-lg">{error}</p>
             <button
@@ -223,110 +350,108 @@ const Automation = () => {
               Try Again
             </button>
           </div>
-        )}
-
-        {/* Projects Grid */}
-        {!loading && !error && (
-          <>
-            {filteredProjects.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-blackc2i-600 text-lg">
-                  No projects found in the {selectedCategory} category
-                </p>
-                <button
-                  onClick={() => setSelectedCategory("All")}
-                  className="mt-4 px-4 py-2 bg-orangec2i-500 text-white rounded-md hover:bg-orangec2i-600"
-                >
-                  View All Projects
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                {filteredProjects.map((project) => (
-                  <div
-                    key={project._id}
-                    className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col"
-                  >
-                    <div className="relative rounded-lg overflow-hidden">
-                      {project.media?.length > 0 ? (
-                        project.media[0].type === "image" ? (
-                          <img
-                            src={`http://localhost:7000${project.media[0].url}`}
-                            alt={project.title}
-                            className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
+        ) : filteredProjects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-blackc2i-600 text-lg">
+              No projects found in the {selectedCategory} category
+            </p>
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className="mt-4 px-4 py-2 bg-orangec2i-500 text-white rounded-md hover:bg-orangec2i-600"
+            >
+              View All Projects
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            {filteredProjects.map((project) => (
+              <div
+                key={project._id}
+                className="border rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto flex flex-col"
+              >
+                <div className="relative rounded-lg overflow-hidden">
+                  {project.media?.length > 0 ? (
+                    project.media[0].type === "image" ? (
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
+                        alt={project.title}
+                        className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="relative">
+                        <video
+                          className="w-full h-48 object-cover rounded"
+                          poster={`${process.env.REACT_APP_API_URL}${project.media[0].url}?thumbnail`}
+                        >
+                          <source
+                            src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                           />
-                        ) : (
-                          <div className="relative">
-                            <video
-                              className="w-full h-48 object-cover rounded"
-                              poster={`http://localhost:7000${project.media[0].url}?thumbnail`}
-                            >
-                              <source
-                                src={`http://localhost:7000${project.media[0].url}`}
-                              />
-                            </video>
-                            <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">
-                              Video
-                            </div>
-                          </div>
-                        )
-                      ) : (
-                        <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
-                          <span className="text-gray-500">No Media</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-3 font-bold text-xl text-blackc2i-900">
-                      {project.title}
-                    </div>
-                    <p className="text-blackc2i-600 mt-1 text-sm flex-grow line-clamp-4 h-fit">
-                      {project.description}
-                    </p>
-                    <div className="mt-3 flex flex-col gap-2">
-                      <ul className="flex gap-2 items-start text-sm flex-wrap">
-                        {project.technologies.slice(0, 3).map((tech, index) => (
-                          <li
-                            className="bg-orangec2i-100 text-orangec2i-500 rounded-md px-2 py-1"
-                            key={index}
-                          >
-                            {tech}
-                          </li>
-                        ))}
-                        {project.technologies.length > 3 && (
-                          <li className="text-blackc2i-600 bg-gray-100 rounded-md px-2 py-1">
-                            +{project.technologies.length - 3} more
-                          </li>
-                        )}
-                      </ul>
-                      <div className="checks">
-                        <div className="result text-blackc2i-600 text-sm">
-                          {project.results.map((result, index) => (
-                            <li
-                              className="list-none flex gap-2 items-center"
-                              key={index}
-                            >
-                              <CircleCheckBig size={16} color="#F8B74C" />
-                              <span className="truncate">{result}</span>
-                            </li>
-                          ))}
+                        </video>
+                        <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">
+                          Video
                         </div>
                       </div>
-                      <button
-                        onClick={() => setSelectedProject(project)}
-                        className="mt-4 w-full bg-orangec2i-500 text-white py-2.5 rounded-lg font-medium hover:bg-orangec2i-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
+                    )
+                  ) : (
+                    <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
+                      <span className="text-gray-500">No Media</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-3 font-bold text-xl text-blackc2i-900">
+                  {project.title}
+                </div>
+                <p className="text-blackc2i-600 mt-1 text-sm flex-grow line-clamp-4 h-fit">
+                  {project.description}
+                </p>
+
+                <div className="mt-3 flex flex-col gap-2">
+                  <ul className="flex gap-2 items-start text-sm flex-wrap">
+                    {project.technologies.slice(0, 3).map((tech, index) => (
+                      <li
+                        className="bg-orangec2i-100 text-orangec2i-500 rounded-md px-2 py-1"
+                        key={index}
                       >
-                        View Details
-                        <MoveRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </button>
+                        {tech}
+                      </li>
+                    ))}
+                    {project.technologies.length > 3 && (
+                      <li className="text-blackc2i-600 bg-gray-100 rounded-md px-2 py-1">
+                        +{project.technologies.length - 3} more
+                      </li>
+                    )}
+                  </ul>
+
+                  <div className="checks">
+                    <div className="result text-blackc2i-600 text-sm">
+                      {project.results.map((result, index) => (
+                        <li
+                          className="list-none flex gap-2 items-center"
+                          key={index}
+                        >
+                          <CircleCheckBig size={16} color="#F8B74C" />
+                          <span className="truncate">{result}</span>
+                        </li>
+                      ))}
                     </div>
                   </div>
-                ))}
+
+                  <button
+                    onClick={() => setSelectedProject(project)}
+                    className="mt-4 w-full bg-orangec2i-500 text-white py-2.5 rounded-lg font-medium hover:bg-orangec2i-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
+                  >
+                    View Details
+                    <MoveRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
       </div>
 
+      {/* CTA */}
       <div className="py-16 bg-gradient-to-r from-orangec2i-500 to-orangec2i-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">

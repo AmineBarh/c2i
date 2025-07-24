@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import c2i from "../images/c2o.png";
 
@@ -81,7 +81,6 @@ const Navbar = () => {
     }
   };
 
-  const navigate = useNavigate();
   const goToAndScrollToBottom = () => {
     window.scrollTo({
       top: document.body.scrollHeight,

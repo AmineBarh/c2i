@@ -78,7 +78,7 @@ const Trust = ({
                       </td>
                       <td className="px-6 py-4">
                         <img
-                          src={`http://localhost:7000/uploads/${partner.img}`}
+                          src={`${process.env.REACT_APP_API_URL}/uploads/${partner.img}`}
                           alt={`${partner.type} logo`}
                           className="h-16 object-contain"
                         />

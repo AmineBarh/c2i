@@ -1,5 +1,6 @@
-// src/services/api.js
-const API_URL = "http://localhost:7000/projects";
+const BASE_URL = process.env.REACT_APP_API_URL;
+
+const API_URL = `${BASE_URL}/projects`;
 
 export const fetchProjects = async () => {
   const response = await fetch(API_URL);
@@ -7,44 +8,32 @@ export const fetchProjects = async () => {
   return await response.json();
 };
 
-// In services/api.js
 export const createProject = async (formData) => {
-  const response = await fetch("http://localhost:7000/Projects/create", {
+  const response = await fetch(`${BASE_URL}/Projects/create`, {
     method: "POST",
     body: formData,
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to create project");
   }
-
   return await response.json();
 };
 
 export const deleteProject = async (projectId) => {
-  try {
-    const response = await fetch(
-      `http://localhost:7000/projects/delete/${projectId}`,
-      {
-        method: "DELETE",
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to delete project");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Delete project error:", error);
-    throw error;
+  const response = await fetch(`${BASE_URL}/projects/delete/${projectId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to delete project");
   }
+  return await response.json();
 };
-// Add these to your existing api.js
+
+// Training APIs
 export const fetchtrainings = async () => {
-  const response = await fetch("http://localhost:7000/training");
+  const response = await fetch(`${BASE_URL}/training`);
   if (!response.ok) throw new Error("Failed to fetch trainings");
   return await response.json();
 };
@@ -55,22 +44,20 @@ export const createtraining = async (trainingData) => {
     if (key === "media" && value) {
       formData.append("media", value);
     } else if (Array.isArray(value)) {
-      formData.append(key, value.join(",")); // ✅ This creates "value1,value2,value3"
+      formData.append(key, value.join(","));
     } else {
       formData.append(key, value);
     }
   });
 
-  const response = await fetch("http://localhost:7000/training/create", {
+  const response = await fetch(`${BASE_URL}/training/create`, {
     method: "POST",
     body: formData,
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to create training");
   }
-
   return await response.json();
 };
 
@@ -80,34 +67,30 @@ export const updatetraining = async (id, trainingData) => {
     if (key === "media" && value) {
       formData.append("media", value);
     } else if (Array.isArray(value)) {
-      formData.append(key, value.join(",")); // ✅ This creates "value1,value2,value3"
+      formData.append(key, value.join(","));
     } else {
       formData.append(key, value);
     }
   });
 
-  const response = await fetch(`http://localhost:7000/training/update/${id}`, {
+  const response = await fetch(`${BASE_URL}/training/update/${id}`, {
     method: "PUT",
     body: formData,
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to update training");
   }
-
   return await response.json();
 };
 
 export const deletetraining = async (id) => {
-  const response = await fetch(`http://localhost:7000/training/delete/${id}`, {
+  const response = await fetch(`${BASE_URL}/training/delete/${id}`, {
     method: "DELETE",
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to delete training");
   }
-
   return await response.json();
 };
