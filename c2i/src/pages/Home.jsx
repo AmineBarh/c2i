@@ -118,7 +118,7 @@ const Home = () => {
             <div className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
               Expert Solutions In
             </div>
-            <div className="py-2 xs:py-3 sm:py-4 md:py-5 text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-600">
+            <div className="py-2 xs:py-3 sm:py-4 md:py-5 text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-purplec2i-500 ">
               <ReactRotatingText
                 items={["Automation!", "IoT Engineering!", "Web Development!"]}
                 pause={1500}
@@ -194,7 +194,7 @@ const Home = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Automation Card */}
           <div className="automation bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-r from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+            <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Cpu color="#ffffff" />
             </div>
             <div className="p-5">
@@ -209,7 +209,7 @@ const Home = () => {
                 to="/automation"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-greenc2i-500"
               >
-                <div className="flex items-center text-greenc2i-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                <div className="flex items-center text-orangec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
@@ -218,7 +218,7 @@ const Home = () => {
           </div>
           {/* IoT Engineering Card */}
           <div className="iot bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-l from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+            <div className="bg-gradient-to-l from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Globe color="#ffffff" />
             </div>
             <div className="p-5">
@@ -233,7 +233,7 @@ const Home = () => {
                 to="/web-dev"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-bluec2i-500"
               >
-                <div className="flex items-center text-bluec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                <div className="flex items-center text-greenc2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
@@ -242,7 +242,7 @@ const Home = () => {
           </div>
           {/* Web Development Card */}
           <div className="dev bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+            <div className="bg-gradient-to-r from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Cog color="#ffffff" />
             </div>
             <div className="p-5">
@@ -257,7 +257,7 @@ const Home = () => {
                 to="/web-dev"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-orangec2i-500"
               >
-                <div className="flex items-center text-orangec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                <div className="flex items-center text-bluec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>

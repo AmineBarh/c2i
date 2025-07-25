@@ -252,7 +252,7 @@ const Automation = () => {
       </section>
 
       {/* Capabilities */}
-      <div className="py-16 mb-16 bg-white">
+      <section className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
             Our Automation{" "}
@@ -298,7 +298,7 @@ const Automation = () => {
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Portfolio */}
       <div className="mb-16">
