@@ -16,7 +16,9 @@ import {
   Mail,
   Phone,
   MapPin,
+  Bot,
 } from "lucide-react";
+import Chatbot from "../component/Chatbot";
 const Home = () => {
   const [trustedPartners, setTrustedPartners] = useState([]);
   const [ourPartners, setOurPartners] = useState([]);
@@ -99,6 +101,11 @@ const Home = () => {
     document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleComponent = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <div className="">
       {/* Hero Section */}
@@ -193,77 +200,77 @@ const Home = () => {
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {/* Automation Card */}
-          <div className="automation bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-              <Cpu color="#ffffff" />
-            </div>
-            <div className="p-5">
-              <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                Automation
-              </h5>
-              <p className="mb-3 text-blackc2i-100">
-                Streamline operations with intelligent automation solutions and
-                process optimization.
-              </p>
-              <Link
-                to="/automation"
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-greenc2i-500"
-              >
+          <Link
+            to="/automation"
+            className="inline-flex items-center px-3 py-2 text-sm font-medium text-greenc2i-500"
+          >
+            <div className="automation bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
+              <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+                <Cpu color="#ffffff" />
+              </div>
+              <div className="p-5">
+                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
+                  Automation
+                </h5>
+                <p className="mb-3 text-blackc2i-100">
+                  Streamline operations with intelligent automation solutions
+                  and process optimization.
+                </p>
                 <div className="flex items-center text-orangec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </Link>
+              </div>
             </div>
-          </div>
+          </Link>
           {/* IoT Engineering Card */}
-          <div className="iot bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-l from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-              <Globe color="#ffffff" />
-            </div>
-            <div className="p-5">
-              <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                IoT Engineering
-              </h5>
-              <p className="mb-3 text-blackc2i-100">
-                Build connected systems and smart products with our IoT
-                expertise.
-              </p>
-              <Link
-                to="/web-dev"
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-bluec2i-500"
-              >
+          <Link
+            to="/iot"
+            className="inline-flex items-center px-3 py-2 text-sm font-medium text-bluec2i-500"
+          >
+            <div className="iot bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
+              <div className="bg-gradient-to-l from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+                <Globe color="#ffffff" />
+              </div>
+              <div className="p-5">
+                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
+                  IoT Engineering
+                </h5>
+                <p className="mb-3 text-blackc2i-100">
+                  Build connected systems and smart products with our IoT
+                  expertise.
+                </p>
                 <div className="flex items-center text-greenc2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </Link>
+              </div>
             </div>
-          </div>
+          </Link>
           {/* Web Development Card */}
-          <div className="dev bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-            <div className="bg-gradient-to-r from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-              <Cog color="#ffffff" />
-            </div>
-            <div className="p-5">
-              <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                Web Development
-              </h5>
-              <p className="mb-3 text-blackc2i-100">
-                Develop modern, responsive websites and platforms tailored to
-                your needs.
-              </p>
-              <Link
-                to="/web-dev"
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-orangec2i-500"
-              >
+          <Link
+            to="/web-dev"
+            className="inline-flex items-center px-3 py-2 text-sm font-medium text-orangec2i-500"
+          >
+            <div className="dev bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
+              <div className="bg-gradient-to-r from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
+                <Cog color="#ffffff" />
+              </div>
+              <div className="p-5">
+                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
+                  Web Development
+                </h5>
+                <p className="mb-3 text-blackc2i-100">
+                  Develop modern, responsive websites and platforms tailored to
+                  your needs.
+                </p>
                 <div className="flex items-center text-bluec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </Link>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 
@@ -352,8 +359,8 @@ const Home = () => {
         {/* CTA Section */}
         <section className="py-24 relative overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-blue-600 to-orange-600 animate-gradient-x"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-orange-600 to-emerald-600 animate-gradient-x-reverse opacity-70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-greenc2i-600 via-blue-600 to-orangec2i-900 animate-gradient-x"></div>
+            <div className="absolute inset-0 bg-gradient-to-r via-purplec2i-500 from-orangec2i-500 to-greenc2i-600 animate-gradient-x-reverse opacity-70"></div>
           </div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -378,39 +385,41 @@ const Home = () => {
               </button>
             </div>
           </div>
-          <style jsx>{`
-            @keyframes gradient-x {
-              0%,
-              100% {
-                background-size: 200% 200%;
-                background-position: left center;
-              }
-              50% {
-                background-size: 200% 200%;
-                background-position: right center;
-              }
-            }
+          <style>
+            {`
+    @keyframes gradient-x {
+      0%,
+      100% {
+        background-size: 200% 200%;
+        background-position: left center;
+      }
+      50% {
+        background-size: 200% 200%;
+        background-position: right center;
+      }
+    }
 
-            @keyframes gradient-x-reverse {
-              0%,
-              100% {
-                background-size: 200% 200%;
-                background-position: right center;
-              }
-              50% {
-                background-size: 200% 200%;
-                background-position: left center;
-              }
-            }
+    @keyframes gradient-x-reverse {
+      0%,
+      100% {
+        background-size: 200% 200%;
+        background-position: right center;
+      }
+      50% {
+        background-size: 200% 200%;
+        background-position: left center;
+      }
+    }
 
-            .animate-gradient-x {
-              animation: gradient-x 12s ease infinite;
-            }
+    .animate-gradient-x {
+      animation: gradient-x 12s ease infinite;
+    }
 
-            .animate-gradient-x-reverse {
-              animation: gradient-x-reverse 18s ease infinite;
-            }
-          `}</style>
+    .animate-gradient-x-reverse {
+      animation: gradient-x-reverse 18s ease infinite;
+    }
+  `}
+          </style>
         </section>
       </section>
 
@@ -556,6 +565,17 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4">
+        {isOpen && (
+          <Chatbot className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden" />
+        )}
+        <button
+          onClick={toggleComponent}
+          className="bg-gradient-to-br from-greenc2i-500 to-bluec2i-900 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+        >
+          <Bot className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 };

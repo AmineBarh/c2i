@@ -114,7 +114,7 @@ const Automation = () => {
           </div>
         </div>
 
-        <style jsx>{`
+        <style>{`
           @keyframes float-1 {
             0%,
             100% {

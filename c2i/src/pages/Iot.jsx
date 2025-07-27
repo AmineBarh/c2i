@@ -100,7 +100,7 @@ const Iot = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-green-500">IoT Solutions</span>
+              <span className="text-greenc2i-500">IOT SOLUTIONS</span>
               <br />
               That Transform Industries
             </h1>
@@ -112,7 +112,7 @@ const Iot = () => {
           </div>
         </div>
 
-        <style jsx global>{`
+        <style global>{`
           @keyframes float-1 {
             0%,
             100% {
