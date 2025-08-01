@@ -310,8 +310,13 @@ const Training = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+<<<<<<< HEAD
               <span className="bg-gradient-to-r from-purplec2i-500 to-bluec2i-900 bg-clip-text text-transparent">
                 Formation professionnelle
+=======
+              <span className="bg-gradient-to-r font-black from-purplec2i-500 to-bluec2i-900 bg-clip-text text-transparent">
+                PROFESSIONAL TRAINING
+>>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
               </span>
               <br />
               <span className="text-gray-900">Programmes</span>
