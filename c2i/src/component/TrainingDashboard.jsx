@@ -16,21 +16,25 @@ import {
   BookOpen,
   Award,
   Calendar,
+  X,
 } from "lucide-react";
 import Dashboard from "./Dashboard";
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);
-  const [setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [activeTab, setActiveTab] = useState("trainings");
+  const [selectedTrainings, setSelectedTrainings] = useState([]);
 
   useEffect(() => {
     loadTrainings();
     loadProjects();
+    loadCategories();
   }, []);
 
   const loadTrainings = async () => {
@@ -48,6 +52,21 @@ const TrainingDashboard = () => {
       setProjects(data);
     } catch (error) {
       console.error("Error loading projects:", error);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/training/categories`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
+      const data = await response.json();
+      setCategories(["All", ...data]);
+    } catch (error) {
+      console.error("Error loading categories:", error);
     }
   };
 
@@ -86,8 +105,6 @@ const TrainingDashboard = () => {
     setIsFormOpen(false);
   };
 
-  const categories = ["All", "IoT", "Web Development", "Automation"];
-
   const filteredTrainings = trainings.filter((training) => {
     const matchesSearch =
       training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,6 +114,36 @@ const TrainingDashboard = () => {
       selectedCategory === "All" || training.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const toggleSelectTraining = (trainingId) => {
+    setSelectedTrainings((prevSelected) =>
+      prevSelected.includes(trainingId)
+        ? prevSelected.filter((id) => id !== trainingId)
+        : [...prevSelected, trainingId]
+    );
+  };
+
+  const toggleSelectAllTrainings = () => {
+    if (selectedTrainings.length === filteredTrainings.length) {
+      setSelectedTrainings([]);
+    } else {
+      setSelectedTrainings(filteredTrainings.map((t) => t._id));
+    }
+  };
+
+  const handleBulkDeleteTrainings = async () => {
+    if (
+      selectedTrainings.length > 0 &&
+      window.confirm(
+        `Are you sure you want to delete ${selectedTrainings.length} selected training(s)?`
+      )
+    ) {
+      for (const trainingId of selectedTrainings) {
+        await handleDelete(trainingId);
+      }
+      setSelectedTrainings([]);
+    }
+  };
 
   const stats = [
     {
@@ -201,13 +248,27 @@ const TrainingDashboard = () => {
                 </select>
               </div>
 
-              <button
-                onClick={() => setIsFormOpen(true)}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Training
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button
+                  onClick={() => setIsFormOpen(true)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Training
+                </button>
+                <button
+                  onClick={handleBulkDeleteTrainings}
+                  disabled={selectedTrainings.length === 0}
+                  className={`bg-red-600 text-white px-6 py-2 rounded-lg font-medium flex items-center ${
+                    selectedTrainings.length === 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-red-700"
+                  }`}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Delete Selected
+                </button>
+              </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -215,6 +276,17 @@ const TrainingDashboard = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <input
+                          type="checkbox"
+                          checked={
+                            selectedTrainings.length ===
+                              filteredTrainings.length &&
+                            filteredTrainings.length > 0
+                          }
+                          onChange={toggleSelectAllTrainings}
+                        />
+                      </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                         Title
                       </th>
@@ -238,6 +310,14 @@ const TrainingDashboard = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredTrainings.map((training) => (
                       <tr key={training._id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedTrainings.includes(training._id)}
+                            onChange={() => toggleSelectTraining(training._id)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </td>
                         <td className="px-6 py-4 flex items-center">
                           <img
                             src={

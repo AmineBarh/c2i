@@ -95,6 +95,8 @@ const Admin = () => {
           <Dashboard
             projects={projects}
             trainings={trainings} // ✅ NOW PASSED CORRECTLY
+            partners={partners}
+            loading={loading}
           />
         );
       // Replace your current Trust component rendering with this:
@@ -107,20 +109,49 @@ const Admin = () => {
             partnerFile={partnerFile}
             setPartnerFile={setPartnerFile}
             handleAddPartner={handleAddPartner}
-            handleDeletePartner={(id) =>
-              setPartners(partners.filter((p) => p._id !== id))
-            }
-          />
-        );
-        return (
-          <Trust
-            partners={partners}
-            handleDeletePartner={(id) =>
-              setPartners(partners.filter((p) => p._id !== id))
-            }
+            handleDeletePartner={async (id) => {
+              if (
+                window.confirm("Are you sure you want to delete this partner?")
+              ) {
+                try {
+                  const response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/api/partners/${id}`,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+                  if (!response.ok) {
+                    throw new Error("Failed to delete partner");
+                  }
+                  setPartners(partners.filter((p) => p._id !== id));
+                } catch (error) {
+                  console.error("Error deleting partner:", error);
+                  alert("Failed to delete partner");
+                }
+              }
+            }}
           />
         );
       case "projects":
+        const handleDeleteProject = async (id) => {
+          if (window.confirm("Are you sure you want to delete this project?")) {
+            try {
+              const response = await fetch(
+                `${process.env.REACT_APP_API_URL}/projects/delete/${id}`,
+                {
+                  method: "DELETE",
+                }
+              );
+              if (!response.ok) {
+                throw new Error("Failed to delete project");
+              }
+              setProjects(projects.filter((p) => p._id !== id));
+            } catch (error) {
+              console.error("Error deleting project:", error);
+            }
+          }
+        };
+
         return (
           <Summary
             projects={filteredProjects}
@@ -134,6 +165,7 @@ const Admin = () => {
             setSelectedType={setSelectedType}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            handleDeleteProject={handleDeleteProject}
           />
         );
       case "training":
@@ -235,6 +267,14 @@ const Admin = () => {
             onClick={() => setActiveSection("training")}
             sidebarOpen={sidebarOpen}
             color="purple"
+          />
+          <SidebarButton
+            icon={<LayoutDashboard className="w-5 h-5" />}
+            label="Analytics"
+            isActive={activeSection === "analytics"}
+            onClick={() => setActiveSection("analytics")}
+            sidebarOpen={sidebarOpen}
+            color="teal"
           />
         </nav>
       </div>

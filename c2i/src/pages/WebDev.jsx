@@ -87,37 +87,101 @@ const WebDev = () => {
 
       <section className="relative py-36 bg-gradient-to-br from-bluec2i-100 via-white to-bluec2i-100">
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-bluec2i-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-bluec2i-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-bluec2i-500/50 rounded-full blur-3xl animate-float-1"></div>
+          <div className="absolute bottom-20 left-20 w-80 h-80 bg-bluec2i-500/50 rounded-full blur-3xl animate-float-2"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               <span className="text-bluec2i-500 uppercase">
-                Web Dev Solutions
+                Solutions de développement web
               </span>
               <br />
-              That Transform Industries
+              Qui transforment les industries
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Connect, monitor, and optimize your operations with our
-              cutting-edge Internet of Things solutions. From smart sensors to
-              comprehensive platforms, we build the infrastructure for tomorrow.
+              Connectez, surveillez et optimisez vos opérations avec nos
+              solutions Internet des objets de pointe. Des capteurs intelligents
+              aux plateformes complètes, nous construisons l'infrastructure de
+              demain.
             </p>
           </div>
         </div>
+        <style>{`
+          @keyframes float-1 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50px, 20px) scale(0.9);
+              opacity: 0.7;
+            }
+            75% {
+              transform: translate(-30px, 40px) scale(1.05);
+              opacity: 0.4;
+            }
+          }
+
+          @keyframes float-2 {
+            0%,
+            100% {
+              transform: translate(0, 0) scale(1);
+              opacity: 0.3;
+            }
+            25% {
+              transform: translate(40px, -20px) scale(1.15);
+              opacity: 0.6;
+            }
+            50% {
+              transform: translate(20px, -40px) scale(0.85);
+              opacity: 0.4;
+            }
+            75% {
+              transform: translate(-30px, -30px) scale(1.1);
+              opacity: 0.7;
+            }
+          }
+          @keyframes gradient-move {
+            0% {
+              background-position: 100% 0%;
+            }
+            100% {
+              background-position: 0% 100%;
+            }
+          }
+
+          .animate-float-1 {
+            animation: float-1 12s ease-in-out infinite;
+          }
+
+          .animate-float-2 {
+            animation: float-2 14s ease-in-out infinite;
+          }
+          .animate-gradient-move {
+            animation: gradient-move 20s ease-in-out infinite alternate;
+            background-size: 200% 200%;
+          }
+        `}</style>
       </section>
 
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our Web Development{" "}
-            <span className="text-bluec2i-500">Capabilities</span>
+            Nos{" "}
+            <span className="text-bluec2i-500">
+              compétences en développement web
+            </span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
-            We provide end-to-end web solutions from device connectivity to data
-            insights.
+            Nous fournissons des solutions web complètes, de la connectivité des
+            appareils aux analyses de données.
           </p>
         </div>
 
@@ -127,11 +191,11 @@ const WebDev = () => {
               <Globe className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Edge Computing
+              Calcul en périphérie
             </h3>
             <p className="text-blackc2i-600">
-              Process data locally for faster response times and reduced
-              bandwidth usage
+              Traitez les données localement pour des temps de réponse plus
+              rapides et une utilisation réduite de la bande passante
             </p>
           </div>
 
@@ -140,11 +204,11 @@ const WebDev = () => {
               <Smartphone className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Connectivity Solutions
+              Solutions de connectivité
             </h3>
             <p className="text-blackc2i-600">
-              Support for various protocols including WiFi, LoRaWAN, Zigbee, and
-              cellular
+              Prise en charge de divers protocoles, notamment WiFi, LoRaWAN,
+              Zigbee et cellulaire
             </p>
           </div>
 
@@ -153,11 +217,11 @@ const WebDev = () => {
               <Zap className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Security First
+              Sécurité avant tout
             </h3>
             <p className="text-blackc2i-600">
-              Enterprise-grade security with encryption and secure device
-              management
+              Sécurité de niveau entreprise avec chiffrement et gestion
+              sécurisée des appareils
             </p>
           </div>
 
@@ -166,10 +230,11 @@ const WebDev = () => {
               <Search className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Data Analytics
+              Analyse de données
             </h3>
             <p className="text-blackc2i-600">
-              Advanced analytics and machine learning for actionable insights
+              Analyses avancées et apprentissage automatique pour des
+              informations exploitables
             </p>
           </div>
         </div>
@@ -333,18 +398,18 @@ const WebDev = () => {
       <div className="py-16 bg-gradient-to-r from-bluec2i-500 to-bluec2i-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Automate Your Business?
+            Prêt à automatiser votre entreprise ?
           </h2>
           <p className="text-xl text-bluec2i-100 mb-8 max-w-2xl mx-auto">
-            Transform your operations with intelligent web solutions. Let's
-            discuss your web needs.
+            Transformez vos opérations avec des solutions web intelligentes.
+            Discutons de vos besoins web.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={goToAndScrollToBottom}
               className="bg-white text-bluec2i-500 px-8 py-3 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center"
             >
-              Start Your web Project
+              Commencez votre projet web
               <MoveRight className="ml-2 w-5 h-5" />
             </button>
           </div>

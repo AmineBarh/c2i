@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { X } from "lucide-react";
 
 const Trust = ({
   partners,
@@ -9,6 +10,38 @@ const Trust = ({
   handleAddPartner,
   handleDeletePartner,
 }) => {
+  const [selectedPartners, setSelectedPartners] = useState([]);
+
+  const toggleSelectPartner = (partnerId) => {
+    setSelectedPartners((prevSelected) =>
+      prevSelected.includes(partnerId)
+        ? prevSelected.filter((id) => id !== partnerId)
+        : [...prevSelected, partnerId]
+    );
+  };
+
+  const toggleSelectAllPartners = () => {
+    if (selectedPartners.length === partners.length) {
+      setSelectedPartners([]);
+    } else {
+      setSelectedPartners(partners.map((p) => p._id));
+    }
+  };
+
+  const handleBulkDeletePartners = () => {
+    if (
+      selectedPartners.length > 0 &&
+      window.confirm(
+        `Are you sure you want to delete ${selectedPartners.length} selected partner(s)?`
+      )
+    ) {
+      selectedPartners.forEach((partnerId) => {
+        handleDeletePartner(partnerId);
+      });
+      setSelectedPartners([]);
+    }
+  };
+
   return (
     <div className="bg-[#F9FAFB] min-h-screen py-8 px-4 sm:px-8 mt-10">
       <div className="max-w-6xl mx-auto">
@@ -57,6 +90,16 @@ const Trust = ({
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedPartners.length === partners.length &&
+                        partners.length > 0
+                      }
+                      onChange={toggleSelectAllPartners}
+                    />
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -70,7 +113,18 @@ const Trust = ({
               <tbody className="bg-white divide-y divide-gray-200">
                 {partners.length > 0 ? (
                   partners.map((partner) => (
-                    <tr key={partner._id}>
+                    <tr
+                      key={partner._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedPartners.includes(partner._id)}
+                          onChange={() => toggleSelectPartner(partner._id)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap capitalize">
                         {partner.type === "trusted"
                           ? "Trusted By"
@@ -96,7 +150,7 @@ const Trust = ({
                 ) : (
                   <tr>
                     <td
-                      colSpan="3"
+                      colSpan="4"
                       className="px-6 py-4 text-center text-gray-500"
                     >
                       No partners found.
@@ -105,6 +159,20 @@ const Trust = ({
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleBulkDeletePartners}
+              disabled={selectedPartners.length === 0}
+              className={`font-semibold flex items-center gap-2 bg-gradient-to-r ${
+                selectedPartners.length === 0
+                  ? "from-gray-400 to-gray-600 cursor-not-allowed"
+                  : "from-red-600 to-red-800 hover:bg-red-700"
+              } text-white px-4 py-2 rounded-md transition-colors`}
+            >
+              Delete Selected
+            </button>
           </div>
         </section>
       </div>

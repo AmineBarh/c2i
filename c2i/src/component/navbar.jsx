@@ -35,11 +35,11 @@ const Navbar = () => {
   }, [isOpen]);
 
   const navigation = [
-    { name: "HOME", href: "/" },
-    { name: "AUTOMATION", href: "/automation" },
-    { name: "WEB DEVELOPMENT", href: "/web-dev" },
-    { name: "IOT SOLUTIONS", href: "/iot" },
-    { name: "TRAINING", href: "/training" },
+    { name: "ACCUEIL", href: "/" },
+    { name: "AUTOMATISATION", href: "/automation" },
+    { name: "DÉVELOPPEMENT WEB", href: "/web-dev" },
+    { name: "SOLUTIONS IOT", href: "/iot" },
+    { name: "FORMATION", href: "/training" },
   ];
 
   const getActiveClass = (isActive, route) => {
@@ -158,8 +158,8 @@ const Navbar = () => {
               >
                 <span className="relative z-10 flex items-center">
                   {location.pathname === "/training"
-                    ? "Get Training"
-                    : "Get Started"}
+                    ? "Obtenir une formation"
+                    : "Commencer"}
                   <ChevronDown className="ml-2 w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
                 </span>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -256,8 +256,8 @@ const Navbar = () => {
                   } text-white px-6 py-3  rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5`}
                 >
                   {location.pathname === "/training"
-                    ? "Get Training"
-                    : "Get Started"}
+                    ? "Obtenir une formation"
+                    : "Commencer"}
                 </button>
               </div>
             </div>

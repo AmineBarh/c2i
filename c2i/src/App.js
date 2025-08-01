@@ -8,6 +8,7 @@ import Automation from "./pages/Automation";
 import Admin from "./pages/Admin";
 import ScrollToTop from "./component/ScrollToTop";
 import Training from "./pages/Training";
+import Chatbot from "./component/Chatbot";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/c2i-2025-admin" element={<Admin />} />
         <Route path="/training" element={<Training />} />
       </Routes>
+      <Chatbot />
     </>
   );
 }

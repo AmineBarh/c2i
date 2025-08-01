@@ -31,6 +31,7 @@ const Summary = ({
   handleDeleteProject = () => {},
 }) => {
   const [showAddProject, setShowAddProject] = useState(false);
+  const [selectedProjects, setSelectedProjects] = useState([]);
 
   const displayProjects =
     Array.isArray(filteredProjects) && filteredProjects.length
@@ -42,6 +43,36 @@ const Summary = ({
   const categories = Array.isArray(projects)
     ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
     : [];
+
+  const toggleSelectProject = (projectId) => {
+    setSelectedProjects((prevSelected) =>
+      prevSelected.includes(projectId)
+        ? prevSelected.filter((id) => id !== projectId)
+        : [...prevSelected, projectId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedProjects.length === displayProjects.length) {
+      setSelectedProjects([]);
+    } else {
+      setSelectedProjects(displayProjects.map((p) => p._id || p.id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (
+      selectedProjects.length > 0 &&
+      window.confirm(
+        `Are you sure you want to delete ${selectedProjects.length} selected project(s)?`
+      )
+    ) {
+      selectedProjects.forEach((projectId) => {
+        handleDeleteProject(projectId);
+      });
+      setSelectedProjects([]);
+    }
+  };
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen py-8 px-4 sm:px-8 mt-10">
@@ -125,13 +156,27 @@ const Summary = ({
                 ))}
               </select>
             </div>
-            <button
-              onClick={() => setShowAddProject(true)}
-              className="font-semibold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full md:w-auto"
-            >
-              <Plus size={16} />
-              Add Project
-            </button>
+            <div className="flex gap-2 w-full md:w-auto">
+              <button
+                onClick={() => setShowAddProject(true)}
+                className="font-semibold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <Plus size={16} />
+                Add Project
+              </button>
+              <button
+                onClick={handleBulkDelete}
+                disabled={selectedProjects.length === 0}
+                className={`font-semibold flex items-center gap-2 bg-gradient-to-r ${
+                  selectedProjects.length === 0
+                    ? "from-gray-400 to-gray-600 cursor-not-allowed"
+                    : "from-red-600 to-red-800 hover:bg-red-700"
+                } text-white px-4 py-2 rounded-md transition-colors`}
+              >
+                <X size={16} />
+                Delete Selected
+              </button>
+            </div>
           </div>
 
           {/* Projects Table */}
@@ -156,6 +201,16 @@ const Summary = ({
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedProjects.length === displayProjects.length &&
+                          displayProjects.length > 0
+                        }
+                        onChange={toggleSelectAll}
+                      />
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Media
                     </th>
@@ -182,6 +237,18 @@ const Summary = ({
                       key={project._id || project.id}
                       className="hover:bg-gray-50 cursor-pointer"
                     >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedProjects.includes(
+                            project._id || project.id
+                          )}
+                          onChange={() =>
+                            toggleSelectProject(project._id || project.id)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {project.media?.length > 0 ? (
                           project.media[0].type === "image" ? (

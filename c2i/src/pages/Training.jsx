@@ -311,16 +311,16 @@ const Training = () => {
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               <span className="bg-gradient-to-r from-purplec2i-500 to-bluec2i-900 bg-clip-text text-transparent">
-                Professional Training
+                Formation professionnelle
               </span>
               <br />
-              <span className="text-gray-900">Programs</span>
+              <span className="text-gray-900">Programmes</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Accelerate your team's expertise with our comprehensive in-person
-              training programs. Learn from industry experts at our facility or
-              yours, with hands-on experience in IoT, Web Development, and
-              Automation.
+              Accélérez l'expertise de votre équipe avec nos programmes de
+              formation en personne complets. Apprenez auprès d'experts de
+              l'industrie dans nos locaux ou les vôtres, avec une expérience
+              pratique en IoT, développement web et automatisation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
               <button
@@ -328,11 +328,11 @@ const Training = () => {
                 className="bg-gradient-to-r from-purplec2i-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl hover:shadow-purplec2i-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center"
               >
                 <Phone className="mr-2 w-5 h-5" />
-                Get Custom Quote
+                Obtenir un devis personnalisé
               </button>
               <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg hover:border-purplec2i-500 hover:text-purplec2i-500 transition-all duration-300 flex items-center">
                 <Play className="mr-2 w-5 h-5" />
-                Watch Demo
+                Voir la démo
               </button>
             </div>
           </div>
@@ -361,12 +361,12 @@ const Training = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Our{" "}
-              <span className="text-purplec2i-500">Training</span>
+              Pourquoi choisir notre{" "}
+              <span className="text-purplec2i-500">formation</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We provide comprehensive, practical training that prepares your
-              team for real-world challenges.
+              Nous proposons une formation complète et pratique qui prépare
+              votre équipe aux défis du monde réel.
             </p>
           </div>
 
@@ -405,12 +405,12 @@ const Training = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Our Training{" "}
-                <span className="text-purplec2i-500">Programs</span>
+                Nos programmes de{" "}
+                <span className="text-purplec2i-500">formation</span>
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                Choose from our comprehensive selection of professional
-                development courses.
+                Choisissez parmi notre sélection complète de cours de
+                développement professionnel.
               </p>
               {/* Category Filter */}
               <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -434,7 +434,7 @@ const Training = () => {
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bluec2i-500 mx-auto"></div>
                 <p className="mt-4 text-lg text-blackc2i-600">
-                  Loading projects...
+                  Chargement des projets...
                 </p>
               </div>
             )}
@@ -446,7 +446,7 @@ const Training = () => {
                   onClick={() => window.location.reload()}
                   className="mt-4 px-4 py-2 bg-bluec2i-500 text-white rounded-md hover:bg-bluec2i-600"
                 >
-                  Try Again
+                  Réessayer
                 </button>
               </div>
             )}
@@ -466,7 +466,7 @@ const Training = () => {
                             ? training.media.startsWith("http")
                               ? training.media
                               : `${process.env.REACT_APP_API_URL}${training.media}`
-                            : "https://via.placeholder.com/800x400?text=No+Image"
+                            : "https://via.placeholder.com/800x400?text=Pas+d'image"
                         }
                         alt={training.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
@@ -478,7 +478,14 @@ const Training = () => {
                         </div>
                       </div>
                       <div className="absolute top-4 right-4 bg-purplec2i-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        In-Person
+                        {training.locations
+                          ? parseLocations(training.locations).slice(0, 1)
+                          : "En ligne"}
+                      </div>
+                      <div className="absolute top-12 right-4 bg-purplec2i-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {training.locations
+                          ? parseLocations(training.locations).slice(1, 2)
+                          : "En ligne"}
                       </div>
                     </div>
 
@@ -542,7 +549,7 @@ const Training = () => {
                         className="flex-grow mt-auto w-full bg-gradient-to-r from-purplec2i-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center"
                       >
                         <BookOpen className="mr-2 w-4 h-4" />
-                        View Training Details
+                        Voir les détails de la formation
                       </button>
                     </div>
                   </div>
@@ -556,11 +563,11 @@ const Training = () => {
                   <BookOpen className="w-16 h-16 mx-auto" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No training programs found
+                  Aucun programme de formation trouvé
                 </h3>
                 <p className="text-gray-600">
-                  Try selecting a different category to find what you're looking
-                  for.
+                  Essayez de sélectionner une catégorie différente pour trouver
+                  ce que vous cherchez.
                 </p>
               </div>
             )}
@@ -965,10 +972,11 @@ const Training = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Training <span className="text-purplec2i-500">Locations</span>
+              Lieux de <span className="text-purplec2i-500">formation</span>
             </h2>
             <p className="text-xl text-gray-600">
-              Choose the training location that works best for your team.
+              Choisissez le lieu de formation qui convient le mieux à votre
+              équipe.
             </p>
           </div>
 
@@ -978,29 +986,30 @@ const Training = () => {
                 <Building className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Our Training Center
+                Notre centre de formation
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                State-of-the-art training facility equipped with the latest
-                technology and hands-on lab environments. Perfect for immersive
-                learning experiences with all necessary equipment provided.
+                Centre de formation ultramoderne équipé des dernières
+                technologies et d'environnements de laboratoire pratiques.
+                Parfait pour des expériences d'apprentissage immersives avec
+                tout l'équipement nécessaire fourni.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Modern lab equipment and workstations
+                  Équipements et postes de travail modernes
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  High-speed internet and presentation systems
+                  Internet haut débit et systèmes de présentation
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Catering and comfortable learning environment
+                  Restauration et environnement d'apprentissage confortable
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Dedicated support staff and technical assistance
+                  Personnel de soutien dédié et assistance technique
                 </li>
               </ul>
             </div>
@@ -1010,29 +1019,30 @@ const Training = () => {
                 <Factory className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Your Facility
+                Votre établissement
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                On-site training at your location for maximum convenience and
-                context-specific learning. We bring our expertise directly to
-                your team, using your existing systems and environment.
+                Formation sur site à votre emplacement pour une commodité
+                maximale et un apprentissage contextuel spécifique. Nous
+                apportons notre expertise directement à votre équipe, en
+                utilisant vos systèmes et votre environnement existants.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Training on your actual systems and processes
+                  Formation sur vos systèmes et processus réels
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  No travel costs or time away from office
+                  Pas de frais de déplacement ni de temps hors du bureau
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Customized content for your specific needs
+                  Contenu personnalisé pour vos besoins spécifiques
                 </li>
                 <li className="flex items-center text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-greenc2i-500 mr-2" />
-                  Immediate implementation opportunities
+                  Opportunités d'implémentation immédiates
                 </li>
               </ul>
             </div>
@@ -1044,11 +1054,11 @@ const Training = () => {
       <section className="py-24 bg-gradient-to-r from-purplec2i-500 to-bluec2i-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Upskill Your Team?
+            Prêt à perfectionner votre équipe ?
           </h2>
           <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Contact us today to discuss your training needs and get a customized
-            quote for your organization.
+            Contactez-nous dès aujourd'hui pour discuter de vos besoins en
+            formation et obtenir un devis personnalisé pour votre organisation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -1056,7 +1066,7 @@ const Training = () => {
               className="bg-white text-purplec2i-500 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center"
             >
               <Phone className="mr-2 w-5 h-5" />
-              Get Training Quote
+              Obtenir un devis de formation
             </button>
           </div>
         </div>

@@ -101,20 +101,21 @@ const Automation = () => {
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               <span className="text-orange-500 uppercase">
-                Automation Solutions
+                Solutions d'automatisation
               </span>
               <br />
-              That Transform Industries
+              Qui transforment les industries
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Connect, monitor, and optimize your operations with our
-              cutting-edge Internet of Things solutions. From smart sensors to
-              comprehensive platforms, we build the infrastructure for tomorrow.
+              Connectez, surveillez et optimisez vos opérations avec nos
+              solutions Internet des objets de pointe. Des capteurs intelligents
+              aux plateformes complètes, nous construisons l'infrastructure de
+              demain.
             </p>
           </div>
         </div>
 
-        <style jsx>{`
+        <style>{`
           @keyframes float-1 {
             0%,
             100% {
@@ -255,12 +256,14 @@ const Automation = () => {
       <section className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our Automation{" "}
-            <span className="text-orangec2i-500">Capabilities</span>
+            Nos{" "}
+            <span className="text-orangec2i-500">
+              compétences en automatisation
+            </span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
-            We provide end-to-end automation solutions from device connectivity
-            to data insights.
+            Nous fournissons des solutions d'automatisation complètes, de la
+            connectivité des appareils aux analyses de données.
           </p>
         </div>
 
@@ -268,23 +271,23 @@ const Automation = () => {
           {[
             {
               icon: <RefreshCw />,
-              title: "Process Automation",
-              desc: "Streamline repetitive tasks and workflows for maximum efficiency.",
+              title: "Automatisation des processus",
+              desc: "Rationalisez les tâches répétitives et les flux de travail pour une efficacité maximale.",
             },
             {
               icon: <BarChart3 />,
-              title: "Connectivity Solutions",
-              desc: "Support for various protocols including WiFi, LoRaWAN, Zigbee, and cellular",
+              title: "Solutions de connectivité",
+              desc: "Prise en charge de divers protocoles, notamment WiFi, LoRaWAN, Zigbee et cellulaire",
             },
             {
               icon: <Clock />,
-              title: "Security First",
-              desc: "Enterprise-grade security with encryption and secure device management",
+              title: "Sécurité avant tout",
+              desc: "Sécurité de niveau entreprise avec chiffrement et gestion sécurisée des appareils",
             },
             {
               icon: <TrendingUp />,
-              title: "Data Analytics",
-              desc: "Advanced analytics and machine learning for actionable insights",
+              title: "Analyse de données",
+              desc: "Analyses avancées et apprentissage automatique pour des informations exploitables",
             },
           ].map((item, idx) => (
             <div key={idx} className="text-center group">
@@ -304,14 +307,14 @@ const Automation = () => {
       <div className="mb-16">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
-            Our Automation
+            Notre
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orangec2i-500 to-orangec2i-900">
-              Portfolio
+              portfolio d'automatisation
             </span>
           </h2>
           <p className="text-xl text-blackc2i-600 mb-8 max-w-3xl mx-auto">
-            Explore our comprehensive collection of automation implementations
-            across various industries.
+            Découvrez notre collection complète de mises en œuvre
+            d'automatisation dans divers secteurs.
           </p>
         </div>
 
@@ -337,7 +340,7 @@ const Automation = () => {
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orangec2i-500 mx-auto"></div>
             <p className="mt-4 text-lg text-blackc2i-600">
-              Loading projects...
+              Chargement des projets...
             </p>
           </div>
         ) : error ? (
@@ -347,19 +350,19 @@ const Automation = () => {
               onClick={() => window.location.reload()}
               className="mt-4 px-4 py-2 bg-orangec2i-500 text-white rounded-md hover:bg-orangec2i-600"
             >
-              Try Again
+              Réessayer
             </button>
           </div>
         ) : filteredProjects.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-blackc2i-600 text-lg">
-              No projects found in the {selectedCategory} category
+              Aucun projet trouvé dans la catégorie {selectedCategory}
             </p>
             <button
               onClick={() => setSelectedCategory("All")}
               className="mt-4 px-4 py-2 bg-orangec2i-500 text-white rounded-md hover:bg-orangec2i-600"
             >
-              View All Projects
+              Voir tous les projets
             </button>
           </div>
         ) : (
@@ -388,24 +391,22 @@ const Automation = () => {
                           />
                         </video>
                         <div className="absolute top-2 right-2 bg-black/50 text-white px-1.5 py-0.5 rounded text-xs">
-                          Video
+                          Vidéo
                         </div>
                       </div>
                     )
                   ) : (
                     <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
-                      <span className="text-gray-500">No Media</span>
+                      <span className="text-gray-500">Pas de média</span>
                     </div>
                   )}
                 </div>
-
                 <div className="mt-3 font-bold text-xl text-blackc2i-900">
                   {project.title}
                 </div>
                 <p className="text-blackc2i-600 mt-1 text-sm flex-grow line-clamp-4 h-fit">
                   {project.description}
                 </p>
-
                 <div className="mt-3 flex flex-col gap-2">
                   <ul className="flex gap-2 items-start text-sm flex-wrap">
                     {project.technologies.slice(0, 3).map((tech, index) => (
@@ -418,11 +419,10 @@ const Automation = () => {
                     ))}
                     {project.technologies.length > 3 && (
                       <li className="text-blackc2i-600 bg-gray-100 rounded-md px-2 py-1">
-                        +{project.technologies.length - 3} more
+                        +{project.technologies.length - 3} de plus
                       </li>
                     )}
                   </ul>
-
                   <div className="checks">
                     <div className="result text-blackc2i-600 text-sm">
                       {project.results.map((result, index) => (
@@ -436,12 +436,11 @@ const Automation = () => {
                       ))}
                     </div>
                   </div>
-
                   <button
                     onClick={() => setSelectedProject(project)}
                     className="mt-4 w-full bg-orangec2i-500 text-white py-2.5 rounded-lg font-medium hover:bg-orangec2i-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
                   >
-                    View Details
+                    Voir les détails
                     <MoveRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>

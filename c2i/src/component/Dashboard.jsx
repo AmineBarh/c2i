@@ -6,11 +6,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
   AreaChart,
   Area,
+  PieChart,
+  Pie,
   LineChart,
   Line,
   Cell,
@@ -22,6 +23,11 @@ import {
   Clock,
   BookOpen,
   Users,
+  Building2,
+  Briefcase,
+  Code,
+  Cpu,
+  Network,
 } from "lucide-react";
 import {
   format,
@@ -31,8 +37,8 @@ import {
   isWithinInterval,
 } from "date-fns";
 
-const Dashboard = ({ projects = [], trainings = [] }) => {
-  // Calculate total unique instructors (more accurate than totalStudents)
+const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
+  // Calculate total unique instructors
   const totalInstructors = useMemo(() => {
     const instructors = new Set();
     trainings.forEach((training) => {
@@ -42,14 +48,15 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
     });
     return instructors.size;
   }, [trainings]);
+
   // PROJECT DASHBOARD LOGIC
   const projectDashboardData = useMemo(() => {
     const now = new Date();
-    const thirtyDaysAgo = subDays(now, 60);
+    const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
 
     const dailyActivity = eachDayOfInterval({
-      start: thirtyDaysAgo,
+      start: sixtyDaysago,
       end: now,
     }).map((date) => {
       const dayStart = startOfDay(date);
@@ -86,10 +93,10 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
   // TRAINING DASHBOARD LOGIC
   const trainingDashboardData = useMemo(() => {
     const now = new Date();
-    const thirtyDaysAgo = subDays(now, 30);
+    const sixtyDaysago = subDays(now, 30);
 
     const dailyActivity = eachDayOfInterval({
-      start: thirtyDaysAgo,
+      start: sixtyDaysago,
       end: now,
     }).map((date) => {
       const dayStart = startOfDay(date);
@@ -122,18 +129,36 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
     );
 
     const totalTrainings = trainings.length;
-    const totalStudents = trainings.reduce(
-      (sum, t) => sum + (t.students || 0),
-      0
-    );
 
     return {
       dailyActivity,
       trainingCategories,
       totalTrainings,
-      totalStudents,
     };
   }, [trainings]);
+
+  // PARTNERS DASHBOARD LOGIC
+  const partnersDashboardData = useMemo(() => {
+    const partnerTypeCounts = partners.reduce((acc, partner) => {
+      acc[partner.type] = (acc[partner.type] || 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(partnerTypeCounts).map(([name, count]) => ({
+      name,
+      count,
+    }));
+  }, [partners]);
+
+  // PROJECTS BY TYPE DATA FOR BAR CHART
+  const projectsByTypeData = useMemo(() => {
+    return Object.entries(projectDashboardData.projectsByType)
+      .filter(([type, count]) => count > 0)
+      .map(([type, count]) => ({
+        name: type.charAt(0).toUpperCase() + type.slice(1),
+        count,
+      }));
+  }, [projectDashboardData.projectsByType]);
 
   const typeColors = {
     iot: "#8EC64C", // emerald
@@ -152,33 +177,36 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
     "#84cc16",
   ];
 
-  const StatCard = ({ icon, title, value, change, changeType }) => (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+  const StatCard = ({ icon, title, value, change, changeType, subtitle }) => (
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 hover:transform hover:scale-105">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-gradient-to-bl from-greenc2i-600 to-blue-500 rounded-lg flex items-center justify-center text-white">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
             {icon}
           </div>
           <div className="ml-4">
             <p className="text-sm font-medium text-gray-600">{title}</p>
             <p className="text-2xl font-bold text-gray-900">{value}</p>
+            {subtitle && (
+              <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+            )}
           </div>
         </div>
         {change && (
           <div
-            className={`flex items-center text-sm font-medium ${
+            className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
               changeType === "positive"
-                ? "text-green-600"
+                ? "bg-green-100 text-green-700"
                 : changeType === "negative"
-                ? "text-red-600"
-                : "text-gray-600"
+                ? "bg-red-100 text-red-700"
+                : "bg-gray-100 text-gray-700"
             }`}
           >
             {changeType === "positive" && (
-              <TrendingUp className="w-4 h-4 mr-1" />
+              <TrendingUp className="w-3 h-3 mr-1" />
             )}
             {changeType === "negative" && (
-              <TrendingDown className="w-4 h-4 mr-1" />
+              <TrendingDown className="w-3 h-3 mr-1" />
             )}
             {change}
           </div>
@@ -187,167 +215,346 @@ const Dashboard = ({ projects = [], trainings = [] }) => {
     </div>
   );
 
+  const ChartCard = ({ title, children, icon, subtitle }) => (
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+      <div className="flex items-center mb-4">
+        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-3">
+          {icon}
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+
   return (
-    <div className="space-y-8 p-6">
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Agency & Training Dashboard
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Overview of your projects and training programs.
-        </p>
-      </div>
-
-      {/* PROJECT STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          icon={<Target />}
-          title="Total Projects"
-          value={projectDashboardData.totalProjects}
-        />
-        <StatCard
-          icon={<Clock />}
-          title="Recent Projects"
-          value={projectDashboardData.recentProjects}
-        />
-      </div>
-
-      {/* PROJECT CHARTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Daily Project Activity */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4">Daily Project Activity</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={projectDashboardData.dailyActivity}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="projects"
-                stroke="#10b981"
-                fill="#10b981"
-                fillOpacity={0.2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* HEADER */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                C2I & Training Dashboard
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Comprehensive overview of your projects, trainings, and
+                partnerships
+              </p>
+            </div>
+            <div className="mt-4 sm:mt-0 flex items-center text-sm text-gray-500">
+              <Clock className="w-4 h-4 mr-1" />
+              <span>Last updated: {new Date().toLocaleTimeString()}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Project Types Distribution */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4">Project Types</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={[
-                  {
-                    name: "IoT",
-                    value: projectDashboardData.projectsByType.iot,
-                  },
-                  {
-                    name: "Web",
-                    value: projectDashboardData.projectsByType.web,
-                  },
-                  {
-                    name: "Automation",
-                    value: projectDashboardData.projectsByType.automation,
-                  },
-                ]}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={5}
-                dataKey="value"
-                nameKey="name"
-              >
-                {[
-                  { color: "#8EC64C" },
-                  { color: "#2379BA" },
-                  { color: "#F8B74C" },
-                ].map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* TRAINING STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-        <StatCard
-          icon={<BookOpen />}
-          title="Total Trainings"
-          value={trainingDashboardData.totalTrainings}
-        />
-        <StatCard
-          icon={<Users />}
-          title="Total Instructors"
-          value={totalInstructors}
-        />
-      </div>
-
-      {/* TRAINING CHARTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Daily Training Activity */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4">
-            Daily Training Activity
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={trainingDashboardData.dailyActivity}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="trainings"
-                stroke="#8b5cf6"
-                fill="#8b5cf6"
-                fillOpacity={0.2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        {/* MAIN STATS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard
+            icon={<Target className="w-6 h-6" />}
+            title="Total Projects"
+            value={projectDashboardData.totalProjects}
+            subtitle={`${projectDashboardData.recentProjects} new this week`}
+          />
+          <StatCard
+            icon={<BookOpen className="w-6 h-6" />}
+            title="Training Categories"
+            value={trainingDashboardData.trainingCategories.length}
+            subtitle={`${trainingDashboardData.trainingCategories.length} categories available`}
+          />
+          <StatCard
+            icon={<Users className="w-6 h-6" />}
+            title="Total Instructors"
+            value={totalInstructors}
+            subtitle={`${trainings.length} active trainings`}
+          />
+          <StatCard
+            icon={<Building2 className="w-6 h-6" />}
+            title="Partners"
+            value={partners.length}
+            subtitle={`${partnersDashboardData.length} partner types`}
+          />
         </div>
 
-        {/* Training Categories Distribution */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4">Training Categories</h3>
-          {trainingDashboardData.trainingCategories.length > 0 ? (
+        {/* PROJECTS SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Daily Project Activity */}
+          <div className="lg:col-span-2">
+            <ChartCard
+              title="Project Activity"
+              subtitle="Last 60 days"
+              icon={<Code className="w-5 h-5" />}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={projectDashboardData.dailyActivity}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="projects"
+                    stroke="#10b981"
+                    fill="#10b981"
+                    fillOpacity={0.2}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          {/* Project Types Distribution */}
+          <ChartCard
+            title="Project Types"
+            icon={<PieChart className="w-5 h-5" />}
+          >
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={trainingDashboardData.trainingCategories}
+                  data={projectsByTypeData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
-                  outerRadius={100}
+                  outerRadius={80}
                   paddingAngle={5}
-                  dataKey="value"
+                  dataKey="count"
                   nameKey="name"
                 >
-                  {trainingDashboardData.trainingCategories.map(
-                    (entry, index) => (
+                  {projectsByTypeData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={pieColors[index % pieColors.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend
+                  verticalAlign="bottom"
+                  height={60}
+                  wrapperStyle={{ fontSize: "12px" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        {/* TRAININGS SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Daily Training Activity */}
+          <div className="lg:col-span-2">
+            <ChartCard
+              title="Training Activity"
+              subtitle="Last 60 days"
+              icon={<Network className="w-5 h-5" />}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={trainingDashboardData.dailyActivity}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="trainings"
+                    stroke="#8b5cf6"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: "#8b5cf6" }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </div>
+
+          {/* Training Categories Distribution */}
+          <ChartCard
+            title="Training Categories"
+            icon={<BookOpen className="w-5 h-5" />}
+          >
+            {trainingDashboardData.trainingCategories.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={trainingDashboardData.trainingCategories}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                    nameKey="name"
+                  >
+                    {trainingDashboardData.trainingCategories.map(
+                      (entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={pieColors[(index + 3) % pieColors.length]}
+                        />
+                      )
+                    )}
+                  </Pie>
+                  <Tooltip />
+                  <Legend
+                    verticalAlign="bottom"
+                    height={60}
+                    wrapperStyle={{ fontSize: "12px" }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-60 flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <BookOpen className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                  <p className="text-sm">No training data available</p>
+                </div>
+              </div>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* PARTNERS & PROJECTS BY TYPE SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Partners by Type */}
+          <ChartCard
+            title="Partners by Type"
+            icon={<Building2 className="w-5 h-5" />}
+          >
+            {partnersDashboardData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={partnersDashboardData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis type="number" allowDecimals={false} />
+                  <YAxis dataKey="name" type="category" width={100} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="count" fill="#2379BA" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-60 flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <Building2 className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                  <p className="text-sm">No partners data available</p>
+                </div>
+              </div>
+            )}
+          </ChartCard>
+
+          {/* Projects by Type - Bar Chart */}
+          <ChartCard
+            title="Projects by Type"
+            icon={<Briefcase className="w-5 h-5" />}
+          >
+            {projectsByTypeData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={projectsByTypeData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="name" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                    {projectsByTypeData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={pieColors[index % pieColors.length]}
                       />
-                    )
-                  )}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-60 flex items-center justify-center text-gray-500">
-              No training categories available
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-60 flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <Briefcase className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                  <p className="text-sm">No projects data available</p>
+                </div>
+              </div>
+            )}
+          </ChartCard>
+
+          {/* Technology Overview */}
+          <ChartCard
+            title="Technology Stack"
+            icon={<Cpu className="w-5 h-5" />}
+            subtitle="Distribution of technologies used"
+          >
+            <div className="space-y-4 h-60 flex items-center justify-center">
+              <div className="text-center">
+                <div className="flex flex-wrap justify-center gap-4 mb-4">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                    <span className="text-sm">IoT Projects</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                    <span className="text-sm">Web Development</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                    <span className="text-sm">Automation</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {projectDashboardData.projectsByType.iot}
+                    </div>
+                    <div className="text-xs text-gray-500">IoT</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-blue-600">
+                      {projectDashboardData.projectsByType.web}
+                    </div>
+                    <div className="text-xs text-gray-500">Web</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-orange-600">
+                      {projectDashboardData.projectsByType.automation}
+                    </div>
+                    <div className="text-xs text-gray-500">Automation</div>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+          </ChartCard>
+        </div>
+
+        {/* FOOTER */}
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>
+            © {new Date().getFullYear()} C2I & Training. All statistics are
+            updated in real-time.
+          </p>
         </div>
       </div>
     </div>

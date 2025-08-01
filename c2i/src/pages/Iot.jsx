@@ -90,29 +90,30 @@ const Iot = () => {
 
       <section className="relative py-36 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-10 right-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-float-1"></div>
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-float-2"></div>
-          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-green-400/5 rounded-full blur-3xl animate-float-3"></div>
-          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-green-300/8 rounded-full blur-3xl animate-float-4"></div>
-          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-green-600/5 rounded-full blur-3xl animate-float-5"></div>
+          <div className="absolute top-10 right-10 w-96 h-96 bg-green-500/50 rounded-full blur-3xl animate-float-1"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-green-500/50 rounded-full blur-3xl animate-float-2"></div>
+          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-green-400/25 rounded-full blur-3xl animate-float-3"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-green-300/40 rounded-full blur-3xl animate-float-4"></div>
+          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-green-600/25 rounded-full blur-3xl animate-float-5"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-green-500">IoT Solutions</span>
+              <span className="text-greenc2i-500">Solutions IoT</span>
               <br />
-              That Transform Industries
+              Qui transforment les industries
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Connect, monitor, and optimize your operations with our
-              cutting-edge Internet of Things solutions. From smart sensors to
-              comprehensive platforms, we build the infrastructure for tomorrow.
+              Connectez, surveillez et optimisez vos opérations avec nos
+              solutions Internet des objets de pointe. Des capteurs intelligents
+              aux plateformes complètes, nous construisons l'infrastructure de
+              demain.
             </p>
           </div>
         </div>
 
-        <style jsx global>{`
+        <style>{`
           @keyframes float-1 {
             0%,
             100% {
@@ -214,23 +215,23 @@ const Iot = () => {
           }
 
           .animate-float-1 {
-            animation: float-1 2s ease-in-out infinite;
+            animation: float-1 12s ease-in-out infinite;
           }
 
           .animate-float-2 {
-            animation: float-2 2s ease-in-out infinite;
+            animation: float-2 12s ease-in-out infinite;
           }
 
           .animate-float-3 {
-            animation: float-3 2s ease-in-out infinite;
+            animation: float-3 12s ease-in-out infinite;
           }
 
           .animate-float-4 {
-            animation: float-4 2s ease-in-out infinite;
+            animation: float-4 12s ease-in-out infinite;
           }
 
           .animate-float-5 {
-            animation: float-5 2s ease-in-out infinite;
+            animation: float-5 12s ease-in-out infinite;
           }
         `}</style>
       </section>
@@ -238,11 +239,11 @@ const Iot = () => {
       <div className="py-16 mb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4">
-            Our IoT <span className="text-greenc2i-500">Capabilities</span>
+            Nos <span className="text-greenc2i-500">compétences IoT</span>
           </h2>
           <p className="text-xl text-blackc2i-600 max-w-2xl mx-auto">
-            We provide end-to-end iot solutions from device connectivity to data
-            insights.
+            Nous fournissons des solutions IoT complètes, de la connectivité des
+            appareils aux analyses de données.
           </p>
         </div>
 
@@ -253,11 +254,11 @@ const Iot = () => {
               <Cpu className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Edge Computing
+              Calcul en périphérie
             </h3>
             <p className="text-blackc2i-600">
-              Process data locally for faster response times and reduced
-              bandwidth usage
+              Traitez les données localement pour des temps de réponse plus
+              rapides et une utilisation réduite de la bande passante
             </p>
           </div>
 
@@ -267,11 +268,11 @@ const Iot = () => {
               <Wifi className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Connectivity Solutions
+              Solutions de connectivité
             </h3>
             <p className="text-blackc2i-600">
-              Support for various protocols including WiFi, LoRaWAN, Zigbee, and
-              cellular
+              Prise en charge de divers protocoles, notamment WiFi, LoRaWAN,
+              Zigbee et cellulaire
             </p>
           </div>
 
@@ -281,11 +282,11 @@ const Iot = () => {
               <Shield className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Security First
+              Sécurité avant tout
             </h3>
             <p className="text-blackc2i-600">
-              Enterprise-grade security with encryption and secure device
-              management
+              Sécurité de niveau entreprise avec chiffrement et gestion
+              sécurisée des appareils
             </p>
           </div>
 
@@ -295,10 +296,11 @@ const Iot = () => {
               <BarChart3 className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-blackc2i-900 mb-3">
-              Data Analytics
+              Analyse de données
             </h3>
             <p className="text-blackc2i-600">
-              Advanced analytics and machine learning for actionable insights
+              Analyses avancées et apprentissage automatique pour des
+              informations exploitables
             </p>
           </div>
         </div>
@@ -307,14 +309,14 @@ const Iot = () => {
       <div className="mb-16">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-blackc2i-900 mb-4 inline-flex items-center gap-3">
-            Our IoT
+            Notre IoT
             <span className="text-transparent bg-clip-text bg-greenc2i-500">
-              Portfolio
+              portfolio
             </span>
           </h2>
           <p className="text-xl text-blackc2i-600 mb-8 max-w-3xl mx-auto">
-            Explore our comprehensive collection of iot implementations across
-            various industries.
+            Découvrez notre collection complète de mises en œuvre IoT dans
+            divers secteurs.
           </p>
         </div>
 
@@ -446,18 +448,18 @@ const Iot = () => {
       <div className="py-16 bg-gradient-to-r from-greenc2i-500 to-emerald-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Automate Your Business?
+            Prêt à automatiser votre entreprise ?
           </h2>
           <p className="text-xl text-greenc2i-bg mb-8 max-w-2xl mx-auto">
-            Transform your operations with intelligent iot solutions. Let's
-            discuss your iot needs.
+            Transformez vos opérations avec des solutions IoT intelligentes.
+            Discutons de vos besoins IoT.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={goToAndScrollToBottom}
               className="bg-white text-greenc2i-500 px-8 py-3 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
             >
-              Start Your IoT Project
+              Commencez votre projet IoT
               <MoveRight className="ml-2 w-5 h-5" />
             </button>
           </div>
