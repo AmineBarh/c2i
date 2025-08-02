@@ -18,7 +18,6 @@ import {
   Calendar,
   X,
 } from "lucide-react";
-import Dashboard from "./Dashboard";
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);

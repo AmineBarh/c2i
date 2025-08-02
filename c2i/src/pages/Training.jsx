@@ -310,13 +310,8 @@ const Training = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-<<<<<<< HEAD
               <span className="bg-gradient-to-r from-purplec2i-500 to-bluec2i-900 bg-clip-text text-transparent">
                 Formation professionnelle
-=======
-              <span className="bg-gradient-to-r font-black from-purplec2i-500 to-bluec2i-900 bg-clip-text text-transparent">
-                PROFESSIONAL TRAINING
->>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
               </span>
               <br />
               <span className="text-gray-900">Programmes</span>
@@ -462,7 +457,7 @@ const Training = () => {
                 {filteredTrainings.map((training) => (
                   <div
                     key={training._id}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group border border-gray-100"
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group border border-gray-100 flex flex-col h-full"
                   >
                     <div className="relative">
                       <img
@@ -483,75 +478,95 @@ const Training = () => {
                         </div>
                       </div>
                       <div className="absolute top-4 right-4 bg-purplec2i-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {training.locations
-                          ? parseLocations(training.locations).slice(0, 1)
+                        {training.locations &&
+                        parseLocations(training.locations).length > 0
+                          ? parseLocations(training.locations)[0]
                           : "En ligne"}
                       </div>
-                      <div className="absolute top-12 right-4 bg-purplec2i-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {training.locations
-                          ? parseLocations(training.locations).slice(1, 2)
-                          : "En ligne"}
-                      </div>
+                      {training.locations &&
+                        parseLocations(training.locations).length > 1 && (
+                          <div className="absolute top-12 right-4 bg-purplec2i-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            +{parseLocations(training.locations).length - 1}
+                          </div>
+                        )}
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-6 flex-grow flex flex-col">
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-purplec2i-500 transition-colors mb-3">
                         {training.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
-                        {training.description}
+
+                      <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3 min-h-12">
+                        {training.description || "Description non disponible"}
                       </p>
 
-                      <div className="mb-4 ">
+                      <div className="mb-4 min-h-8">
                         <div className="flex flex-wrap gap-1">
-                          {training.technologies
-                            .slice(0, 3)
-                            .map((tech, index) => (
-                              <span
-                                key={index}
-                                className="bg-purple-100 text-purplec2i-900 px-2 py-1 rounded-md text-xs font-medium"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          {training.technologies.length > 3 && (
-                            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-medium">
-                              +{training.technologies.length - 3}
+                          {training.technologies &&
+                          training.technologies.length > 0 ? (
+                            training.technologies
+                              .slice(0, 3)
+                              .map((tech, index) => (
+                                <span
+                                  key={index}
+                                  className="bg-purple-100 text-purplec2i-900 px-2 py-1 rounded-md text-xs font-medium"
+                                >
+                                  {tech}
+                                </span>
+                              ))
+                          ) : (
+                            <span className="text-gray-400 text-xs italic">
+                              Aucune technologie spécifiée
                             </span>
                           )}
+                          {training.technologies &&
+                            training.technologies.length > 3 && (
+                              <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-medium">
+                                +{training.technologies.length - 3}
+                              </span>
+                            )}
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-4 mb-4">
+                      <div className="border-t border-gray-100 pt-4 mb-4 flex-grow">
                         <div className="text-sm text-gray-600 mb-2">
                           <span className="font-medium">
                             Available Locations:
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {parseLocations(training.locations).map(
-                            (location, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center text-sm text-gray-600 bg-gray-50 px-2 py-1 rounded-md"
-                              >
-                                {getLocationIcon(location)}
-                                <span className="ml-1">{location}</span>
-                              </div>
+                        <div className="flex flex-col gap-1">
+                          {training.locations &&
+                          parseLocations(training.locations).length > 0 ? (
+                            parseLocations(training.locations).map(
+                              (location, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center text-sm text-gray-600 bg-gray-50 px-2 py-1 rounded-md"
+                                >
+                                  {getLocationIcon(location)}
+                                  <span className="ml-1">{location}</span>
+                                </div>
+                              )
                             )
+                          ) : (
+                            <div className="flex items-center text-sm text-gray-400 bg-gray-50 px-2 py-1 rounded-md italic">
+                              <MapPin className="w-4 h-4 mr-1" />
+                              <span>Localisation non disponible</span>
+                            </div>
                           )}
                         </div>
+
                         <div className="text-sm text-gray-600 mt-2">
                           Instructor:{" "}
                           <span className="font-medium">
-                            {training.instructor}
+                            {training.instructor || "Non spécifié"}
                           </span>
                         </div>
                       </div>
 
                       <button
                         onClick={() => setSelectedTraining(training)}
-                        className="flex-grow mt-auto w-full bg-gradient-to-r from-purplec2i-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center"
+                        className="mt-auto w-full bg-gradient-to-r from-purplec2i-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center"
                       >
                         <BookOpen className="mr-2 w-4 h-4" />
                         Voir les détails de la formation

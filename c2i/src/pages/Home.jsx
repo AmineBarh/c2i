@@ -19,6 +19,7 @@ import {
   Bot,
 } from "lucide-react";
 import Chatbot from "../component/Chatbot";
+import StatsSection from "../component/StatsSection";
 const Home = () => {
   const [trustedPartners, setTrustedPartners] = useState([]);
   const [ourPartners, setOurPartners] = useState([]);
@@ -142,11 +143,17 @@ const Home = () => {
             intelligents.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 xs:gap-4 justify-center items-center">
-            <button className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
+            <button
+              onClick={scrollToContact}
+              className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-1 flex items-center"
+            >
               Découvrez notre travail
               <ArrowRight className="ml-2 w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
             </button>
-            <button className="border-2 border-gray-300 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300">
+            <button
+              onClick={scrollToContact}
+              className="border-2 border-gray-300 text-white px-5 py-2.5 xs:px-6 xs:py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm xs:text-base sm:text-lg hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300"
+            >
               Contactez-nous
             </button>
           </div>
@@ -205,7 +212,6 @@ const Home = () => {
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {/* Automation Card */}
-<<<<<<< HEAD
           <div className="automation bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
             <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Cpu color="#ffffff" />
@@ -222,33 +228,14 @@ const Home = () => {
                 to="/automation"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-greenc2i-500"
               >
-=======
-          <Link
-            to="/automation"
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-greenc2i-500"
-          >
-            <div className="automation bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-              <div className="bg-gradient-to-r from-orangec2i-500 to-orange-700 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-                <Cpu color="#ffffff" />
-              </div>
-              <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                  Automation
-                </h5>
-                <p className="mb-3 text-blackc2i-100">
-                  Streamline operations with intelligent automation solutions
-                  and process optimization.
-                </p>
->>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
                 <div className="flex items-center text-orangec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </div>
+              </Link>
             </div>
-          </Link>
+          </div>
           {/* IoT Engineering Card */}
-<<<<<<< HEAD
           <div className="iot bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
             <div className="bg-gradient-to-l from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Globe color="#ffffff" />
@@ -265,33 +252,14 @@ const Home = () => {
                 to="/iot"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-bluec2i-500"
               >
-=======
-          <Link
-            to="/iot"
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-bluec2i-500"
-          >
-            <div className="iot bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-              <div className="bg-gradient-to-l from-greenc2i-500 to-emerald-600 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-                <Globe color="#ffffff" />
-              </div>
-              <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                  IoT Engineering
-                </h5>
-                <p className="mb-3 text-blackc2i-100">
-                  Build connected systems and smart products with our IoT
-                  expertise.
-                </p>
->>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
                 <div className="flex items-center text-greenc2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </div>
+              </Link>
             </div>
-          </Link>
+          </div>
           {/* Web Development Card */}
-<<<<<<< HEAD
           <div className="dev bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
             <div className="bg-gradient-to-r from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
               <Cog color="#ffffff" />
@@ -308,200 +276,19 @@ const Home = () => {
                 to="/web-dev"
                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-orangec2i-500"
               >
-=======
-          <Link
-            to="/web-dev"
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-orangec2i-500"
-          >
-            <div className="dev bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 transform hover:-translate-y-2">
-              <div className="bg-gradient-to-r from-bluec2i-500 to-bluec2i-900 p-5 m-5 rounded-xl w-16 flex items-center justify-center">
-                <Cog color="#ffffff" />
-              </div>
-              <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold text-blackc2i-500">
-                  Web Development
-                </h5>
-                <p className="mb-3 text-blackc2i-100">
-                  Develop modern, responsive websites and platforms tailored to
-                  your needs.
-                </p>
->>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
                 <div className="flex items-center text-bluec2i-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
-              </div>
+              </Link>
             </div>
-          </Link>
+          </div>
         </div>
       </section>
 
       {/* Stats & Call to Action */}
-      <section className="somestuff">
-        <div className="anotherhero py-24 bg-gradient-to-r from-emerald-50 via-blue-50 to-orange-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Happy Clients */}
-              <div className="clients flex flex-col items-center justify-center">
-                <div className="p-5 m-5 w-16 h-16 bg-white rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Users color="#8EC64C" size={40} />
-                </div>
-                <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  <CountUp from={0} to={150} separator="," duration={1} />
-                  <span>+</span>
-                </div>
-                <div className="text-gray-600 font-medium">
-                  Clients satisfaits
-                </div>
-              </div>
-              {/* Projects */}
-              <div className="projects flex flex-col items-center justify-center">
-                <div className="bg-white p-5 m-5 w-16 h-16 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Award color="#F8B74C" size={40} />
-                </div>
-                <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  <CountUp from={0} to={30} separator="," duration={1} />
-                  <span>+</span>
-                </div>
-                <div className=" text-gray-600 font-medium">
-                  Projets réalisés
-                </div>
-              </div>
-              {/* Success Rate */}
-              <div className="stats flex flex-col items-center justify-center">
-                <div className="bg-white p-5 m-5 w-16 h-16 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <TrendingUp color="#2379BA" size={40} />
-                </div>
-                <div className="number text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  <GradientText
-                    colors={["#2379BA", "#8EC64C"]}
-                    animationSpeed={4}
-                  >
-                    90%
-                  </GradientText>
-                </div>
-                <div className="text-gray-600 font-medium">
-                  Taux de réussite
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Partners Component */}
-        <section className=" my-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Nos
-                <span className="bg-gradient-to-r ml-2 from-bluec2i-500 to-orangec2i-500 bg-clip-text text-transparent">
-                  partenaires
-                </span>
-              </h2>
-              <p className="text-gray-600">
-                Propulsé par les principales plateformes et frameworks
-                technologiques mondiaux
-              </p>
-            </div>
-          </div>
-        </section>
-        <div className="marquee mx-64 ">
-          <Marquee
-            pauseOnHover
-            speed={50}
-            direction="right"
-            autoFill
-            className="pb-16"
-          >
-            {ourPartners.map((partner, index) => (
-              <img
-                key={index}
-                src={`${process.env.REACT_APP_API_URL}/uploads/${partner.img}`}
-                alt="Partner"
-                className="mx-16 h-16 object-contain"
-              />
-            ))}
-          </Marquee>
-        </div>
-        {/* CTA Section */}
-        <section className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-greenc2i-600 via-blue-600 to-orangec2i-900 animate-gradient-x"></div>
-            <div className="absolute inset-0 bg-gradient-to-r via-purplec2i-500 from-orangec2i-500 to-greenc2i-600 animate-gradient-x-reverse opacity-70"></div>
-          </div>
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Prêt à transformer votre entreprise ?
-            </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Discutons de la manière dont nos solutions innovantes peuvent
-              faire avancer votre entreprise à l'ère numérique.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={scrollToContact}
-                className="bg-white text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                Commencez votre projet
-              </button>
-              <button
-                onClick={scrollToContact}
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
-              >
-                Planifier une consultation
-              </button>
-            </div>
-          </div>
-<<<<<<< HEAD
-          <style>{`
-            @keyframes gradient-x {
-              0%,
-              100% {
-                background-size: 200% 200%;
-                background-position: left center;
-              }
-              50% {
-                background-size: 200% 200%;
-                background-position: right center;
-              }
-            }
-=======
-          <style>
-            {`
-    @keyframes gradient-x {
-      0%,
-      100% {
-        background-size: 200% 200%;
-        background-position: left center;
-      }
-      50% {
-        background-size: 200% 200%;
-        background-position: right center;
-      }
-    }
->>>>>>> 03cf32796b1bcee42f0440f4482536ab1002662b
-
-    @keyframes gradient-x-reverse {
-      0%,
-      100% {
-        background-size: 200% 200%;
-        background-position: right center;
-      }
-      50% {
-        background-size: 200% 200%;
-        background-position: left center;
-      }
-    }
-
-    .animate-gradient-x {
-      animation: gradient-x 12s ease infinite;
-    }
-
-    .animate-gradient-x-reverse {
-      animation: gradient-x-reverse 18s ease infinite;
-    }
-  `}
-          </style>
-        </section>
+      <section>
+        <StatsSection />
       </section>
 
       {/* Contact Section */}
@@ -651,10 +438,7 @@ const Home = () => {
         {isOpen && (
           <Chatbot className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden" />
         )}
-        <button
-          onClick={toggleComponent}
-          className="bg-gradient-to-br from-greenc2i-500 to-bluec2i-900 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
-        >
+        <button onClick={toggleComponent}>
           <Bot className="w-6 h-6" />
         </button>
       </div>
