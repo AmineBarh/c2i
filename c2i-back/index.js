@@ -74,7 +74,12 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
+const serverless = require("serverless-http");
+
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+module.exports = app;
+module.exports.handler = serverless(app);

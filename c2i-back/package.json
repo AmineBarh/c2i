@@ -7,14 +7,14 @@
     "mongoose": "^8.16.0",
     "multer": "^2.0.1",
     "nodemailer": "^7.0.5",
-    "nodemon": "^3.1.10",
+    "serverless-http": "^3.2.0",
     "path": "^0.12.7"
   },
   "name": "c2i-back",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
