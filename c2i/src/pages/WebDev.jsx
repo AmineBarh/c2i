@@ -94,11 +94,10 @@ const WebDev = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-bluec2i-500 uppercase">
+              <div className="text-bluec2i-500 uppercase mb-5">
                 Solutions de développement web
-              </span>
-              <br />
-              Qui transforment les industries
+              </div>
+              <div>Qui transforment les industries</div>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Connectez, surveillez et optimisez vos opérations avec nos

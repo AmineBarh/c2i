@@ -89,22 +89,20 @@ const Automation = () => {
       {/* Hero Section */}
       <section className="relative py-36 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-10 right-10 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-float-1"></div>
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-float-2"></div>
-          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-orange-400/15 rounded-full blur-3xl animate-float-3"></div>
-          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-orange-300/10 rounded-full blur-3xl animate-float-4"></div>
-          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-orange-600/15 rounded-full blur-3xl animate-float-5"></div>
-          <div className="absolute inset-0 bg-gradient-to-bl from-orange-200/30 via-transparent to-orange-200/30 animate-gradient-move"></div>
+          <div className="absolute top-10 right-10 w-96 h-96 bg-orangec2i-500/50 rounded-full blur-3xl animate-float-1"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-orangec2i-500/50 rounded-full blur-3xl animate-float-2"></div>
+          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-orangec2i-900/20 rounded-full blur-3xl animate-float-3"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-orangec2i-500/25 rounded-full blur-3xl animate-float-4"></div>
+          <div className="absolute top-1/4 left-1/2 w-64 h-64 bg-orangec2i-900/50 rounded-full blur-3xl animate-float-5"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              <span className="text-orange-500 uppercase">
+              <div className="text-orange-500 uppercase mb-5">
                 Solutions d'automatisation
-              </span>
-              <br />
-              Qui transforment les industries
+              </div>
+              <div>Qui transforment les industries</div>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Connectez, surveillez et optimisez vos opérations avec nos

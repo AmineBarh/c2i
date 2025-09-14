@@ -10,7 +10,7 @@ const HappyClients = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={150} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-bold text-blue-600">+</span>
+        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">+</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">
@@ -27,7 +27,7 @@ const ProjectsCompleted = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={30} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-bold text-blue-600">+</span>
+        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">+</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">Projets réalisés</div>
@@ -42,7 +42,7 @@ const SuccessRate = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={90} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-bold text-blue-600">%</span>
+        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">%</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">Taux de réussite</div>
@@ -54,8 +54,6 @@ const StatsSection = () => {
     <section className="py-24 bg-gradient-to-r from-emerald-50 via-blue-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-3 gap-12 text-center">
-          <HappyClients />
-          <ProjectsCompleted />
           <HappyClients />
           <ProjectsCompleted />
           <SuccessRate />

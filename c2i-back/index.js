@@ -60,6 +60,9 @@ app.use("/quotes", quoteRoutes);
 const contactRouter = require("./Router/contactRouter");
 app.use("/api/contact", contactRouter);
 
+const chatRouter = require("./Router/chatRouter");
+app.use("/api/chat", chatRouter);
+
 mongoose
   .connect(MONGOURL)
   .then(() => console.log("DB connected"))
@@ -75,27 +78,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-require("dotenv").config();
-
-const chatRouter = require("./Router/chatRouter");
-
-app.use(cors());
-app.use(express.json());
-
-app.use("/api", chatRouter);
-
-// Start your server in a function
-async function startServer() {
-  try {
-    // You can put any async/await logic here if needed
-
-    app.listen(7001, () => {
-      console.log(`✅ Backend is running on ${process.env.REACT_APP_API_URL}`);
-    });
-  } catch (error) {
-    console.error("Server failed to start:", error);
-  }
-}
-
-startServer(); // <== Call the async wrapper
