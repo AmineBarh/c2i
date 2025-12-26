@@ -177,59 +177,6 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     "#84cc16",
   ];
 
-  const StatCard = ({ icon, title, value, change, changeType, subtitle }) => (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 hover:transform hover:scale-105">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-            {icon}
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
-            {subtitle && (
-              <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
-            )}
-          </div>
-        </div>
-        {change && (
-          <div
-            className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
-              changeType === "positive"
-                ? "bg-green-100 text-green-700"
-                : changeType === "negative"
-                ? "bg-red-100 text-red-700"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {changeType === "positive" && (
-              <TrendingUp className="w-3 h-3 mr-1" />
-            )}
-            {changeType === "negative" && (
-              <TrendingDown className="w-3 h-3 mr-1" />
-            )}
-            {change}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const ChartCard = ({ title, children, icon, subtitle }) => (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-      <div className="flex items-center mb-4">
-        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-3">
-          {icon}
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -560,5 +507,58 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     </div>
   );
 };
+
+const StatCard = ({ icon, title, value, change, changeType, subtitle }) => (
+  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 hover:transform hover:scale-105">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center">
+        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+          {icon}
+        </div>
+        <div className="ml-4">
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          {subtitle && (
+            <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+          )}
+        </div>
+      </div>
+      {change && (
+        <div
+          className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
+            changeType === "positive"
+              ? "bg-green-100 text-green-700"
+              : changeType === "negative"
+              ? "bg-red-100 text-red-700"
+              : "bg-gray-100 text-gray-700"
+          }`}
+        >
+          {changeType === "positive" && (
+            <TrendingUp className="w-3 h-3 mr-1" />
+          )}
+          {changeType === "negative" && (
+            <TrendingDown className="w-3 h-3 mr-1" />
+          )}
+          {change}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const ChartCard = ({ title, children, icon, subtitle }) => (
+  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+    <div className="flex items-center mb-4">
+      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-3">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+      </div>
+    </div>
+    {children}
+  </div>
+);
 
 export default Dashboard;
