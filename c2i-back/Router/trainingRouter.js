@@ -3,6 +3,7 @@ const router = express.Router();
 const upload = require("../middleware/upload"); // your multer config
 const Training = require("../Models/training");
 const {
+  createTraining,
   deleteTraining,
   updateTraining,
   getCategories,
@@ -13,34 +14,8 @@ const {
 
 router.get("/training/categories", getCategories);
 
-router.post("/training/create", upload.single("media"), async (req, res) => {
-  try {
-    const {
-      title,
-      category,
-      description,
-      instructor,
-      locations,
-      technologies,
-    } = req.body;
-
-    const newTraining = new Training({
-      title,
-      category,
-      description,
-      instructor,
-      locations,
-      technologies: technologies ? technologies.split(",") : [],
-      media: req.file ? `/uploads/${req.file.filename}` : "",
-    });
-
-    const saved = await newTraining.save();
-    res.status(201).json(saved);
-  } catch (err) {
-    console.error("Error saving training:", err);
-    res.status(500).json({ message: "Failed to create training" });
-  }
-});
+// Use controller function instead of inline handler to ensure consistency
+router.post("/training/create", upload.single("media"), createTraining);
 
 // @desc Get all trainings
 router.get("/training", async (req, res) => {
