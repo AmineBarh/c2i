@@ -1,6 +1,5 @@
 const Training = require("../Models/training");
-const fs = require("fs");
-const path = require("path");
+const cloudinary = require("../utils/cloudinary");
 
 // Create Training with file upload handling
 exports.createTraining = async (req, res) => {
@@ -25,8 +24,8 @@ exports.createTraining = async (req, res) => {
       !instructor ||
       !modules
     ) {
-      if (req.files) {
-        req.files.forEach((file) => fs.unlinkSync(file.path));
+      if (req.file && req.file.filename) {
+          await cloudinary.uploader.destroy(req.file.filename);
       }
       return res.status(400).json({ error: "Missing required fields!" });
     }
@@ -38,11 +37,8 @@ exports.createTraining = async (req, res) => {
         : field.split(",").map((item) => item.trim());
 
     // Handle file uploads (if any)
-    const media =
-      req.files?.map((file) => ({
-        url: `/uploads/${file.filename}`,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      })) || [];
+    // Training schema expects a string for media (URL)
+    const media = req.file ? req.file.path : "";
 
     // Create new training
     const newTraining = new Training({
@@ -60,8 +56,8 @@ exports.createTraining = async (req, res) => {
     res.status(201).json(newTraining);
   } catch (e) {
     console.error("Error:", e);
-    if (req.files) {
-      req.files.forEach((file) => fs.unlinkSync(file.path));
+    if (req.file && req.file.filename) {
+        await cloudinary.uploader.destroy(req.file.filename);
     }
     res.status(500).json({ error: "Server error: " + e.message });
   }
@@ -127,19 +123,34 @@ exports.updateTraining = async (req, res) => {
     if (req.file) {
       // Delete old media file
       if (existingTraining.media) {
-        try {
-          const filename = existingTraining.media.split("/").pop();
-          const filePath = path.join(__dirname, "../uploads", filename);
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+          // Try to extract public_id from Cloudinary URL if possible
+          // Cloudinary URLs usually have the public_id at the end, but getting it reliable requires parsing.
+          // However, for now we might rely on the fact that if it was uploaded via Cloudinary, we might be able to get it.
+          // But since the schema stores only the URL string, we don't have the public_id stored separately.
+          // We can try to extract it:
+          // https://res.cloudinary.com/demo/image/upload/v1/folder/filename.jpg -> folder/filename
+
+          try {
+             // Basic extraction logic:
+             // 1. Split by '/'
+             // 2. Take the last part (filename.ext)
+             // 3. Remove extension
+             // 4. If there are folders, we need to know the folder name. We configured 'c2i_uploads'.
+
+             // If the URL contains 'c2i_uploads', we can try to construct the public_id.
+             if (existingTraining.media.includes('c2i_uploads')) {
+                 const urlParts = existingTraining.media.split('/');
+                 const filenameWithExt = urlParts[urlParts.length - 1];
+                 const publicId = `c2i_uploads/${filenameWithExt.split('.')[0]}`;
+                 await cloudinary.uploader.destroy(publicId);
+             }
+          } catch(err) {
+              console.error("Failed to delete old image from Cloudinary:", err);
           }
-        } catch (fileError) {
-          console.error("File deletion error:", fileError.message);
-        }
       }
 
       // Add new media file
-      media = `/uploads/${req.file.filename}`;
+      media = req.file.path;
     }
 
     // Update training
@@ -160,12 +171,8 @@ exports.updateTraining = async (req, res) => {
     res.status(200).json(updatedTraining);
   } catch (e) {
     console.error("Update error:", e.message);
-    if (req.file) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (unlinkError) {
-        console.error("Error deleting file:", unlinkError.message);
-      }
+    if (req.file && req.file.filename) {
+       await cloudinary.uploader.destroy(req.file.filename);
     }
     res.status(500).json({ error: "Failed to update training" });
   }
@@ -182,22 +189,17 @@ exports.deleteTraining = async (req, res) => {
     }
 
     // Delete associated media files
-    if (training.media && training.media.length > 0) {
-      training.media.forEach((mediaItem) => {
+    if (training.media) {
         try {
-          const filename = mediaItem.url.split("/").pop();
-          const filePath = path.join(__dirname, "../uploads", filename);
-
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-            console.log("Successfully deleted file:", filePath);
-          } else {
-            console.warn("File not found:", filePath);
-          }
+             if (training.media.includes('c2i_uploads')) {
+                 const urlParts = training.media.split('/');
+                 const filenameWithExt = urlParts[urlParts.length - 1];
+                 const publicId = `c2i_uploads/${filenameWithExt.split('.')[0]}`;
+                 await cloudinary.uploader.destroy(publicId);
+             }
         } catch (fileError) {
           console.error("File deletion error:", fileError.message);
         }
-      });
     }
 
     await Training.findByIdAndDelete(trainingId);

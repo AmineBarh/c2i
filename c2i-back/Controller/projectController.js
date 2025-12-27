@@ -1,5 +1,5 @@
 const Project = require("../Models/Projects");
-const fs = require("fs");
+const cloudinary = require("../utils/cloudinary");
 
 exports.createProject = async (req, res) => {
   try {
@@ -12,9 +12,11 @@ exports.createProject = async (req, res) => {
     if (!title || !description || !category || !type) {
       // Clean up any uploaded files if validation fails
       if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-          fs.unlinkSync(file.path);
-        });
+        for (const file of req.files) {
+          if (file.filename) {
+             await cloudinary.uploader.destroy(file.filename);
+          }
+        }
       }
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -35,10 +37,14 @@ exports.createProject = async (req, res) => {
     }
 
     // Create media array with type information
+    // Cloudinary returns file information in req.files
+    // file.path contains the URL
+    // file.mimetype contains the type
     const media = req.files
       ? req.files.map((file) => ({
-          url: `/uploads/${file.filename}`,
+          url: file.path,
           type: file.mimetype.startsWith("image") ? "image" : "video",
+          public_id: file.filename, // Store public_id for easier deletion
         }))
       : [];
 
@@ -49,7 +55,7 @@ exports.createProject = async (req, res) => {
       results: parsedResults,
       category,
       type,
-      media, // Changed from image to media array
+      media,
     });
 
     await newProject.save();
@@ -60,13 +66,11 @@ exports.createProject = async (req, res) => {
 
     // Clean up any uploaded files on error
     if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        try {
-          fs.unlinkSync(file.path);
-        } catch (unlinkError) {
-          console.error("Error deleting file:", unlinkError.message);
+        for (const file of req.files) {
+            if (file.filename) {
+               await cloudinary.uploader.destroy(file.filename);
+            }
         }
-      });
     }
 
     return res.status(500).json({
@@ -105,7 +109,6 @@ exports.SeeOneProject = async (req, res) => {
   }
 };
 
-const path = require("path"); // ADD THIS AT THE TOP
 
 exports.deleteProject = async (req, res) => {
   try {
@@ -116,31 +119,23 @@ exports.deleteProject = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // Delete associated media files
+    // Delete associated media files from Cloudinary
     if (project.media && project.media.length > 0) {
-      project.media.forEach((mediaItem) => {
+      for (const mediaItem of project.media) {
         try {
-          // Get filename from URL
-          const filename = mediaItem.url.split("/").pop();
-
-          // Construct file path
-          const filePath = path.join(__dirname, "../uploads", filename);
-
-          // Debug logging
-          console.log("Attempting to delete file:", filePath);
-          console.log("File exists:", fs.existsSync(filePath));
-
-          // Delete if exists
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-            console.log("Successfully deleted file:", filePath);
-          } else {
-            console.warn("File not found:", filePath);
-          }
+            if (mediaItem.public_id) {
+                await cloudinary.uploader.destroy(mediaItem.public_id);
+            } else if (mediaItem.url && mediaItem.url.includes('c2i_uploads')) {
+                // Fallback for cases where public_id might be missing but we can guess it
+                const urlParts = mediaItem.url.split('/');
+                 const filenameWithExt = urlParts[urlParts.length - 1];
+                 const publicId = `c2i_uploads/${filenameWithExt.split('.')[0]}`;
+                 await cloudinary.uploader.destroy(publicId);
+            }
         } catch (fileError) {
-          console.error("File deletion error:", fileError.message);
+          console.error("Cloudinary deletion error:", fileError.message);
         }
-      });
+      }
     }
 
     // Delete from database
