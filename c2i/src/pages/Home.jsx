@@ -16,10 +16,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  Bot,
   BookOpen,
 } from "lucide-react";
-import Chatbot from "../component/Chatbot";
 import StatsSection from "../component/StatsSection";
 const Home = () => {
   const [trustedPartners, setTrustedPartners] = useState([]);
@@ -108,11 +106,7 @@ const Home = () => {
       .getElementById("ourexpertise")
       .scrollIntoView({ behavior: "smooth" });
   };
-  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleComponent = () => {
-    setIsOpen(!isOpen);
-  };
   return (
     <div>
       {/* Hero Section */}
@@ -565,14 +559,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4">
-        {isOpen && (
-          <Chatbot className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden" />
-        )}
-        <button onClick={toggleComponent}>
-          <Bot className="w-6 h-6" />
-        </button>
-      </div>
     </div>
   );
 };
