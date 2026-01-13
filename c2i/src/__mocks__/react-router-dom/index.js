@@ -1,0 +1,1 @@
+module.exports = { Routes: ({ children }) => <div>{children}</div>, Route: () => <div>Route</div>, Link: ({ children }) => <div>{children}</div>, BrowserRouter: ({ children }) => <div>{children}</div>, NavLink: ({ children }) => <div>{children({ isActive: false })}</div>, useLocation: () => ({ pathname: '/' }), useNavigate: () => jest.fn() };
