@@ -1,0 +1,3 @@
+## 2024-05-22 - Jest vs React Router v7 ESM Issues
+**Learning:** `react-router-dom` v7+ is ESM-only (or has ESM exports that confuse Jest 27/CRA). In a standard Create React App environment (Jest 27), this leads to "Cannot find module" or "SyntaxError: Cannot use import statement outside a module" errors during tests.
+**Action:** When working with CRA and modern libraries, always be prepared to mock these libraries in `setupTests.js` or `__mocks__` if `transformIgnorePatterns` configuration isn't an option (e.g., without ejecting). A manual mock of `react-router-dom` is often the most robust solution.
