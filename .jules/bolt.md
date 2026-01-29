@@ -1,5 +1,3 @@
-## 2025-02-19 - Expensive Animation Components in State-Heavy Parents
-
-**Learning:** Components using expensive animation libraries (like `framer-motion` or `CountUp`) should be memoized (`React.memo`) if they are children of components with frequent state updates (e.g., forms, scroll listeners). In this codebase, `StatsSection` was re-rendering on every keystroke in the `Home` contact form, triggering `CountUp` re-initialization logic.
-
-**Action:** When adding animation-heavy components, always check the parent component's re-render frequency. If the parent manages high-frequency state (like form inputs), wrap the expensive child in `React.memo` to isolate it from unrelated updates.
+## 2024-05-23 - CI Strictness and Framer Motion Cost
+**Learning:** This codebase runs builds with `CI=true`, which treats all ESLint warnings (unused vars, missing deps) as fatal errors. Also, `framer-motion` animations in `CountUp` components are computationally expensive and trigger on every parent re-render if not memoized.
+**Action:** Always clean up unused imports before attempting a build. Wrap animation-heavy child components in `React.memo` if the parent has frequent state updates (like form inputs).
