@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import ReactRotatingText from "react-rotating-text";
-import CountUp from "../blocks/CountUp/CountUp";
-import GradientText from "../blocks/GradientText/GradientText";
 import { Link } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import bglanding from "../images/bglanding.png";
@@ -10,9 +8,6 @@ import {
   Cpu,
   Globe,
   Cog,
-  Users,
-  Award,
-  TrendingUp,
   Mail,
   Phone,
   MapPin,

@@ -19,8 +19,14 @@ const Chatbot = ({ className }) => {
   // Initialize with welcome message if empty
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([initialBotMessage]);
+      setMessages([
+        {
+          sender: "bot",
+          text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+        },
+      ]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-scroll to bottom when messages change
