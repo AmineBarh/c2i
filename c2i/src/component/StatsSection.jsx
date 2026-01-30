@@ -63,4 +63,6 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Optimization: Memoized to prevent re-renders when parent (Home) state changes (e.g. form inputs)
+// This avoids expensive re-initialization of CountUp animations which use framer-motion hooks.
+export default React.memo(StatsSection);
