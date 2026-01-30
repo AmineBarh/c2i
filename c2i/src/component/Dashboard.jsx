@@ -160,6 +160,12 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
       }));
   }, [projectDashboardData.projectsByType]);
 
+  const typeColors = {
+    iot: "#8EC64C", // emerald
+    web: "#2379BA", // blue
+    automation: "#F8B74C", // orange
+  };
+
   const pieColors = [
     "#8EC64C",
     "#2379BA",

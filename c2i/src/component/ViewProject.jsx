@@ -97,20 +97,19 @@ const Carousel = ({
 
   // Measure container width responsively
   useEffect(() => {
-    const currentRef = containerRef.current;
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         setContainerWidth(entry.contentRect.width);
       }
     });
 
-    if (currentRef) {
-      observer.observe(currentRef);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
       }
     };
   }, []);
@@ -216,7 +215,8 @@ const Carousel = ({
     return { width, height };
   };
 
-  const { width: responsiveWidth } = getResponsiveDimensions();
+  const { width: responsiveWidth, height: carouselHeight } =
+    getResponsiveDimensions();
 
   return (
     <div
