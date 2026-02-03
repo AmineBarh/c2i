@@ -49,7 +49,14 @@ const SuccessRate = () => (
   </div>
 );
 
-const StatsSection = () => {
+/**
+ * ⚡ Performance Optimization:
+ * Wrapped in React.memo() to prevent unnecessary re-renders.
+ * The parent Home component updates state frequently (e.g. form input),
+ * which would otherwise cause this component and its expensive CountUp animations
+ * to re-render repeatedly.
+ */
+const StatsSection = React.memo(() => {
   return (
     <section className="py-24 bg-gradient-to-r from-emerald-50 via-blue-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,6 +68,6 @@ const StatsSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default StatsSection;
