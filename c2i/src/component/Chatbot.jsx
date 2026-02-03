@@ -10,18 +10,23 @@ const Chatbot = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Sample initial bot message
+  // Initialize with welcome message if empty
+  useEffect(() => {
+    if (messages.length === 0) {
+      const initialBotMessage = {
+        sender: "bot",
+        text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+      };
+      setMessages([initialBotMessage]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Sample initial bot message (used for reset)
   const initialBotMessage = {
     sender: "bot",
     text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
   };
-
-  // Initialize with welcome message if empty
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([initialBotMessage]);
-    }
-  }, []);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
