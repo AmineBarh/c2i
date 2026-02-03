@@ -1,0 +1,4 @@
+[build]
+  base = "c2i"
+  publish = "build"
+  command = "CI=false npm run build"
