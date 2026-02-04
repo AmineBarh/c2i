@@ -103,13 +103,14 @@ const Carousel = ({
       }
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    const container = containerRef.current;
+    if (container) {
+      observer.observe(container);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (container) {
+        observer.unobserve(container);
       }
     };
   }, []);
@@ -119,8 +120,8 @@ const Carousel = ({
   const carouselItems = loop ? [...items, items[0]] : items;
 
   useEffect(() => {
-    if (pauseOnHover && containerRef.current) {
-      const container = containerRef.current;
+    const container = containerRef.current;
+    if (pauseOnHover && container) {
       const handleMouseEnter = () => setIsHovered(true);
       const handleMouseLeave = () => setIsHovered(false);
       container.addEventListener("mouseenter", handleMouseEnter);
@@ -215,8 +216,7 @@ const Carousel = ({
     return { width, height };
   };
 
-  const { width: responsiveWidth, height: carouselHeight } =
-    getResponsiveDimensions();
+  const { width: responsiveWidth } = getResponsiveDimensions();
 
   return (
     <div
