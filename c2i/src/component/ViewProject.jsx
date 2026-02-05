@@ -103,13 +103,16 @@ const Carousel = ({
       }
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    // Capture the current ref value for cleanup
+    const currentContainer = containerRef.current;
+
+    if (currentContainer) {
+      observer.observe(currentContainer);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (currentContainer) {
+        observer.unobserve(currentContainer);
       }
     };
   }, []);
@@ -119,8 +122,10 @@ const Carousel = ({
   const carouselItems = loop ? [...items, items[0]] : items;
 
   useEffect(() => {
-    if (pauseOnHover && containerRef.current) {
-      const container = containerRef.current;
+    // Capture the current ref value for cleanup
+    const container = containerRef.current;
+
+    if (pauseOnHover && container) {
       const handleMouseEnter = () => setIsHovered(true);
       const handleMouseLeave = () => setIsHovered(false);
       container.addEventListener("mouseenter", handleMouseEnter);
@@ -194,29 +199,24 @@ const Carousel = ({
 
   // Calculate responsive width and height
   const getResponsiveDimensions = () => {
-    if (typeof window === "undefined") return { width: baseWidth, height: 300 };
+    if (typeof window === "undefined") return { width: baseWidth };
     const screenWidth = window.innerWidth;
-    let width, height;
+    let width;
 
     if (screenWidth < 640) {
       width = Math.min(screenWidth - 32, baseWidth);
-      height = 200;
     } else if (screenWidth < 768) {
       width = Math.min(screenWidth - 48, baseWidth);
-      height = 250;
     } else if (screenWidth < 1024) {
       width = Math.min(screenWidth - 64, baseWidth);
-      height = 280;
     } else {
       width = baseWidth;
-      height = 300;
     }
 
-    return { width, height };
+    return { width };
   };
 
-  const { width: responsiveWidth, height: carouselHeight } =
-    getResponsiveDimensions();
+  const { width: responsiveWidth } = getResponsiveDimensions();
 
   return (
     <div

@@ -5,3 +5,7 @@
 ## 2025-02-20 - JSDOM Missing APIs
 **Learning:** Modern React components using `framer-motion` or scroll logic often crash in JSDOM due to missing `IntersectionObserver`, `ResizeObserver`, and `window.scrollTo`.
 **Action:** Add global mocks for these APIs in `setupTests.js` to ensure tests pass.
+
+## 2025-02-20 - CI Build Failures (Netlify/React Scripts)
+**Learning:** Netlify and other CI providers set `CI=true` by default, which causes `react-scripts build` to treat all ESLint warnings (unused vars, missing deps) as fatal errors, failing the build.
+**Action:** Always run `CI=true npm run build` locally to detect and fix these warnings before pushing, or fix the underlying lint issues (unused variables, exhaustive-deps).
