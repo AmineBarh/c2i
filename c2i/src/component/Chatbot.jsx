@@ -2,6 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Bot, Send, X, Loader2, MessageCirclePlus } from "lucide-react";
 
+// Initial message constant defined outside component to avoid recreation and dependency issues
+const INITIAL_BOT_MESSAGE = {
+  sender: "bot",
+  text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+};
+
 const Chatbot = ({ className }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -12,14 +18,8 @@ const Chatbot = ({ className }) => {
 
   // Initialize with welcome message if empty
   useEffect(() => {
-    // Sample initial bot message
-    const initialBotMessage = {
-      sender: "bot",
-      text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
-    };
-
     if (messages.length === 0) {
-      setMessages([initialBotMessage]);
+      setMessages([INITIAL_BOT_MESSAGE]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once on mount
@@ -87,11 +87,7 @@ const Chatbot = ({ className }) => {
   };
 
   const clearConversation = () => {
-    const initialBotMessage = {
-      sender: "bot",
-      text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
-    };
-    setMessages([initialBotMessage]);
+    setMessages([INITIAL_BOT_MESSAGE]);
     setError(null);
   };
 
