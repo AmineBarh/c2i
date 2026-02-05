@@ -9,3 +9,7 @@
 ## 2025-02-20 - CI Build Failures (Netlify/React Scripts)
 **Learning:** Netlify and other CI providers set `CI=true` by default, which causes `react-scripts build` to treat all ESLint warnings (unused vars, missing deps) as fatal errors, failing the build.
 **Action:** Always run `CI=true npm run build` locally to detect and fix these warnings before pushing, or fix the underlying lint issues (unused variables, exhaustive-deps).
+
+## 2025-02-20 - Netlify Deployment
+**Learning:** Projects with a nested frontend directory (like `c2i/`) require a `netlify.toml` in the root with `base = "c2i"` to instruct Netlify where to find the package.json and run the build command. Without this, the deployment fails.
+**Action:** Ensure `netlify.toml` exists in the root for monorepo-like structures.
