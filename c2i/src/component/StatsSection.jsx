@@ -63,4 +63,6 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Memoized to prevent re-renders on parent state changes (e.g. form input in Home.jsx)
+// This avoids restarting CountUp animations and unnecessary processing
+export default React.memo(StatsSection);
