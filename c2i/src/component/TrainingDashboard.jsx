@@ -21,6 +21,7 @@ import {
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -326,6 +327,7 @@ const TrainingDashboard = () => {
                                   : `${process.env.REACT_APP_API_URL}${training.media}`
                                 : "https://via.placeholder.com/800x400?text=No+Image"
                             }
+                            alt={training.title || "Training"}
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
 

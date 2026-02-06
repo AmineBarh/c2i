@@ -10,17 +10,18 @@ const Chatbot = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Sample initial bot message
-  const initialBotMessage = {
-    sender: "bot",
-    text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
-  };
-
   // Initialize with welcome message if empty
   useEffect(() => {
+    // Sample initial bot message
+    const initialBotMessage = {
+      sender: "bot",
+      text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+    };
+
     if (messages.length === 0) {
       setMessages([initialBotMessage]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-scroll to bottom when messages change
@@ -86,7 +87,10 @@ const Chatbot = ({ className }) => {
   };
 
   const clearConversation = () => {
-    setMessages([initialBotMessage]);
+    setMessages([{
+      sender: "bot",
+      text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+    }]);
     setError(null);
   };
 
