@@ -103,13 +103,15 @@ const Carousel = ({
       }
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    const currentRef = containerRef.current;
+
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);
@@ -196,26 +198,22 @@ const Carousel = ({
   const getResponsiveDimensions = () => {
     if (typeof window === "undefined") return { width: baseWidth, height: 300 };
     const screenWidth = window.innerWidth;
-    let width, height;
+    let width;
 
     if (screenWidth < 640) {
       width = Math.min(screenWidth - 32, baseWidth);
-      height = 200;
     } else if (screenWidth < 768) {
       width = Math.min(screenWidth - 48, baseWidth);
-      height = 250;
     } else if (screenWidth < 1024) {
       width = Math.min(screenWidth - 64, baseWidth);
-      height = 280;
     } else {
       width = baseWidth;
-      height = 300;
     }
 
-    return { width, height };
+    return { width };
   };
 
-  const { width: responsiveWidth, height: carouselHeight } =
+  const { width: responsiveWidth } =
     getResponsiveDimensions();
 
   return (
