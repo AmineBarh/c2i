@@ -63,4 +63,5 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Optimization: Memoize StatsSection to prevent unnecessary re-renders when parent state updates.
+export default React.memo(StatsSection);
