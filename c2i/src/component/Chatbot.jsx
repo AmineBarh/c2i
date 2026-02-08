@@ -21,6 +21,7 @@ const Chatbot = ({ className }) => {
     if (messages.length === 0) {
       setMessages([initialBotMessage]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-scroll to bottom when messages change

@@ -103,13 +103,14 @@ const Carousel = ({
       }
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    const element = containerRef.current;
+    if (element) {
+      observer.observe(element);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (element) {
+        observer.unobserve(element);
       }
     };
   }, []);
@@ -215,8 +216,7 @@ const Carousel = ({
     return { width, height };
   };
 
-  const { width: responsiveWidth, height: carouselHeight } =
-    getResponsiveDimensions();
+  const { width: responsiveWidth } = getResponsiveDimensions();
 
   return (
     <div

@@ -5,7 +5,7 @@ import {
   createtraining,
   updatetraining,
   deletetraining,
-  fetchProjects,
+  // fetchProjects,
 } from "../services/api";
 
 import {
@@ -21,7 +21,7 @@ import {
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);
-  const [projects, setProjects] = useState([]);
+  // const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
@@ -32,7 +32,7 @@ const TrainingDashboard = () => {
 
   useEffect(() => {
     loadTrainings();
-    loadProjects();
+    // loadProjects();
     loadCategories();
   }, []);
 
@@ -45,14 +45,14 @@ const TrainingDashboard = () => {
     }
   };
 
-  const loadProjects = async () => {
-    try {
-      const data = await fetchProjects();
-      setProjects(data);
-    } catch (error) {
-      console.error("Error loading projects:", error);
-    }
-  };
+  // const loadProjects = async () => {
+  //   try {
+  //     const data = await fetchProjects();
+  //     setProjects(data);
+  //   } catch (error) {
+  //     console.error("Error loading projects:", error);
+  //   }
+  // };
 
   const loadCategories = async () => {
     try {
@@ -326,6 +326,7 @@ const TrainingDashboard = () => {
                                   : `${process.env.REACT_APP_API_URL}${training.media}`
                                 : "https://via.placeholder.com/800x400?text=No+Image"
                             }
+                            alt={training.title}
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
 
