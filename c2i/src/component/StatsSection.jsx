@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import CountUp from "../blocks/CountUp/CountUp";
 import { Users, Award, TrendingUp } from "lucide-react";
 
@@ -63,4 +63,5 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Memoize to prevent expensive re-renders (animation restart) on parent state updates
+export default memo(StatsSection);

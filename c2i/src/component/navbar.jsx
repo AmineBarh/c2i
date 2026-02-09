@@ -151,13 +151,13 @@ const Navbar = () => {
               <button
                 onClick={goToAndScrollToBottom}
                 className={`relative ${
-                  location.pathname === "/training"
+                  location?.pathname === "/training"
                     ? "bg-gradient-to-r from-purplec2i-500 to-orangec2i-500"
                     : "bg-gradient-to-r from-greenc2i-600 to-bluec2i-900"
                 } text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 group overflow-hidden`}
               >
                 <span className="relative z-10 flex items-center">
-                  {location.pathname === "/training"
+                  {location?.pathname === "/training"
                     ? "Obtenir une formation"
                     : "Commencer"}
                   <ChevronDown className="ml-2 w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
@@ -250,12 +250,12 @@ const Navbar = () => {
                     goToAndScrollToBottom();
                   }}
                   className={`w-full ${
-                    location.pathname === "/training"
+                    location?.pathname === "/training"
                       ? "bg-gradient-to-r from-purplec2i-500 to-orangec2i-500"
                       : "bg-gradient-to-r from-greenc2i-600 to-bluec2i-900"
                   } text-white px-6 py-3  rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5`}
                 >
-                  {location.pathname === "/training"
+                  {location?.pathname === "/training"
                     ? "Obtenir une formation"
                     : "Commencer"}
                 </button>

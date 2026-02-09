@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname } = useLocation() || {};
 
   useEffect(() => {
     // Optional: if you want to do something on navigation,
