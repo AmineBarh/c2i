@@ -2,26 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Bot, Send, X, Loader2, MessageCirclePlus } from "lucide-react";
 
+const INITIAL_BOT_MESSAGE = {
+  sender: "bot",
+  text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+};
+
 const Chatbot = ({ className }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([INITIAL_BOT_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef(null);
-
-  // Sample initial bot message
-  const initialBotMessage = {
-    sender: "bot",
-    text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
-  };
-
-  // Initialize with welcome message if empty
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([initialBotMessage]);
-    }
-  }, []);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -86,7 +78,7 @@ const Chatbot = ({ className }) => {
   };
 
   const clearConversation = () => {
-    setMessages([initialBotMessage]);
+    setMessages([INITIAL_BOT_MESSAGE]);
     setError(null);
   };
 

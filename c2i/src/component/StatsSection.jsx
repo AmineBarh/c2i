@@ -63,4 +63,5 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Memoized to prevent expensive re-renders of CountUp animations when parent Home component updates
+export default React.memo(StatsSection);
