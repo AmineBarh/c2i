@@ -63,4 +63,6 @@ const StatsSection = () => {
   );
 };
 
-export default StatsSection;
+// Optimized with React.memo to prevent unnecessary re-renders when parent (Home) updates
+// This is critical because CountUp uses expensive animations (framer-motion hooks)
+export default React.memo(StatsSection);
