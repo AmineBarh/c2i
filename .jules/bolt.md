@@ -1,0 +1,3 @@
+## 2026-02-11 - Jest 27 Incompatibility with ESM (react-router-dom v7, axios v1)
+**Learning:** The project uses Create React App v5 (Jest 27) which fails to process ESM-only modules like `react-router-dom` v7+ and `axios` v1.x out of the box, throwing `SyntaxError: Cannot use import statement outside a module` or `Cannot find module`.
+**Action:** Proactively mock these libraries in `src/setupTests.js` using `jest.mock('lib', factory, { virtual: true })` to bypass module resolution and transformation errors during testing. This allows the test suite to run even if the underlying modules are incompatible with the test runner.
