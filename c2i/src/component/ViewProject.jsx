@@ -1,281 +1,85 @@
-import { CircleCheckBig, X } from "lucide-react";
+import { CircleCheckBig, X, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-const DRAG_BUFFER = 0;
-const VELOCITY_THRESHOLD = 500;
-const GAP = 16;
-const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
-
-const CarouselItem = ({
-  item,
-  index,
-  trackItemOffset,
-  itemWidth,
-  round,
-  x,
-}) => {
-  const range = [
-    -(index + 1) * trackItemOffset,
-    -index * trackItemOffset,
-    -(index - 1) * trackItemOffset,
-  ];
-  const outputRange = [90, 0, -90];
-  const rotateY = useTransform(x, range, outputRange, { clamp: false });
-
-  return (
-    <motion.div
-      className={`relative shrink-0 ${round
-        ? "items-center justify-center text-center bg-[#060010] border-0"
-        : "bg-[#222] border border-[#222] rounded-[12px]"
-        } overflow-hidden cursor-grab active:cursor-grabbing`}
-      style={{
-        width: itemWidth,
-        height: round ? itemWidth : "300px",
-        rotateY: rotateY,
-        ...(round && { borderRadius: "50%" }),
-      }}
-      transition={SPRING_OPTIONS}
-    >
-      {item.type === "image" ? (
-        <img
-          src={`${process.env.REACT_APP_API_URL || ""}${item.url}`}
-          alt={`Slide ${index + 1}`}
-          className="w-full h-full object-cover"
-          draggable="false"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.parentNode.innerHTML = `
-              <div class="w-full h-full flex items-center justify-center bg-gray-200">
-                <span class="text-gray-500">Image failed to load</span>
-              </div>
-            `;
-          }}
-        />
-      ) : (
-        <video
-          className="w-full h-full object-cover"
-          controls={true}
-          muted
-          loop
-          playsInline
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.parentNode.innerHTML = `
-              <div class="w-full h-full flex items-center justify-center bg-gray-200">
-                <span class="text-gray-500">Video failed to load</span>
-              </div>
-            `;
-          }}
-        >
-          <source
-            src={`${process.env.REACT_APP_API_URL || ""}${item.url}`}
-            type={`video/${item.url.split(".").pop()}`}
-          />
-        </video>
-      )}
-    </motion.div>
-  );
-};
-
-const Carousel = ({
-  items = [],
-  autoplay = false,
-  autoplayDelay = 1000,
-  pauseOnHover = false,
-  loop = false,
-  round = false,
-  baseWidth = 600,
-}) => {
-  const containerRef = useRef(null);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const x = useMotionValue(0);
+const Carousel = ({ items = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
 
-  // Measure container width responsively
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        setContainerWidth(entry.contentRect.width);
-      }
-    });
-
-    const currentContainer = containerRef.current;
-    if (currentContainer) {
-      observer.observe(currentContainer);
-    }
-
-    return () => {
-      if (currentContainer) {
-        observer.unobserve(currentContainer);
-      }
-    };
-  }, []);
-
-  const itemWidth = Math.min(containerWidth - 32, baseWidth - 32); // Responsive width
-  const trackItemOffset = itemWidth + GAP;
-  const carouselItems = loop ? [...items, items[0]] : items;
-
-  useEffect(() => {
-    if (pauseOnHover && containerRef.current) {
-      const container = containerRef.current;
-      const handleMouseEnter = () => setIsHovered(true);
-      const handleMouseLeave = () => setIsHovered(false);
-      container.addEventListener("mouseenter", handleMouseEnter);
-      container.addEventListener("mouseleave", handleMouseLeave);
-      return () => {
-        container.removeEventListener("mouseenter", handleMouseEnter);
-        container.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    }
-  }, [pauseOnHover]);
-
-  useEffect(() => {
-    if (autoplay && (!pauseOnHover || !isHovered)) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prev) => {
-          if (prev === items.length - 1 && loop) return prev + 1;
-          if (prev === carouselItems.length - 1) return loop ? 0 : prev;
-          return prev + 1;
-        });
-      }, autoplayDelay);
-      return () => clearInterval(timer);
-    }
-  }, [
-    autoplay,
-    autoplayDelay,
-    isHovered,
-    loop,
-    items.length,
-    carouselItems.length,
-    pauseOnHover,
-  ]);
-
-  const effectiveTransition = isResetting ? { duration: 0 } : SPRING_OPTIONS;
-
-  const handleAnimationComplete = () => {
-    if (loop && currentIndex === carouselItems.length - 1) {
-      setIsResetting(true);
-      x.set(0);
-      setCurrentIndex(0);
-      setTimeout(() => setIsResetting(false), 50);
-    }
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === items.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
-  const handleDragEnd = (_, info) => {
-    const offset = info.offset.x;
-    const velocity = info.velocity.x;
-
-    if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
-      if (loop && currentIndex === items.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setCurrentIndex((prev) => Math.min(prev + 1, carouselItems.length - 1));
-      }
-    } else if (offset > DRAG_BUFFER || velocity > VELOCITY_THRESHOLD) {
-      if (loop && currentIndex === 0) {
-        setCurrentIndex(items.length - 1);
-      } else {
-        setCurrentIndex((prev) => Math.max(prev - 1, 0));
-      }
-    }
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? items.length - 1 : prevIndex - 1
+    );
   };
 
-  const dragProps = loop
-    ? {}
-    : {
-      dragConstraints: {
-        left: -trackItemOffset * (carouselItems.length - 1),
-        right: 0,
-      },
-    };
-
-  // Calculate responsive width and height
-  const getResponsiveDimensions = () => {
-    if (typeof window === "undefined") return { width: baseWidth, height: 300 };
-    const screenWidth = window.innerWidth;
-    let width, height;
-
-    if (screenWidth < 640) {
-      width = Math.min(screenWidth - 32, baseWidth);
-      height = 200;
-    } else if (screenWidth < 768) {
-      width = Math.min(screenWidth - 48, baseWidth);
-      height = 250;
-    } else if (screenWidth < 1024) {
-      width = Math.min(screenWidth - 64, baseWidth);
-      height = 280;
-    } else {
-      width = baseWidth;
-      height = 300;
-    }
-
-    return { width, height };
-  };
-
-  const { width: responsiveWidth } =
-    getResponsiveDimensions();
+  if (!items || items.length === 0) {
+    return (
+      <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-200 border-2 border-dashed rounded-xl flex items-center justify-center text-gray-500 text-center text-xs sm:text-sm">
+        No media available
+      </div>
+    );
+  }
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden p-2 sm:p-4 ${round ? "rounded-full border-white" : "rounded-[24px] border-[#222]"
-        } mx-auto transition-transform duration-300 w-full`}
-      style={{
-        maxWidth: `${responsiveWidth}px`,
-      }}
-    >
-      <motion.div
-        className="flex"
-        drag="x"
-        {...dragProps}
-        style={{
-          gap: `${GAP}px`,
-          perspective: 1000,
-          perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2
-            }px 50%`,
-          x,
-        }}
-        onDragEnd={handleDragEnd}
-        animate={{ x: -(currentIndex * trackItemOffset) }}
-        transition={effectiveTransition}
-        onAnimationComplete={handleAnimationComplete}
-      >
-        {carouselItems.map((item, index) => (
-          <CarouselItem
-            key={index}
-            item={item}
-            index={index}
-            trackItemOffset={trackItemOffset}
-            itemWidth={itemWidth}
-            round={round}
-            x={x}
-          />
-        ))}
-      </motion.div>
+    <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] overflow-hidden rounded-xl bg-black group">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full h-full flex items-center justify-center"
+        >
+          {items[currentIndex].type === "image" ? (
+            <img
+              src={`${process.env.REACT_APP_API_URL || ""}${items[currentIndex].url}`}
+              alt={`Slide ${currentIndex + 1}`}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <video
+              src={`${process.env.REACT_APP_API_URL || ""}${items[currentIndex].url}`}
+              className="w-full h-full object-contain"
+              controls
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Indicators */}
+      {/* Navigation Buttons */}
       {items.length > 1 && (
-        <div className="flex w-full justify-center mt-3 sm:mt-4">
-          <div className="flex gap-1 sm:gap-2">
+        <>
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          {/* Indicators */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
             {items.map((_, index) => (
-              <motion.div
+              <button
                 key={index}
-                className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full cursor-pointer ${currentIndex % items.length === index
-                  ? "bg-white"
-                  : "bg-gray-500"
-                  }`}
-                animate={{
-                  scale: currentIndex % items.length === index ? 1.2 : 1,
-                }}
                 onClick={() => setCurrentIndex(index)}
-                transition={{ duration: 0.15 }}
+                className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${currentIndex === index ? "bg-white scale-110" : "bg-white/50 hover:bg-white/70"
+                  }`}
               />
             ))}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
@@ -294,124 +98,113 @@ const ViewProject = ({ onClose, project, theme }) => {
     projectTypeBg: theme?.projectTypeBg || "bg-bluec2i-700",
   };
 
+  const handleBackdropClick = (e) => {
+    // Only close if clicking the backdrop wrapper or the alignment container
+    if (e.target.id === "modal-backdrop" || e.target.id === "modal-alignment-container") {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-2 sm:p-4 overflow-y-auto">
+    <div
+      id="modal-backdrop"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md"
+      onClick={handleBackdropClick}
+    >
       <div
-        className="rounded-lg p-3 sm:p-4 md:p-6 w-full max-w-6xl shadow-lg relative my-4"
-        style={{
-          backgroundColor: currentTheme.background,
-          color: currentTheme.text,
-        }}
+        id="modal-alignment-container"
+        className="flex min-h-full items-center justify-center p-4 sm:p-6"
       >
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 sm:top-3 sm:right-3 text-gray-500 hover:text-gray-700 z-10 p-1"
-          aria-label="Close project details"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="rounded-3xl w-full max-w-3xl shadow-2xl relative flex flex-col border border-white/10 overflow-hidden bg-white text-gray-900" // Ensure bg/text colors are set even if theme fails
+          style={{
+            backgroundColor: currentTheme.background,
+            color: currentTheme.text,
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <X size={20} className="sm:w-6 sm:h-6" />
-        </button>
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-50 bg-black/40 hover:bg-black/60 text-white p-2.5 rounded-full transition-all backdrop-blur-sm border border-white/10 shadow-lg group"
+            aria-label="Close project details"
+          >
+            <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          </button>
 
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
-          {/* Media Carousel */}
-          <div className="w-full lg:w-1/2">
-            <div className="p-1 sm:p-2 md:p-4">
-              {mediaItems.length > 0 ? (
-                <Carousel
-                  items={mediaItems}
-                  baseWidth={600}
-                  autoplay={false}
-                  autoplayDelay={5000}
-                  pauseOnHover={true}
-                  loop={false}
-                  round={false}
-                />
-              ) : (
-                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-48 sm:h-64 md:h-80 flex items-center justify-center text-gray-500 text-center text-xs sm:text-sm">
-                  No media available
-                </div>
-              )}
-            </div>
+          {/* Media Section */}
+          <div className="w-full bg-black relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent z-10 pointer-events-none" />
+            <Carousel items={mediaItems} />
           </div>
 
-          {/* Project Details */}
-          <div className="w-full lg:w-1/2 px-1 sm:px-2 md:px-4">
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3 md:mb-4">
-              {project.title}
-            </h3>
-
-            <p className="mb-3 sm:mb-4 md:mb-6 text-sm sm:text-base md:text-lg">
-              {project.description}
-            </p>
-
-            {project.technologies && project.technologies.length > 0 && (
-              <div className="mb-3 sm:mb-4 md:mb-6">
-                <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
-                  Technologies:
-                </h4>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {project.technologies.map((tech, index) => (
-                    tech.trim() !== "" && (
-                      <span
-                        key={index}
-                        className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium ${currentTheme.badgeBg} ${currentTheme.badgeText}`}
-                      >
-                        {tech}
-                      </span>
-                    )
-                  ))}
+          {/* Content Section - Natural Layout (No fixed height) */}
+          <div className="p-6 sm:p-8 bg-gradient-to-br from-transparent to-black/5">
+            <div className="flex flex-col gap-8">
+              {/* Header */}
+              <div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${currentTheme.categoryBg} ${currentTheme.categoryText}`}>
+                    {project.category}
+                  </span>
+                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${currentTheme.projectTypeBg} ${currentTheme.categoryText}`}>
+                    {project.type}
+                  </span>
                 </div>
-              </div>
-            )}
-
-            {project.results && project.results.length > 0 && (
-              <div className="mb-3 sm:mb-4 md:mb-6">
-                <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
-                  Results:
-                </h4>
-                <ul className="space-y-1.5 sm:space-y-2 md:space-y-3">
-                  {project.results.map((result, index) => (
-                    result.trim() !== "" && (
-                      <li
-                        key={index}
-                        className="flex items-start text-xs sm:text-sm md:text-base"
-                      >
-                        <CircleCheckBig
-                          size={16}
-                          className={`sm:w-5 sm:h-5 ${currentTheme.badgeText} flex-shrink-0 mt-0.5 mr-1.5 sm:mr-2`}
-                        />
-                        <span>{result}</span>
-                      </li>
-                    )
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 md:gap-10">
-              <div>
-                <h4 className="font-semibold text-xs sm:text-sm md:text-base mb-1">
-                  Category:
-                </h4>
-                <span
-                  className={`inline-block rounded-full px-2 py-1 sm:px-3 sm:py-1.5 text-xs ${currentTheme.categoryBg} ${currentTheme.categoryText}`}
-                >
-                  {project.category}
-                </span>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 tracking-tight">{project.title}</h2>
+                <p className="text-gray-600 text-base sm:text-lg leading-relaxed">{project.description}</p>
               </div>
 
-              <div>
-                <h4 className="font-semibold text-xs sm:text-sm md:text-base mb-1">
-                  Project Type:
-                </h4>
-                <span
-                  className={`inline-block rounded-full px-2 py-1 sm:px-3 sm:py-1.5 text-xs ${currentTheme.projectTypeBg} ${currentTheme.categoryText}`}
-                >
-                  {project.type}
-                </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Technologies */}
+                {project.technologies && project.technologies.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      Technologies
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech, index) => (
+                        tech.trim() !== "" && (
+                          <span
+                            key={index}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${currentTheme.badgeBg} ${currentTheme.badgeText}`}
+                          >
+                            {tech}
+                          </span>
+                        )
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Results */}
+                {project.results && project.results.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      Key Results
+                    </h3>
+                    <ul className="space-y-3">
+                      {project.results.map((result, index) => (
+                        result.trim() !== "" && (
+                          <li key={index} className="flex items-start gap-3">
+                            <div className={`mt-1 p-1 rounded-full ${currentTheme.badgeBg}`}>
+                              <CircleCheckBig size={14} className={currentTheme.badgeText} />
+                            </div>
+                            <span className="text-gray-700">{result}</span>
+                          </li>
+                        )
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

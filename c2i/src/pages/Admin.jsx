@@ -14,7 +14,13 @@ import Trust from "../component/Trust";
 import Summary from "../component/Summary";
 import TrainingDashboard from "../component/TrainingDashboard";
 
-import { fetchProjects, fetchtrainings } from "../services/api";
+import {
+  fetchProjects,
+  fetchtrainings,
+  createtraining,
+  updatetraining,
+  deletetraining,
+} from "../services/api";
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -134,21 +140,55 @@ const Admin = () => {
         );
       case "projects":
         const handleDeleteProject = async (id) => {
-          if (window.confirm("Are you sure you want to delete this project?")) {
-            try {
-              const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/projects/delete/${id}`,
-                {
-                  method: "DELETE",
-                }
-              );
-              if (!response.ok) {
-                throw new Error("Failed to delete project");
+          try {
+            const response = await fetch(
+              `${process.env.REACT_APP_API_URL}/projects/delete/${id}`,
+              {
+                method: "DELETE",
               }
-              setProjects(projects.filter((p) => p._id !== id));
-            } catch (error) {
-              console.error("Error deleting project:", error);
+            );
+            if (!response.ok) {
+              throw new Error("Failed to delete project");
             }
+            setProjects(projects.filter((p) => p._id !== id));
+          } catch (error) {
+            console.error("Error deleting project:", error);
+          }
+        };
+
+        const handleAddProject = async (formData) => {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/Projects/create`, {
+              method: "POST",
+              body: formData,
+            });
+            if (!response.ok) throw new Error("Failed to create project");
+            const newProject = await response.json();
+            setProjects([...projects, newProject]);
+            return newProject;
+          } catch (error) {
+            console.error("Error creating project:", error);
+            throw error;
+          }
+        };
+
+        const handleUpdateProject = async (id, formData) => {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/projects/update/${id}`, {
+              method: "PUT",
+              body: formData,
+            });
+            if (!response.ok) throw new Error("Failed to update project");
+            const updatedProject = await response.json();
+
+            // Check if the backend returns the updated project or just a success message/status
+            // Assuming it returns the updated object. If not, we might need to refetch or assume formData has the new values.
+            // A safe bet if response is the object:
+            setProjects(projects.map(p => p._id === id ? updatedProject : p));
+            return updatedProject;
+          } catch (error) {
+            console.error("Error updating project:", error);
+            throw error;
           }
         };
 
@@ -166,12 +206,53 @@ const Admin = () => {
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
             handleDeleteProject={handleDeleteProject}
+            handleAddProject={handleAddProject}
+            handleUpdateProject={handleUpdateProject}
           />
         );
       case "training":
-        return <TrainingDashboard />;
+        return (
+          <TrainingDashboard
+            trainings={trainings}
+            handleCreateTraining={handleCreateTraining}
+            handleUpdateTraining={handleUpdateTraining}
+            handleDeleteTraining={handleDeleteTraining}
+          />
+        );
       default:
         return <Dashboard projects={projects} trainings={trainings} />;
+    }
+  };
+
+  // Training Handlers
+  const handleCreateTraining = async (data) => {
+    try {
+      const newTraining = await createtraining(data);
+      setTrainings([...trainings, newTraining]);
+      return newTraining;
+    } catch (err) {
+      console.error("Error creating training:", err);
+      throw err;
+    }
+  };
+
+  const handleUpdateTraining = async (id, data) => {
+    try {
+      const updated = await updatetraining(id, data);
+      setTrainings(trainings.map((t) => (t._id === id ? updated : t)));
+      return updated;
+    } catch (err) {
+      console.error("Error updating training:", err);
+      throw err;
+    }
+  };
+
+  const handleDeleteTraining = async (id) => {
+    try {
+      await deletetraining(id);
+      setTrainings(trainings.filter((t) => t._id !== id));
+    } catch (error) {
+      console.error("Error deleting training:", error);
     }
   };
 
@@ -213,9 +294,8 @@ const Admin = () => {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <div
-        className={`bg-white shadow-md transition-all duration-300 ${
-          sidebarOpen ? "w-64" : "w-20"
-        }`}
+        className={`bg-white shadow-md transition-all duration-300 ${sidebarOpen ? "w-64" : "w-20"
+          }`}
       >
         <div className="p-4 flex items-center justify-between border-b">
           {sidebarOpen ? (

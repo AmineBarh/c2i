@@ -27,9 +27,9 @@ const Summary = ({
   setSelectedType = () => { },
   selectedCategory = "",
   setSelectedCategory = () => { },
-  handleAddProject = () => { },
-  handleDeleteProject = () => { },
-  handleEditProject = () => { },
+  handleAddProject,
+  handleDeleteProject,
+  handleUpdateProject,
 }) => {
   const [showAddProject, setShowAddProject] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
@@ -86,17 +86,11 @@ const Summary = ({
               setEditingProject(null);
             }}
             initialData={editingProject}
-            onSubmit={(formData) => {
+            onSubmit={async (formData) => {
               if (editingProject) {
-                return fetch(`${process.env.REACT_APP_API_URL}/projects/update/${editingProject._id}`, {
-                  method: "PUT",
-                  body: formData,
-                });
+                await handleUpdateProject(editingProject._id, formData);
               } else {
-                return fetch(`${process.env.REACT_APP_API_URL}/Projects/create`, {
-                  method: "POST",
-                  body: formData,
-                });
+                await handleAddProject(formData);
               }
             }}
           />
@@ -181,8 +175,8 @@ const Summary = ({
                 onClick={handleBulkDelete}
                 disabled={selectedProjects.length === 0}
                 className={`font-semibold flex items-center gap-2 bg-gradient-to-r ${selectedProjects.length === 0
-                    ? "from-gray-400 to-gray-600 cursor-not-allowed"
-                    : "from-red-600 to-red-800 hover:bg-red-700"
+                  ? "from-gray-400 to-gray-600 cursor-not-allowed"
+                  : "from-red-600 to-red-800 hover:bg-red-700"
                   } text-white px-4 py-2 rounded-md transition-colors`}
               >
                 <X size={16} />
@@ -302,10 +296,10 @@ const Summary = ({
                       <td className="px-6 py-4 capitalize">
                         <span
                           className={`px-2 py-1 rounded-full text-xs ${project.type === "web"
-                              ? "bg-blue-100 text-blue-800"
-                              : project.type === "iot"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-orange-100 text-orange-800"
+                            ? "bg-blue-100 text-blue-800"
+                            : project.type === "iot"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-orange-100 text-orange-800"
                             }`}
                         >
                           {project.type}
@@ -329,7 +323,9 @@ const Summary = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDeleteProject(project._id || project.id);
+                              if (window.confirm("Are you sure you want to delete this project?")) {
+                                handleDeleteProject(project._id || project.id);
+                              }
                             }}
                             className="text-red-600 hover:text-red-900 flex items-center gap-1"
                           >
