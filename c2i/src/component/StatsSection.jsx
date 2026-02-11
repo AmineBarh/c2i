@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import CountUp from "../blocks/CountUp/CountUp";
 import { Users, Award, TrendingUp } from "lucide-react";
 
@@ -49,7 +49,7 @@ const SuccessRate = () => (
   </div>
 );
 
-const StatsSection = () => {
+const StatsSection = memo(() => {
   return (
     <section className="py-24 bg-gradient-to-r from-emerald-50 via-blue-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,6 +61,6 @@ const StatsSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default StatsSection;
