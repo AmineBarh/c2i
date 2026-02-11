@@ -2,26 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Bot, Send, X, Loader2, MessageCirclePlus } from "lucide-react";
 
+// Sample initial bot message
+const initialBotMessage = {
+  sender: "bot",
+  text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
+};
+
 const Chatbot = ({ className }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([initialBotMessage]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef(null);
-
-  // Sample initial bot message
-  const initialBotMessage = {
-    sender: "bot",
-    text: "Bonjour! Je suis l'assistant virtuel de C2I & Training. Comment puis-je vous aider aujourd'hui?",
-  };
-
-  // Initialize with welcome message if empty
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([initialBotMessage]);
-    }
-  }, []);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -127,27 +120,24 @@ const Chatbot = ({ className }) => {
             {messages.map((msg, i) => (
               <div
                 key={`msg-${i}-${msg.timestamp || Date.now()}`}
-                className={`mb-3 flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`mb-3 flex ${msg.sender === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-                    msg.sender === "user"
+                  className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${msg.sender === "user"
                       ? "bg-orangec2i-500 text-white rounded-br-none"
                       : msg.isError
-                      ? "bg-red-100 text-red-800 border border-red-200 rounded-bl-none"
-                      : "bg-white border border-gray-200 rounded-bl-none"
-                  }`}
+                        ? "bg-red-100 text-red-800 border border-red-200 rounded-bl-none"
+                        : "bg-white border border-gray-200 rounded-bl-none"
+                    }`}
                 >
                   {msg.text}
                   {msg.timestamp && (
                     <div
-                      className={`text-xs mt-1 ${
-                        msg.sender === "user"
+                      className={`text-xs mt-1 ${msg.sender === "user"
                           ? "text-orangec2i-500"
                           : "text-gray-500"
-                      }`}
+                        }`}
                     >
                       {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
@@ -208,9 +198,8 @@ const Chatbot = ({ className }) => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`bg-gradient-to-br from-purplec2i-500 to-orangec2i-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 ${
-          isOpen ? "rotate-45" : ""
-        }`}
+        className={`bg-gradient-to-br from-purplec2i-500 to-orangec2i-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 ${isOpen ? "rotate-45" : ""
+          }`}
         aria-label={isOpen ? "Fermer le chat" : "Ouvrir le chat"}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}

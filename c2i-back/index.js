@@ -77,9 +77,6 @@ app.use((err, req, res, next) => {
 const serverless = require("serverless-http");
 
 // Start server
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

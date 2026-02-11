@@ -5,7 +5,6 @@ import {
   createtraining,
   updatetraining,
   deletetraining,
-  fetchProjects,
 } from "../services/api";
 
 import {
@@ -21,7 +20,6 @@ import {
 
 const TrainingDashboard = () => {
   const [trainings, setTrainings] = useState([]);
-  const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(["All"]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
@@ -32,7 +30,6 @@ const TrainingDashboard = () => {
 
   useEffect(() => {
     loadTrainings();
-    loadProjects();
     loadCategories();
   }, []);
 
@@ -45,14 +42,7 @@ const TrainingDashboard = () => {
     }
   };
 
-  const loadProjects = async () => {
-    try {
-      const data = await fetchProjects();
-      setProjects(data);
-    } catch (error) {
-      console.error("Error loading projects:", error);
-    }
-  };
+
 
   const loadCategories = async () => {
     try {
@@ -182,11 +172,10 @@ const TrainingDashboard = () => {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("trainings")}
-                className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "trainings"
+                className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "trainings"
                     ? "border-blue-500 text-blue-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                  }`}
               >
                 <BookOpen className="w-5 h-5 mr-1" />
                 Training Programs
@@ -258,11 +247,10 @@ const TrainingDashboard = () => {
                 <button
                   onClick={handleBulkDeleteTrainings}
                   disabled={selectedTrainings.length === 0}
-                  className={`bg-red-600 text-white px-6 py-2 rounded-lg font-medium flex items-center ${
-                    selectedTrainings.length === 0
+                  className={`bg-red-600 text-white px-6 py-2 rounded-lg font-medium flex items-center ${selectedTrainings.length === 0
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-red-700"
-                  }`}
+                    }`}
                 >
                   <X className="w-4 h-4 mr-2" />
                   Delete Selected
@@ -280,7 +268,7 @@ const TrainingDashboard = () => {
                           type="checkbox"
                           checked={
                             selectedTrainings.length ===
-                              filteredTrainings.length &&
+                            filteredTrainings.length &&
                             filteredTrainings.length > 0
                           }
                           onChange={toggleSelectAllTrainings}
@@ -326,6 +314,7 @@ const TrainingDashboard = () => {
                                   : `${process.env.REACT_APP_API_URL}${training.media}`
                                 : "https://via.placeholder.com/800x400?text=No+Image"
                             }
+                            alt={training.title}
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
 

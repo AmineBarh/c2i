@@ -28,6 +28,9 @@ import {
   Code,
   Cpu,
   Network,
+  PieChart as PieChartIcon,
+  BarChart3,
+  Activity,
 } from "lucide-react";
 import {
   format,
@@ -160,11 +163,7 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
       }));
   }, [projectDashboardData.projectsByType]);
 
-  const typeColors = {
-    iot: "#8EC64C", // emerald
-    web: "#2379BA", // blue
-    automation: "#F8B74C", // orange
-  };
+
 
   const pieColors = [
     "#8EC64C",
@@ -194,13 +193,12 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
         </div>
         {change && (
           <div
-            className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
-              changeType === "positive"
-                ? "bg-green-100 text-green-700"
-                : changeType === "negative"
+            className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${changeType === "positive"
+              ? "bg-green-100 text-green-700"
+              : changeType === "negative"
                 ? "bg-red-100 text-red-700"
                 : "bg-gray-100 text-gray-700"
-            }`}
+              }`}
           >
             {changeType === "positive" && (
               <TrendingUp className="w-3 h-3 mr-1" />
@@ -291,23 +289,45 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
             >
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={projectDashboardData.dailyActivity}>
+                  <defs>
+                    <linearGradient
+                      id="colorProjects"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "white",
-                      border: "1px solid #f0f0f0",
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "none",
                       borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     }}
                   />
                   <Area
                     type="monotone"
                     dataKey="projects"
                     stroke="#10b981"
-                    fill="#10b981"
-                    fillOpacity={0.2}
-                    strokeWidth={2}
+                    fill="url(#colorProjects)"
+                    strokeWidth={3}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -317,7 +337,7 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
           {/* Project Types Distribution */}
           <ChartCard
             title="Project Types"
-            icon={<PieChart className="w-5 h-5" />}
+            icon={<PieChartIcon className="w-5 h-5" />}
           >
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -330,6 +350,9 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                   paddingAngle={5}
                   dataKey="count"
                   nameKey="name"
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {projectsByTypeData.map((entry, index) => (
                     <Cell
@@ -338,11 +361,19 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "none",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                  }}
+                  itemStyle={{ color: "#374151" }}
+                />
                 <Legend
                   verticalAlign="bottom"
-                  height={60}
-                  wrapperStyle={{ fontSize: "12px" }}
+                  height={36}
+                  wrapperStyle={{ fontSize: "12px", paddingTop: "20px" }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -359,26 +390,48 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
               icon={<Network className="w-5 h-5" />}
             >
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={trainingDashboardData.dailyActivity}>
+                <AreaChart data={trainingDashboardData.dailyActivity}>
+                  <defs>
+                    <linearGradient
+                      id="colorTrainings"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "white",
-                      border: "1px solid #f0f0f0",
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "none",
                       borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     }}
                   />
-                  <Line
+                  <Area
                     type="monotone"
                     dataKey="trainings"
                     stroke="#8b5cf6"
-                    strokeWidth={2}
-                    dot={{ r: 4, fill: "#8b5cf6" }}
-                    activeDot={{ r: 6 }}
+                    fill="url(#colorTrainings)"
+                    strokeWidth={3}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </ChartCard>
           </div>
@@ -400,6 +453,9 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                     paddingAngle={5}
                     dataKey="value"
                     nameKey="name"
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
                   >
                     {trainingDashboardData.trainingCategories.map(
                       (entry, index) => (
@@ -410,11 +466,19 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                       )
                     )}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "none",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    itemStyle={{ color: "#374151" }}
+                  />
                   <Legend
                     verticalAlign="bottom"
-                    height={60}
-                    wrapperStyle={{ fontSize: "12px" }}
+                    height={36}
+                    wrapperStyle={{ fontSize: "12px", paddingTop: "20px" }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -450,7 +514,14 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                     }}
                   />
                   <Legend />
-                  <Bar dataKey="count" fill="#2379BA" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                    {partnersDashboardData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={pieColors[index % pieColors.length]}
+                      />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (

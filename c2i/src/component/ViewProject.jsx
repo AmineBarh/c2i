@@ -25,11 +25,10 @@ const CarouselItem = ({
 
   return (
     <motion.div
-      className={`relative shrink-0 ${
-        round
+      className={`relative shrink-0 ${round
           ? "items-center justify-center text-center bg-[#060010] border-0"
           : "bg-[#222] border border-[#222] rounded-[12px]"
-      } overflow-hidden cursor-grab active:cursor-grabbing`}
+        } overflow-hidden cursor-grab active:cursor-grabbing`}
       style={{
         width: itemWidth,
         height: round ? itemWidth : "300px",
@@ -103,13 +102,14 @@ const Carousel = ({
       }
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      observer.observe(currentContainer);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (currentContainer) {
+        observer.unobserve(currentContainer);
       }
     };
   }, []);
@@ -186,11 +186,11 @@ const Carousel = ({
   const dragProps = loop
     ? {}
     : {
-        dragConstraints: {
-          left: -trackItemOffset * (carouselItems.length - 1),
-          right: 0,
-        },
-      };
+      dragConstraints: {
+        left: -trackItemOffset * (carouselItems.length - 1),
+        right: 0,
+      },
+    };
 
   // Calculate responsive width and height
   const getResponsiveDimensions = () => {
@@ -215,15 +215,14 @@ const Carousel = ({
     return { width, height };
   };
 
-  const { width: responsiveWidth, height: carouselHeight } =
+  const { width: responsiveWidth } =
     getResponsiveDimensions();
 
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden p-2 sm:p-4 ${
-        round ? "rounded-full border-white" : "rounded-[24px] border-[#222]"
-      } mx-auto transition-transform duration-300 w-full`}
+      className={`relative overflow-hidden p-2 sm:p-4 ${round ? "rounded-full border-white" : "rounded-[24px] border-[#222]"
+        } mx-auto transition-transform duration-300 w-full`}
       style={{
         maxWidth: `${responsiveWidth}px`,
       }}
@@ -235,9 +234,8 @@ const Carousel = ({
         style={{
           gap: `${GAP}px`,
           perspective: 1000,
-          perspectiveOrigin: `${
-            currentIndex * trackItemOffset + itemWidth / 2
-          }px 50%`,
+          perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2
+            }px 50%`,
           x,
         }}
         onDragEnd={handleDragEnd}
@@ -265,11 +263,10 @@ const Carousel = ({
             {items.map((_, index) => (
               <motion.div
                 key={index}
-                className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full cursor-pointer ${
-                  currentIndex % items.length === index
+                className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full cursor-pointer ${currentIndex % items.length === index
                     ? "bg-white"
                     : "bg-gray-500"
-                }`}
+                  }`}
                 animate={{
                   scale: currentIndex % items.length === index ? 1.2 : 1,
                 }}

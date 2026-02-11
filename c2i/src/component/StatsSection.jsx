@@ -10,7 +10,7 @@ const HappyClients = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={150} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">+</span>
+        <span className="ml-1 text-4xl font-bold text-blue-600">+</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">
@@ -27,7 +27,7 @@ const ProjectsCompleted = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={30} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">+</span>
+        <span className="ml-1 text-4xl font-bold text-blue-600">+</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">Projets réalisés</div>
@@ -42,7 +42,7 @@ const SuccessRate = () => (
     <div className="text-5xl font-extrabold text-gray-900 mb-2 flex items-center justify-center">
       <>
         <CountUp from={0} to={90} duration={1.5} separator="," />
-        <span className="ml-1 text-4xl font-extrabold text-bluec2i-500">%</span>
+        <span className="ml-1 text-4xl font-bold text-blue-600">%</span>
       </>
     </div>
     <div className="text-lg font-semibold text-gray-600">Taux de réussite</div>
