@@ -26,8 +26,8 @@ const CarouselItem = ({
   return (
     <motion.div
       className={`relative shrink-0 ${round
-          ? "items-center justify-center text-center bg-[#060010] border-0"
-          : "bg-[#222] border border-[#222] rounded-[12px]"
+        ? "items-center justify-center text-center bg-[#060010] border-0"
+        : "bg-[#222] border border-[#222] rounded-[12px]"
         } overflow-hidden cursor-grab active:cursor-grabbing`}
       style={{
         width: itemWidth,
@@ -264,8 +264,8 @@ const Carousel = ({
               <motion.div
                 key={index}
                 className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full cursor-pointer ${currentIndex % items.length === index
-                    ? "bg-white"
-                    : "bg-gray-500"
+                  ? "bg-white"
+                  : "bg-gray-500"
                   }`}
                 animate={{
                   scale: currentIndex % items.length === index ? 1.2 : 1,
@@ -343,41 +343,49 @@ const ViewProject = ({ onClose, project, theme }) => {
               {project.description}
             </p>
 
-            <div className="mb-3 sm:mb-4 md:mb-6">
-              <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
-                Technologies:
-              </h4>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {project.technologies.map((tech, index) => (
-                  <span
-                    key={index}
-                    className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium ${currentTheme.badgeBg} ${currentTheme.badgeText}`}
-                  >
-                    {tech}
-                  </span>
-                ))}
+            {project.technologies && project.technologies.length > 0 && (
+              <div className="mb-3 sm:mb-4 md:mb-6">
+                <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
+                  Technologies:
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  {project.technologies.map((tech, index) => (
+                    tech.trim() !== "" && (
+                      <span
+                        key={index}
+                        className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium ${currentTheme.badgeBg} ${currentTheme.badgeText}`}
+                      >
+                        {tech}
+                      </span>
+                    )
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="mb-3 sm:mb-4 md:mb-6">
-              <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
-                Results:
-              </h4>
-              <ul className="space-y-1.5 sm:space-y-2 md:space-y-3">
-                {project.results.map((result, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start text-xs sm:text-sm md:text-base"
-                  >
-                    <CircleCheckBig
-                      size={16}
-                      className={`sm:w-5 sm:h-5 ${currentTheme.badgeText} flex-shrink-0 mt-0.5 mr-1.5 sm:mr-2`}
-                    />
-                    <span>{result}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {project.results && project.results.length > 0 && (
+              <div className="mb-3 sm:mb-4 md:mb-6">
+                <h4 className="font-semibold text-base sm:text-lg md:text-xl mb-2">
+                  Results:
+                </h4>
+                <ul className="space-y-1.5 sm:space-y-2 md:space-y-3">
+                  {project.results.map((result, index) => (
+                    result.trim() !== "" && (
+                      <li
+                        key={index}
+                        className="flex items-start text-xs sm:text-sm md:text-base"
+                      >
+                        <CircleCheckBig
+                          size={16}
+                          className={`sm:w-5 sm:h-5 ${currentTheme.badgeText} flex-shrink-0 mt-0.5 mr-1.5 sm:mr-2`}
+                        />
+                        <span>{result}</span>
+                      </li>
+                    )
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 md:gap-10">
               <div>

@@ -12,8 +12,6 @@ import {
   Area,
   PieChart,
   Pie,
-  LineChart,
-  Line,
   Cell,
 } from "recharts";
 import {
@@ -29,8 +27,6 @@ import {
   Cpu,
   Network,
   PieChart as PieChartIcon,
-  BarChart3,
-  Activity,
 } from "lucide-react";
 import {
   format,
@@ -351,8 +347,9 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
                   dataKey="count"
                   nameKey="name"
                   label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
+                    percent > 0 ? `${(percent * 100).toFixed(0)}%` : ""
                   }
+                  labelLine={false}
                 >
                   {projectsByTypeData.map((entry, index) => (
                     <Cell

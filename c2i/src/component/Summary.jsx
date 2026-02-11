@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X } from "lucide-react";
+import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X, Pencil } from "lucide-react";
 import Addproject from "./Addproject"; // Make sure this path is correct
 
 const SummaryCard = ({ icon, label, count, bgColor }) => (
@@ -22,23 +22,25 @@ const Summary = ({
   webProjects = 0,
   automationProjects = 0,
   searchTerm = "",
-  setSearchTerm = () => {},
+  setSearchTerm = () => { },
   selectedType = "",
-  setSelectedType = () => {},
+  setSelectedType = () => { },
   selectedCategory = "",
-  setSelectedCategory = () => {},
-  handleAddProject = () => {},
-  handleDeleteProject = () => {},
+  setSelectedCategory = () => { },
+  handleAddProject = () => { },
+  handleDeleteProject = () => { },
+  handleEditProject = () => { },
 }) => {
   const [showAddProject, setShowAddProject] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
   const [selectedProjects, setSelectedProjects] = useState([]);
 
   const displayProjects =
     Array.isArray(filteredProjects) && filteredProjects.length
       ? filteredProjects
       : Array.isArray(projects)
-      ? projects
-      : [];
+        ? projects
+        : [];
 
   const categories = Array.isArray(projects)
     ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
@@ -79,13 +81,24 @@ const Summary = ({
       <div className="max-w-6xl mx-auto">
         {showAddProject && (
           <Addproject
-            onClose={() => setShowAddProject(false)}
-            onSubmit={(formData) =>
-              fetch(`${process.env.REACT_APP_API_URL}/Projects/create`, {
-                method: "POST",
-                body: formData,
-              })
-            }
+            onClose={() => {
+              setShowAddProject(false);
+              setEditingProject(null);
+            }}
+            initialData={editingProject}
+            onSubmit={(formData) => {
+              if (editingProject) {
+                return fetch(`${process.env.REACT_APP_API_URL}/projects/update/${editingProject._id}`, {
+                  method: "PUT",
+                  body: formData,
+                });
+              } else {
+                return fetch(`${process.env.REACT_APP_API_URL}/Projects/create`, {
+                  method: "POST",
+                  body: formData,
+                });
+              }
+            }}
           />
         )}
         <h1 className="text-4xl font-bold text-center mb-8">Admin Panel</h1>
@@ -167,11 +180,10 @@ const Summary = ({
               <button
                 onClick={handleBulkDelete}
                 disabled={selectedProjects.length === 0}
-                className={`font-semibold flex items-center gap-2 bg-gradient-to-r ${
-                  selectedProjects.length === 0
+                className={`font-semibold flex items-center gap-2 bg-gradient-to-r ${selectedProjects.length === 0
                     ? "from-gray-400 to-gray-600 cursor-not-allowed"
                     : "from-red-600 to-red-800 hover:bg-red-700"
-                } text-white px-4 py-2 rounded-md transition-colors`}
+                  } text-white px-4 py-2 rounded-md transition-colors`}
               >
                 <X size={16} />
                 Delete Selected
@@ -289,13 +301,12 @@ const Summary = ({
                       </td>
                       <td className="px-6 py-4 capitalize">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            project.type === "web"
+                          className={`px-2 py-1 rounded-full text-xs ${project.type === "web"
                               ? "bg-blue-100 text-blue-800"
                               : project.type === "iot"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-orange-100 text-orange-800"
-                          }`}
+                                ? "bg-green-100 text-green-800"
+                                : "bg-orange-100 text-orange-800"
+                            }`}
                         >
                           {project.type}
                         </span>
@@ -304,15 +315,27 @@ const Summary = ({
                         {project.category}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteProject(project._id || project.id);
-                          }}
-                          className="text-red-600 hover:text-red-900 flex items-center gap-1"
-                        >
-                          <X size={16} /> Delete
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingProject(project);
+                              setShowAddProject(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                          >
+                            <Pencil size={16} /> Edit
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteProject(project._id || project.id);
+                            }}
+                            className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                          >
+                            <X size={16} /> Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

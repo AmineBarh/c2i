@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-const Addproject = ({ onClose, onSubmit }) => {
+const Addproject = ({ onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    technologies: "",
-    results: "",
-    category: "",
-    type: "",
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    technologies: initialData?.technologies ? (Array.isArray(initialData.technologies) ? initialData.technologies.join(", ") : initialData.technologies) : "",
+    results: initialData?.results ? (Array.isArray(initialData.results) ? initialData.results.join(", ") : initialData.results) : "",
+    category: initialData?.category || "",
+    type: initialData?.type || "",
   });
 
   const [files, setFiles] = useState([]);
-  const [previews, setPreviews] = useState([]);
+  const [previews, setPreviews] = useState(
+    initialData?.media ? initialData.media.map(m => ({
+      url: `${process.env.REACT_APP_API_URL}${m.url}`,
+      type: m.type,
+      name: m.url.split('/').pop(),
+      existing: true
+    })) : []
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -157,7 +164,7 @@ const Addproject = ({ onClose, onSubmit }) => {
         >
           <X size={24} />
         </button>
-        <h3 className="text-xl font-bold mb-4">Add New Project</h3>
+        <h3 className="text-xl font-bold mb-4">{initialData ? "Edit Project" : "Add New Project"}</h3>
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex items-start">
@@ -350,9 +357,8 @@ const Addproject = ({ onClose, onSubmit }) => {
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 bg-gradient-to-r from-bluec2i-900 to-bluec2i-500 text-white rounded-md hover:from-bluec2i-500 hover:to-bluec2i-900 transition-colors flex items-center justify-center ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+              className={`px-4 py-2 bg-gradient-to-r from-bluec2i-900 to-bluec2i-500 text-white rounded-md hover:from-bluec2i-500 hover:to-bluec2i-900 transition-colors flex items-center justify-center ${loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
               {loading ? (
                 <>
@@ -379,7 +385,7 @@ const Addproject = ({ onClose, onSubmit }) => {
                   Creating...
                 </>
               ) : (
-                "Add Project"
+                initialData ? "Update Project" : "Add Project"
               )}
             </button>
           </div>
