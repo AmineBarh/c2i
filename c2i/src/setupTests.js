@@ -55,7 +55,7 @@ jest.mock('axios', () => ({
   })),
 }), { virtual: true });
 
-// Mock framer-motion to bypass ESM issues and simplify tests
+// Mock framer-motion to bypass ESM issues
 jest.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }) => <div {...props}>{children}</div>,
@@ -68,6 +68,6 @@ jest.mock('framer-motion', () => ({
   useSpring: () => ({ on: jest.fn() }),
 }), { virtual: true });
 
-// Mock other potential ESM libraries
+// Mock other ESM libraries
 jest.mock('react-fast-marquee', () => ({ children }) => <div>{children}</div>, { virtual: true });
 jest.mock('react-rotating-text', () => () => <span>Rotating Text</span>, { virtual: true });
