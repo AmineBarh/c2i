@@ -25,11 +25,21 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() { return null; }
 };
 
+// Mock fetch
+global.fetch = jest.fn().mockResolvedValue({
+  ok: true,
+  json: async () => [],
+});
+window.fetch = global.fetch;
+
 // Mock react-router-dom to bypass ESM issues
 jest.mock('react-router-dom', () => ({
   BrowserRouter: ({ children }) => <div>{children}</div>,
   Routes: ({ children }) => <div>{children}</div>,
-  Route: ({ element }) => element,
+  Route: ({ path, element }) => {
+    // Only render the Home route (/) to avoid mounting all pages and triggering their side effects
+    return path === '/' ? element : null;
+  },
   Link: ({ children, to, ...props }) => <a href={to} {...props}>{children}</a>,
   NavLink: ({ children, to, className, ...props }) => {
     const isActive = false;
