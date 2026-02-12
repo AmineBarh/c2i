@@ -4,7 +4,7 @@ const Trust = ({
   partners,
   partnerType,
   setPartnerType,
-  partnerFile,
+  // partnerFile, // Removed unused prop
   setPartnerFile,
   handleAddPartner,
   handleDeletePartner,
