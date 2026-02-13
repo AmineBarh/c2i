@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders home page content', async () => {
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+  // Wait for the Home component to load and render "Solutions expertes en"
+  const textElement = await screen.findByText(/Solutions expertes en/i, {}, { timeout: 3000 });
+  expect(textElement).toBeInTheDocument();
 });
