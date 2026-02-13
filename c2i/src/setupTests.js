@@ -32,10 +32,6 @@ jest.mock('react-router-dom', () => {
     }
     // 3. Catch-all (simplified) - usually '*' but we might not want to render 404 in tests unless checking for it.
     if (path === '*') {
-       // Only render catch-all if explicitly testing for it or if nothing else matched?
-       // For now, let's render it if currentPath is not handled by others?
-       // Difficult to know without more complex logic.
-       // Let's assume for our tests we target specific routes.
        return null;
     }
 

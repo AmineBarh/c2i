@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
+import React, { Suspense, lazy } from "react";
 import "./App.css";
 import Navbar from "./component/navbar";
 import ScrollToTop from "./component/ScrollToTop";
