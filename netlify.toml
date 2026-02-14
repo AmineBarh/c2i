@@ -1,6 +1,7 @@
 [build]
-  command = "cd c2i && npm install && npm run build"
-  publish = "c2i/build"
+  base = "c2i"
+  publish = "build"
+  command = "npm run build"
 
 [[redirects]]
   from = "/*"
