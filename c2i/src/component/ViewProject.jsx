@@ -1,5 +1,5 @@
 import { CircleCheckBig, X, ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Carousel = ({ items = [] }) => {
