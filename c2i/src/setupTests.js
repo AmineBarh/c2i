@@ -13,7 +13,11 @@ jest.mock('react-router-dom', () => {
     Routes: ({ children }) => <div>{children}</div>,
     Route: ({ element }) => element,
     Link: ({ children, to, ...props }) => <a href={to} {...props}>{children}</a>,
-    NavLink: ({ children, to, ...props }) => <a href={to} {...props}>{typeof children === 'function' ? children({ isActive: false }) : children}</a>,
+    NavLink: ({ children, to, className, ...props }) => {
+      const isActive = false;
+      const finalClassName = typeof className === 'function' ? className({ isActive }) : className;
+      return <a href={to} className={finalClassName} {...props}>{typeof children === 'function' ? children({ isActive }) : children}</a>;
+    },
     useLocation: () => ({ pathname: '/' }),
     useNavigate: () => jest.fn(),
     Outlet: () => null,
