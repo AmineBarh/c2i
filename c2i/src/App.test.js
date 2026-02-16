@@ -1,8 +1,15 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import Navbar from './component/navbar';
+import { MemoryRouter } from 'react-router-dom';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders navbar', () => {
+  render(
+    <MemoryRouter>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  // Check for navbar item "ACCUEIL"
+  const navLinks = screen.getAllByText(/ACCUEIL/i);
+  expect(navLinks.length).toBeGreaterThan(0);
 });
