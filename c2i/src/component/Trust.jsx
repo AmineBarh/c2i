@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Trust = ({
   partners,
   partnerType,
   setPartnerType,
+  partnerFile,
   setPartnerFile,
   handleAddPartner,
   handleDeletePartner,
