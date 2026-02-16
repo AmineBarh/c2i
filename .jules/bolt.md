@@ -7,3 +7,7 @@
 ## 2025-02-19 - Netlify Deployment for CRA in Subdirectory
 **Learning:** Netlify deployments for a React app in a subdirectory require a `netlify.toml` at the **repository root** that explicitly sets the `base` directory. Without this, Netlify defaults to the root, can't find `package.json`, or fails to build.
 **Action:** Always include a `netlify.toml` with `[build]` configuration setting `base = "subdir"` and appropriate `publish` directory relative to that base. Also ensure SPA routing (redirect `/*` to `/index.html`) is configured.
+
+## 2025-02-19 - CI=true and ESLint Warnings
+**Learning:** In CI environments (like Netlify and GitHub Actions), `react-scripts build` typically treats ESLint warnings as fatal errors when `CI=true`.
+**Action:** Always ensure `CI=true npm run build` produces **zero** warnings locally before pushing. Pay close attention to unused variables (`no-unused-vars`) and hook dependencies (`react-hooks/exhaustive-deps`).
