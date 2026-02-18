@@ -23,3 +23,6 @@ src/component/ViewProject.jsx
   Line 2:38:  'useRef' is defined but never used     no-unused-vars
 
 webpack compiled with 1 warning
+Compiling...
+Compiled successfully!
+webpack compiled successfully
