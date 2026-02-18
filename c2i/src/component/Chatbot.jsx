@@ -18,12 +18,11 @@ const Chatbot = ({ className }) => {
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
     scrollToBottom();
   }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
