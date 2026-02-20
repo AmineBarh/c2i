@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import AddTraining from "./Addtraining";
+import AddTraining from "./AddTraining";
 // import {
 //   fetchtrainings,
 //   createtraining,
