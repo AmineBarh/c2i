@@ -30,27 +30,26 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
 
   useEffect(() => {
     // loadTrainings(); // Moved to parent
+
+    const loadCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/training/categories`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(["All", ...data]);
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
     loadCategories();
   }, []);
 
   // const loadTrainings = async () => { ... } // Moved to parent
-
-
-
-  const loadCategories = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/training/categories`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch categories");
-      }
-      const data = await response.json();
-      setCategories(["All", ...data]);
-    } catch (error) {
-      console.error("Error loading categories:", error);
-    }
-  };
 
   const handleFormSubmit = async (data) => {
     try {
