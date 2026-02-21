@@ -1,0 +1,3 @@
+## 2025-02-22 - Mocking fetch in Jest/JSDOM
+**Learning:** In Jest/JSDOM environment (specifically with react-scripts v5), `fetch` is not globally available by default in the way `node-fetch` might be. When mocking it manually with `jest.fn()`, assigning it to `global.fetch` alone might not be sufficient if code (or libraries) access it via `window.fetch` or if the test runner isolates globals. Assigning the mock to both `global.fetch` and `window.fetch` ensures consistent behavior.
+**Action:** When manually mocking `fetch` in setup or test files, always assign: `global.fetch = mock; window.fetch = mock;`.
