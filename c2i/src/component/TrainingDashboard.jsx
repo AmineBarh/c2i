@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import AddTraining from "./Addtraining";
+import React, { useState, useEffect } from "react";
+import AddTraining from "./AddTraining";
 // import {
 //   fetchtrainings,
 //   createtraining,
@@ -83,18 +83,15 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  // Memoize filtered trainings to avoid re-filtering on every render
-  const filteredTrainings = useMemo(() => {
-    return trainings.filter((training) => {
-      const matchesSearch =
-        training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "All" || training.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-  }, [trainings, searchTerm, selectedCategory]);
+  const filteredTrainings = trainings.filter((training) => {
+    const matchesSearch =
+      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All" || training.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
@@ -126,8 +123,7 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     }
   };
 
-  // Memoize stats to avoid recalculating unique sets on every render
-  const stats = useMemo(() => [
+  const stats = [
     {
       icon: <BookOpen className="w-6 h-6" />,
       label: "Total Programs",
@@ -146,7 +142,7 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
       value: new Set(trainings.map((t) => t.category)).size,
       color: "bg-orange-500",
     },
-  ], [trainings]);
+  ];
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">

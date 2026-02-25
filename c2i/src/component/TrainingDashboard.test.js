@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TrainingDashboard from './TrainingDashboard';
 
 // Mock child components
-jest.mock('./Addtraining', () => () => <div data-testid="add-training-modal">Add Training Modal</div>);
+jest.mock('./AddTraining', () => () => <div data-testid="add-training-modal">Add Training Modal</div>);
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({
