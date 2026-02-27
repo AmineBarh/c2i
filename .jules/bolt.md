@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimizing derived state with useMemo in TrainingDashboard and Admin]
+**Learning:** Derived state based on large arrays and complex object manipulation (like Sets or multiple filters) can cause significant performance degradation when components re-render due to unconnected state updates (e.g. tracking active tabs or sidebars).
+**Action:** Used `useMemo` to memoize these expensive derived states in `c2i/src/component/TrainingDashboard.jsx` and `c2i/src/pages/Admin.jsx`. Always look for redundant `O(N)` or higher operations directly inside the render loop, especially when filtering multiple attributes simultaneously based on multiple states.
