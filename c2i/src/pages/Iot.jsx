@@ -387,6 +387,8 @@ const Iot = () => {
                           src={`${process.env.REACT_APP_API_URL}${project.media[0].url}`}
                           alt={project.title}
                           className="w-full h-48 object-cover rounded group-hover:scale-105 transition-transform duration-500"
+                          // ⚡ Bolt: Native lazy loading prevents fetching off-screen images until needed
+                      loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center">

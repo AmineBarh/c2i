@@ -185,6 +185,8 @@ const Home = () => {
                 src={`${process.env.REACT_APP_API_URL}/uploads/${partner.img}`}
                 alt={`Partner ${index + 1}`}
                 className="mx-16 h-16 object-contain"
+                // ⚡ Bolt: Native lazy loading prevents fetching off-screen images until needed, improving initial page load time and saving bandwidth
+                loading="lazy"
               />
             ))}
           </Marquee>
