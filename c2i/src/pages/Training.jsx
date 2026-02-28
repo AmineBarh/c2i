@@ -470,6 +470,8 @@ const Training = () => {
                         }
                         alt={training.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                        // ⚡ Bolt: Native lazy loading prevents fetching off-screen images until needed
+                        loading="lazy"
                       />
                       <div className="absolute top-4 left-4 flex gap-2">
                         <div className="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
