@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import AddTraining from "./Addtraining";
+import React, { useState, useEffect, useMemo } from "react";
+import AddTraining from "./AddTraining";
 // import {
 //   fetchtrainings,
 //   createtraining,
@@ -30,27 +30,26 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
 
   useEffect(() => {
     // loadTrainings(); // Moved to parent
+
+    const loadCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/training/categories`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(["All", ...data]);
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
     loadCategories();
   }, []);
 
   // const loadTrainings = async () => { ... } // Moved to parent
-
-
-
-  const loadCategories = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/training/categories`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch categories");
-      }
-      const data = await response.json();
-      setCategories(["All", ...data]);
-    } catch (error) {
-      console.error("Error loading categories:", error);
-    }
-  };
 
   const handleFormSubmit = async (data) => {
     try {
@@ -83,15 +82,18 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  const filteredTrainings = trainings.filter((training) => {
-    const matchesSearch =
-      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || training.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Memoize filtered trainings to prevent recalculation on every render
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) => {
+      const matchesSearch =
+        training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All" || training.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [trainings, searchTerm, selectedCategory]);
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
@@ -123,7 +125,8 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     }
   };
 
-  const stats = [
+  // Memoize stats calculation to avoid iterating over trainings on every render
+  const stats = useMemo(() => [
     {
       icon: <BookOpen className="w-6 h-6" />,
       label: "Total Programs",
@@ -142,7 +145,7 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
       value: new Set(trainings.map((t) => t.category)).size,
       color: "bg-orange-500",
     },
-  ];
+  ], [trainings]);
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
