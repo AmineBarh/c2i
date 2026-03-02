@@ -49,7 +49,8 @@ const SuccessRate = () => (
   </div>
 );
 
-const StatsSection = () => {
+// Memoized to prevent re-renders when parent component (e.g., Home) updates state (like form inputs)
+const StatsSection = React.memo(() => {
   return (
     <section className="py-24 bg-gradient-to-r from-emerald-50 via-blue-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,6 +62,6 @@ const StatsSection = () => {
       </div>
     </section>
   );
-};
+});
 
 export default StatsSection;
