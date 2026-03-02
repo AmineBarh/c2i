@@ -1,0 +1,28 @@
+
+> c2i@0.1.0 test
+> react-scripts test --watchAll=false
+
+FAIL src/App.test.js
+  ✕ renders learn react link (595 ms)
+
+  ● renders learn react link
+
+    AggregateError:
+
+      at aggregateErrors (node_modules/react/cjs/react.development.js:527:11)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:796:23)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at node_modules/@testing-library/react/dist/pure.js:307:28
+          at Array.forEach (<anonymous>)
+      at cleanup (node_modules/@testing-library/react/dist/pure.js:303:22)
+      at Object.<anonymous> (node_modules/@testing-library/react/dist/index.js:28:25)
+      at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+      at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+      at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+      at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        3.408 s
+Ran all test suites.
