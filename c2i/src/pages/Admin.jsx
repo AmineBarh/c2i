@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,26 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
+  // ⚡ Bolt: Memoized project filtering to prevent O(N) array processing on every render
+  const filteredProjects = useMemo(() => {
+    return projects.filter(
     (project) =>
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedType === "" || project.type === selectedType) &&
       (selectedCategory === "" || project.category === selectedCategory)
-  );
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
+  // ⚡ Bolt: Consolidated multiple O(N) .filter() calls into a single memoized .reduce() pass
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  const { iotProjects, webProjects, automationProjects } = useMemo(() => {
+    return projects.reduce((counts, p) => {
+      if (p.type === "iot") counts.iotProjects++;
+      else if (p.type === "web") counts.webProjects++;
+      else if (p.type === "automation") counts.automationProjects++;
+      return counts;
+    }, { iotProjects: 0, webProjects: 0, automationProjects: 0 });
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {
