@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -30,6 +30,63 @@ import ViewTraining from "../component/ViewTraining";
 // Import API functions
 import { fetchtrainings } from "../services/api";
 import ContactForm from "../component/ContactForm";
+
+// Calculate stats
+// ⚡ Bolt: Define static stats array outside component to completely eliminate recreation on every render
+const STATS = [
+  {
+    icon: <Users className="w-6 h-6" />,
+    number: "1150 +",
+    label: "Professionals Trained",
+  },
+  {
+    icon: <Award className="w-6 h-6" />,
+    number: "95%",
+    label: "Completion Rate",
+  },
+  {
+    icon: <Star className="w-6 h-6" />,
+    number: "4.1",
+    label: "Average Rating",
+  },
+  {
+    icon: <TrendingUp className="w-6 h-6" />,
+    number: "89%",
+    label: "Career Advancement",
+  },
+];
+
+// ⚡ Bolt: Define static features array outside component to completely eliminate recreation on every render
+const FEATURES = [
+  {
+    icon: <Brain className="w-8 h-8" />,
+    title: "Expert-Led Training",
+    description:
+      "Learn from industry professionals with real-world experience and proven track records.",
+    color: "bg-purplec2i-500",
+  },
+  {
+    icon: <Laptop className="w-8 h-8" />,
+    title: "Hands-On Projects",
+    description:
+      "Build real applications and solutions that you can showcase in your portfolio.",
+    color: "bg-emerald-500",
+  },
+  {
+    icon: <Building className="w-8 h-8" />,
+    title: "Flexible Locations",
+    description:
+      "Training at our state-of-the-art facility or on-site at your location for maximum convenience.",
+    color: "bg-blue-500",
+  },
+  {
+    icon: <Users className="w-8 h-8" />,
+    title: "Team Development",
+    description:
+      "Customized group training programs designed to upskill your entire team effectively.",
+    color: "bg-orange-500",
+  },
+];
 
 const Training = () => {
   const [trainings, setTrainings] = useState([]);
@@ -81,66 +138,12 @@ const Training = () => {
   }, []);
 
   // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
-
-  // Calculate stats
-  const stats = (() => {
-    return [
-      {
-        icon: <Users className="w-6 h-6" />,
-        number: "1150 +",
-        label: "Professionals Trained",
-      },
-      {
-        icon: <Award className="w-6 h-6" />,
-        number: "95%",
-        label: "Completion Rate",
-      },
-      {
-        icon: <Star className="w-6 h-6" />,
-        number: "4.1",
-        label: "Average Rating",
-      },
-      {
-        icon: <TrendingUp className="w-6 h-6" />,
-        number: "89%",
-        label: "Career Advancement",
-      },
-    ];
-  })();
-
-  const features = [
-    {
-      icon: <Brain className="w-8 h-8" />,
-      title: "Expert-Led Training",
-      description:
-        "Learn from industry professionals with real-world experience and proven track records.",
-      color: "bg-purplec2i-500",
-    },
-    {
-      icon: <Laptop className="w-8 h-8" />,
-      title: "Hands-On Projects",
-      description:
-        "Build real applications and solutions that you can showcase in your portfolio.",
-      color: "bg-emerald-500",
-    },
-    {
-      icon: <Building className="w-8 h-8" />,
-      title: "Flexible Locations",
-      description:
-        "Training at our state-of-the-art facility or on-site at your location for maximum convenience.",
-      color: "bg-blue-500",
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Team Development",
-      description:
-        "Customized group training programs designed to upskill your entire team effectively.",
-      color: "bg-orange-500",
-    },
-  ];
+  // ⚡ Bolt: Memoize filtered trainings to prevent O(N) re-calculation on every keystroke in the quote modal
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
   const getCategoryIcon = (category) => {
     switch (category) {
@@ -342,7 +345,7 @@ const Training = () => {
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
+            {STATS.map((stat, index) => (
               <div key={index} className="text-center group">
                 <div className="w-16 h-16 bg-gradient-to-br from-purplec2i-500 to-blue-600 rounded-full flex items-center justify-center text-white mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                   {stat.icon}
@@ -371,7 +374,7 @@ const Training = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+            {FEATURES.map((feature, index) => (
               <div key={index} className="text-center group">
                 <div
                   className={`w-20 h-20 ${feature.color} rounded-2xl flex items-center justify-center text-white mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
