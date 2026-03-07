@@ -1,0 +1,3 @@
+## 2025-03-07 - Admin Dashboard Project Filtering Optimizations
+**Learning:** In a codebase displaying potentially large numbers of list items (e.g. Admin view with potentially thousands of projects), calculating multiple `O(N)` counts per render using array `.filter().length` without memoization is extremely inefficient, especially with unrelated state changes triggering re-renders (like searching or changing tabs).
+**Action:** When deriving multiple state values based on an array condition, use `useMemo` combined with `Array.prototype.reduce()` to process the array in a single O(N) pass, preventing redundant loop iterations on non-dependent state updates.
