@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -80,36 +80,36 @@ const Training = () => {
     loadTrainings();
   }, []);
 
-  // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
+  // ⚡ Bolt: Memoize filtered trainings to prevent O(N) recalculations on every render when dependencies haven't changed
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
-  // Calculate stats
-  const stats = (() => {
-    return [
-      {
-        icon: <Users className="w-6 h-6" />,
-        number: "1150 +",
-        label: "Professionals Trained",
-      },
-      {
-        icon: <Award className="w-6 h-6" />,
-        number: "95%",
-        label: "Completion Rate",
-      },
-      {
-        icon: <Star className="w-6 h-6" />,
-        number: "4.1",
-        label: "Average Rating",
-      },
-      {
-        icon: <TrendingUp className="w-6 h-6" />,
-        number: "89%",
-        label: "Career Advancement",
-      },
-    ];
-  })();
+  // ⚡ Bolt: Memoize stats array to avoid recreating the array and its object items on every render
+  const stats = useMemo(() => [
+    {
+      icon: <Users className="w-6 h-6" />,
+      number: "1150 +",
+      label: "Professionals Trained",
+    },
+    {
+      icon: <Award className="w-6 h-6" />,
+      number: "95%",
+      label: "Completion Rate",
+    },
+    {
+      icon: <Star className="w-6 h-6" />,
+      number: "4.1",
+      label: "Average Rating",
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6" />,
+      number: "89%",
+      label: "Career Advancement",
+    },
+  ], []);
 
   const features = [
     {
