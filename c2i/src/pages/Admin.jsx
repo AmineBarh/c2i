@@ -80,19 +80,27 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Prevent unnecessary O(N) array filtering on every re-render
+  const filteredProjects = React.useMemo(() => {
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+
+  // ⚡ Bolt: Prevent 3 separate O(N) array traversals on every render by consolidating into one memoized pass
+  const { iotProjects, webProjects, automationProjects } = React.useMemo(() => {
+    return projects.reduce((acc, p) => {
+      if (p.type === "iot") acc.iotProjects++;
+      else if (p.type === "web") acc.webProjects++;
+      else if (p.type === "automation") acc.automationProjects++;
+      return acc;
+    }, { iotProjects: 0, webProjects: 0, automationProjects: 0 });
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {

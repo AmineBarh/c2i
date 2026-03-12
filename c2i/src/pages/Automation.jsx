@@ -64,10 +64,12 @@ const Automation = () => {
     loadProjects();
   }, []);
 
-  const filteredProjects =
-    selectedCategory === "All"
+  // ⚡ Bolt: Prevent unnecessary O(N) array filtering on every re-render
+  const filteredProjects = React.useMemo(() => {
+    return selectedCategory === "All"
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
+  }, [projects, selectedCategory]);
 
   return (
     <div className="pt-16">
