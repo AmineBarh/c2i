@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X, Pencil } from "lucide-react";
 import Addproject from "./Addproject"; // Make sure this path is correct
 
@@ -35,16 +35,23 @@ const Summary = ({
   const [editingProject, setEditingProject] = useState(null);
   const [selectedProjects, setSelectedProjects] = useState([]);
 
-  const displayProjects =
-    Array.isArray(filteredProjects) && filteredProjects.length
+  // ⚡ Bolt: Memoize the resolution of display projects to avoid recreating
+  // an empty array reference on every render when inputs are falsy.
+  const displayProjects = useMemo(() => {
+    return Array.isArray(filteredProjects) && filteredProjects.length
       ? filteredProjects
       : Array.isArray(projects)
         ? projects
         : [];
+  }, [filteredProjects, projects]);
 
-  const categories = Array.isArray(projects)
-    ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
-    : [];
+  // ⚡ Bolt: Memoize categories generation, which involves an O(N) map and Set,
+  // preventing redundant processing on every render.
+  const categories = useMemo(() => {
+    return Array.isArray(projects)
+      ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
+      : [];
+  }, [projects]);
 
   const toggleSelectProject = (projectId) => {
     setSelectedProjects((prevSelected) =>
