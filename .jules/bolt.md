@@ -1,0 +1,4 @@
+
+## 2024-03-15 - Top-Level Render Memoization Pattern
+**Learning:** Found several top-level route pages (`Iot.jsx`, `WebDev.jsx`, `Automation.jsx`, `Training.jsx`) directly filtering large dataset arrays `(O(N))` outside of hooks like `useMemo`. Given that these pages are the main view contexts, any minor re-render triggers unneeded re-processing of static data. `react-scripts` / Webpack environment does not implicitly optimize these array copies and filter callbacks without `useMemo`.
+**Action:** When working in React components handling large global data states or fetched lists (`projects`, `trainings`), always wrap derived state filters and static arrays (like `stats` configuration arrays) in `useMemo` immediately to preserve rendering efficiency, as shown across all primary application routes.
