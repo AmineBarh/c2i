@@ -1,0 +1,3 @@
+## 2025-05-18 - [Memoizing Derived Component State]
+**Learning:** Top-level components like Admin or pages that render lists directly derived from array methods (`filter`, `map`) without `useMemo` become a significant bottleneck as the dataset grows, especially when sibling interactions like toggling a sidebar or typing into a search input trigger unrelated parent renders.
+**Action:** Always wrap top-level array filtering logic (like `filteredProjects` or metrics summaries like `stats`) in `useMemo` hooks, specifying correct dependencies. This ensures that frequent lightweight renders (like typing or toggling states) do not repeatedly execute O(N) recalculations on the full data list.
