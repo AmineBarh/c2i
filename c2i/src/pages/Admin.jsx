@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,25 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Cache array filters so they don't block the main thread unnecessarily when changing unrelated tabs or typing in other inputs
+  const filteredProjects = useMemo(() => {
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  // ⚡ Bolt: Group and memoize aggregated metrics so we only calculate O(N) when the main data array changes
+  const { totalProjects, iotProjects, automationProjects, webProjects } = useMemo(() => {
+    return {
+      totalProjects: projects.length,
+      iotProjects: projects.filter((p) => p.type === "iot").length,
+      webProjects: projects.filter((p) => p.type === "web").length,
+      automationProjects: projects.filter((p) => p.type === "automation").length,
+    };
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {
