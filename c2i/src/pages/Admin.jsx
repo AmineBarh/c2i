@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,30 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Wrap filteredProjects in useMemo to prevent O(N) array filtering on unrelated re-renders (like opening the sidebar)
+  const filteredProjects = useMemo(() => {
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+
+  // ⚡ Bolt: Memoize derived project counts
+  const iotProjects = useMemo(() => {
+    return projects.filter((p) => p.type === "iot").length;
+  }, [projects]);
+
+  const webProjects = useMemo(() => {
+    return projects.filter((p) => p.type === "web").length;
+  }, [projects]);
+
+  const automationProjects = useMemo(() => {
+    return projects.filter((p) => p.type === "automation").length;
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {
