@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -81,12 +81,16 @@ const Training = () => {
   }, []);
 
   // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
+  // ⚡ Bolt: Memoize filteredTrainings to prevent O(N) array recalculations on unrelated re-renders (like typing in the quote modal form).
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
   // Calculate stats
-  const stats = (() => {
+  // ⚡ Bolt: Memoize stats array to prevent recreating these objects on every render.
+  const stats = useMemo(() => {
     return [
       {
         icon: <Users className="w-6 h-6" />,
@@ -109,7 +113,7 @@ const Training = () => {
         label: "Career Advancement",
       },
     ];
-  })();
+  }, []);
 
   const features = [
     {
