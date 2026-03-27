@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X, Pencil } from "lucide-react";
-import Addproject from "./Addproject"; // Make sure this path is correct
+import Addproject from "./AddProject"; // Make sure this path is correct
 
 const SummaryCard = ({ icon, label, count, bgColor }) => (
   <div className="flex items-center bg-white border border-gray-200 rounded-xl p-4 w-full max-w-xs">
