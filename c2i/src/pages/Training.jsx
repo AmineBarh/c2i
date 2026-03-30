@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -80,10 +80,12 @@ const Training = () => {
     loadTrainings();
   }, []);
 
-  // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
+  // ⚡ Bolt: Memoize filtered trainings to prevent O(N) re-filtering on unrelated re-renders (e.g. typing in a child component or modal)
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
   // Calculate stats
   const stats = (() => {
