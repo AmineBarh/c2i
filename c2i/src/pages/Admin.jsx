@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,32 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  const filteredProjects = useMemo(() => {
+    // ⚡ Bolt: Memoized filtered projects to prevent unnecessary O(N) re-calculations
+    // when unrelated state (like sidebarOpen) changes.
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(lowerSearchTerm) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  const { totalProjects, iotProjects, webProjects, automationProjects } = useMemo(() => {
+    // ⚡ Bolt: Combined three sequential O(N) .filter().length passes into a single O(N) loop
+    // and memoized the result to prevent recalculation on unrelated renders.
+    return projects.reduce(
+      (acc, p) => {
+        acc.totalProjects++;
+        if (p.type === "iot") acc.iotProjects++;
+        else if (p.type === "web") acc.webProjects++;
+        else if (p.type === "automation") acc.automationProjects++;
+        return acc;
+      },
+      { totalProjects: 0, iotProjects: 0, webProjects: 0, automationProjects: 0 }
+    );
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {
