@@ -1,0 +1,3 @@
+## 2025-02-12 - [Combine Multiple Array Passes and Memoize State]
+**Learning:** When calculating counts for multiple distinct categories from an array in React, avoid using multiple sequential O(N) `.filter().length` passes, as they scale poorly. Unmemoized array operations trigger on every re-render, causing unnecessary computational overhead.
+**Action:** Combine multiple array aggregations into a single O(N) `forEach` or `reduce` loop, and wrap the calculation in a `useMemo` hook to ensure the derived state is only recomputed when its dependencies change.
