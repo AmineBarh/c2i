@@ -1,0 +1,3 @@
+## 2025-04-04 - Unmemoized derived state and redundant filters in top-level components
+**Learning:** Top-level components rendering multiple heavy sub-components (like `Admin.jsx` or page components) often perform redundant O(N) operations calculating summary statistics and filtered views on every render. Toggling a simple UI state (like `sidebarOpen`) causes these full recalculations.
+**Action:** When working on top-level stateful components or dashboards, always consolidate summary derivations (like multiple category counts) into a single O(N) pass, hoist heavy string manipulation out of loops, and memoize the final result with `useMemo` so it's only recalculated when the source data (`projects`, filters) changes.
