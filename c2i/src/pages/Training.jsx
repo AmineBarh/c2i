@@ -81,35 +81,37 @@ const Training = () => {
   }, []);
 
   // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
+  // ⚡ Bolt: Prevent unnecessary O(N) array filtering on every re-render
+  const filteredTrainings = React.useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
   // Calculate stats
-  const stats = (() => {
-    return [
-      {
-        icon: <Users className="w-6 h-6" />,
-        number: "1150 +",
-        label: "Professionals Trained",
-      },
-      {
-        icon: <Award className="w-6 h-6" />,
-        number: "95%",
-        label: "Completion Rate",
-      },
-      {
-        icon: <Star className="w-6 h-6" />,
-        number: "4.1",
-        label: "Average Rating",
-      },
-      {
-        icon: <TrendingUp className="w-6 h-6" />,
-        number: "89%",
-        label: "Career Advancement",
-      },
-    ];
-  })();
+  // ⚡ Bolt: Memoize static array to prevent recreating objects on every render
+  const stats = React.useMemo(() => [
+    {
+      icon: <Users className="w-6 h-6" />,
+      number: "1150 +",
+      label: "Professionals Trained",
+    },
+    {
+      icon: <Award className="w-6 h-6" />,
+      number: "95%",
+      label: "Completion Rate",
+    },
+    {
+      icon: <Star className="w-6 h-6" />,
+      number: "4.1",
+      label: "Average Rating",
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6" />,
+      number: "89%",
+      label: "Career Advancement",
+    },
+  ], []);
 
   const features = [
     {
