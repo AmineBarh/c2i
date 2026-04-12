@@ -1,0 +1,3 @@
+## 2025-04-12 - Combined Multiple Array Filtering Passes
+**Learning:** In the `Admin.jsx` component, calculating the length of subsets (e.g. `projects.filter(p => p.type === 'iot').length`) using three distinct `filter()` calls triggered three `O(N)` loop passes every time the component rendered. When combined with typing in the search input, this un-memoized behavior was an avoidable performance drain.
+**Action:** Always combine mutually exclusive array length counting operations into a single `O(N)` `.forEach()` or `.reduce()` iteration, and memoize the result if it's dependent on a relatively stable collection of data (e.g. `projects`).
