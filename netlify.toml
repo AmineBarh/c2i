@@ -1,0 +1,9 @@
+[build]
+  base = "c2i"
+  publish = "build"
+  command = "CI=true npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
