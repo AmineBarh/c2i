@@ -1,0 +1,4 @@
+
+## 2024-05-24 - Admin Projects O(N) Array Filter Derivation Bottleneck
+**Learning:** Found an anti-pattern in `Admin.jsx` where computing `iotProjects`, `webProjects`, and `automationProjects` was triggering 3x sequential `O(N)` `.filter().length` array passes on the full `projects` list on every render. Because these were computed derived state variables un-memoized outside the `renderSection`, any state change (e.g. typing in the `searchTerm` input, switching active tabs, or simply toggling the `sidebarOpen` sidebar) was forcing a recalculation over the entire unfiltered array.
+**Action:** When deriving multiple stats or subsets from a single large array list in React, group the calculations into a single `O(N)` `forEach` or `reduce` loop, and wrap the entire block in `useMemo` with the root source array as the dependency array. This ensures that unrelated rapid state changes (like typing or toggles) don't trigger expensive sequential O(N) re-computations.
