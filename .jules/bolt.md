@@ -1,0 +1,3 @@
+## $(date +%Y-%m-%d) - Combining multiple array filters into a single reduce pass
+**Learning:** In React components like Admin dashboard pages, sequentially chaining `array.filter(condition).length` for mutually exclusive categories (like "iot", "web", "automation") causes unnecessary O(N) array traversals for each filter. On large datasets, doing this sequentially four times is a performance bottleneck.
+**Action:** When calculating statistics or derived counts across multiple categories, always combine the loops into a single `array.reduce()` traversal and wrap the entire block in `useMemo` so it only re-runs when the source array actually changes.
