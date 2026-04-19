@@ -1,0 +1,3 @@
+## 2024-04-19 - Redundant Array Filtering on Page Render
+**Learning:** Top-level page components (`WebDev.jsx`, `Automation.jsx`, `Iot.jsx`, `Training.jsx`) recalculate derived array state (`filteredProjects`/`filteredTrainings`) via O(N) `.filter()` operations on every component render, leading to wasted processing, especially on frequent updates (e.g., hover effects, navigation, internal state changes).
+**Action:** Use `useMemo` to cache derived array transformations (like filtering or distinct category extraction) based on external inputs (`selectedCategory` and the raw data array) to guarantee filtering only executes when the dependencies change, strictly following React performance patterns.
