@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,42 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated 4 sequential O(N) operations into a single O(N) useMemo block to prevent unnecessary re-renders when typing in the search bar or opening the sidebar
+  const {
+    filteredProjects,
+    totalProjects,
+    iotProjects,
+    webProjects,
+    automationProjects,
+  } = useMemo(() => {
+    let iotCount = 0;
+    let webCount = 0;
+    let automationCount = 0;
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const searchLower = searchTerm.toLowerCase();
+
+    const filtered = projects.filter((project) => {
+      // Calculate counts for all projects
+      if (project.type === "iot") iotCount++;
+      if (project.type === "web") webCount++;
+      if (project.type === "automation") automationCount++;
+
+      // Filter based on search criteria
+      return (
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+      );
+    });
+
+    return {
+      filteredProjects: filtered,
+      totalProjects: projects.length,
+      iotProjects: iotCount,
+      webProjects: webCount,
+      automationProjects: automationCount,
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {

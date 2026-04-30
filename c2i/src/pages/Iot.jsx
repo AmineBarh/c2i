@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { fetchProjects } from "../services/api";
 import {
   CircleCheckBig,
@@ -50,10 +50,12 @@ const Iot = () => {
     loadProjects();
   }, []);
 
-  const filteredProjects =
-    selectedCategory === "All"
+  // ⚡ Bolt: Memoized derived filtered state to prevent unnecessary O(N) calculations when unrelated states (like selectedProject) change
+  const filteredProjects = useMemo(() => {
+    return selectedCategory === "All"
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
+  }, [projects, selectedCategory]);
 
   const navigate = useNavigate();
   const goToAndScrollToBottom = () => {
