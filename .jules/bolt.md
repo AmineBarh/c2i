@@ -1,0 +1,3 @@
+## 2026-05-01 - Admin Dashboard Derived State Optimization
+**Learning:** In components rendering long lists and multiple aggregate metrics (like Admin.jsx), performing multiple sequential `O(N)` filter operations (e.g., `projects.filter(p => p.type === 'iot').length`) inside the render body is an anti-pattern that causes performance degradation on unrelated state changes (like opening a sidebar or modal).
+**Action:** Consolidate multiple sequential filter passes into a single `O(N)` reduce/forEach loop, and wrap computationally expensive array operations (filtering and aggregations) in `useMemo` hooks.
