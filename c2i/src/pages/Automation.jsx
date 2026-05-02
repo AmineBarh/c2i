@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { fetchProjects } from "../services/api";
 import {
   CircleCheckBig,
@@ -64,10 +64,12 @@ const Automation = () => {
     loadProjects();
   }, []);
 
-  const filteredProjects =
+  // ⚡ Bolt: Memoized filtered projects to prevent redundant array filtering on every re-render
+  const filteredProjects = useMemo(() =>
     selectedCategory === "All"
       ? projects
-      : projects.filter((project) => project.category === selectedCategory);
+      : projects.filter((project) => project.category === selectedCategory)
+  , [projects, selectedCategory]);
 
   return (
     <div className="pt-16">
