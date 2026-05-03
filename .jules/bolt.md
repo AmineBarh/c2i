@@ -1,0 +1,3 @@
+## 2025-02-14 - Derived states optimization in Admin and category pages
+**Learning:** In the `Admin.jsx` component, calculating filtered arrays and multiple O(N) loops sequentially to count categories (`iotProjects`, `webProjects`, `automationProjects`) directly within the render flow is inefficient and leads to unnecessary work on each render, especially since filtering depends on text input `searchTerm` state. The same missing memoization issue existed in derived states (`filteredProjects`) in the `WebDev.jsx`, `Automation.jsx` and `Iot.jsx` pages.
+**Action:** When calculating derived counts across multiple categories for an array, combine them into a single O(N) loop and wrap all expensive array operations in `useMemo` hooks.

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,28 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Memoized derived states and combined 3 O(N) array filter passes into a single O(N) loop to reduce unnecessary re-renders.
+  const filteredProjects = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  const { iotProjects, webProjects, automationProjects } = useMemo(() => {
+    let iot = 0, web = 0, automation = 0;
+    for (let i = 0; i < totalProjects; i++) {
+      const type = projects[i].type;
+      if (type === "iot") iot++;
+      else if (type === "web") web++;
+      else if (type === "automation") automation++;
+    }
+    return { iotProjects: iot, webProjects: web, automationProjects: automation };
+  }, [projects, totalProjects]);
 
   const renderSection = () => {
     switch (activeSection) {
