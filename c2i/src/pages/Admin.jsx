@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,44 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated 4 sequential O(N) array passes (1 filter, 3 length filters)
+  // into a single O(N) pass inside useMemo. This prevents recalculating derived state
+  // on every render, significantly improving performance when the projects list grows.
+  const {
+    filteredProjects,
+    totalProjects,
+    iotProjects,
+    webProjects,
+    automationProjects,
+  } = useMemo(() => {
+    const result = {
+      filteredProjects: [],
+      totalProjects: projects.length,
+      iotProjects: 0,
+      webProjects: 0,
+      automationProjects: 0,
+    };
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const lowerSearchTerm = searchTerm.toLowerCase();
+
+    projects.forEach((project) => {
+      // Calculate category counts
+      if (project.type === "iot") result.iotProjects++;
+      else if (project.type === "web") result.webProjects++;
+      else if (project.type === "automation") result.automationProjects++;
+
+      // Filter projects
+      const matchesSearch = project.title.toLowerCase().includes(lowerSearchTerm);
+      const matchesType = selectedType === "" || project.type === selectedType;
+      const matchesCategory = selectedCategory === "" || project.category === selectedCategory;
+
+      if (matchesSearch && matchesType && matchesCategory) {
+        result.filteredProjects.push(project);
+      }
+    });
+
+    return result;
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
