@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,30 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Memoize filtered projects and cache search term to prevent O(N) recalculations on unrelated re-renders
+  const filteredProjects = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    return projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  // ⚡ Bolt: Consolidate multiple O(N) loops into a single pass and memoize to avoid recalculation on unrelated state changes
+  const { iotProjects, webProjects, automationProjects, totalProjects } = useMemo(() => {
+    return projects.reduce(
+      (acc, p) => {
+        if (p.type === "iot") acc.iotProjects++;
+        else if (p.type === "web") acc.webProjects++;
+        else if (p.type === "automation") acc.automationProjects++;
+        acc.totalProjects++;
+        return acc;
+      },
+      { iotProjects: 0, webProjects: 0, automationProjects: 0, totalProjects: 0 }
+    );
+  }, [projects]);
 
   const renderSection = () => {
     switch (activeSection) {
