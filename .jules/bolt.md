@@ -1,0 +1,3 @@
+## 2026-05-08 - Memoization of project filtering and stats calculation
+**Learning:** In React components dealing with array filtering and mapping, relying on multiple sequential `filter()` calls and `.length` operations in the render body creates significant O(N) overhead. When dealing with unrelated state changes (like toggling a sidebar in an Admin layout), these expensive operations rerun unnecessarily.
+**Action:** When calculating derived state metrics or filtering data based on search/category inputs, consolidate the operations into a single O(N) `reduce` pass wrapped in a `useMemo` hook with a strictly defined dependency array.
