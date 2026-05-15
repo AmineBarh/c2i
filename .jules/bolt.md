@@ -1,0 +1,3 @@
+## 2024-05-18 - [Admin Performance Patterns]
+**Learning:** Multiple consecutive O(N) calls (`filter`) for calculating simple categorical counts (like project types) are an anti-pattern when rendering complex pages, as they evaluate the same array repeatedly. Unmemoized array derivations cause components to recalculate fully on ANY state change, including UI-only updates (like toggling a sidebar or switching tabs).
+**Action:** When a page has independent view states (like Admin panel with a sidebar and tabs), always wrap derived O(N) calculations in `useMemo` and consolidate categorical filtering into a single `reduce` pass to decouple computation from unrelated renders.
