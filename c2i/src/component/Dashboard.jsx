@@ -32,8 +32,6 @@ import {
   format,
   subDays,
   eachDayOfInterval,
-  startOfDay,
-  isWithinInterval,
 } from "date-fns";
 
 const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
@@ -54,32 +52,39 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
 
+    // ⚡ Bolt: Use a hash map for project counts by date to avoid O(N*M) daily filtering
+    const projectCountsByDate = {};
+    const projectsByType = { iot: 0, web: 0, automation: 0 };
+    let recentProjects = 0;
+
+    projects.forEach((project) => {
+      if (!project.createdAt) return;
+      const createdDate = new Date(project.createdAt);
+
+      const dateStr = format(createdDate, "yyyy-MM-dd");
+      projectCountsByDate[dateStr] = (projectCountsByDate[dateStr] || 0) + 1;
+
+      if (project.type && projectsByType[project.type] !== undefined) {
+        projectsByType[project.type]++;
+      }
+
+      if (createdDate >= sevenDaysAgo) {
+        recentProjects++;
+      }
+    });
+
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateStr = format(date, "yyyy-MM-dd");
       return {
         date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
+        projects: projectCountsByDate[dateStr] || 0,
       };
     });
 
-    const projectsByType = {
-      iot: projects.filter((p) => p.type === "iot").length,
-      web: projects.filter((p) => p.type === "web").length,
-      automation: projects.filter((p) => p.type === "automation").length,
-    };
-
     const totalProjects = projects.length;
-    const recentProjects = projects.filter(
-      (p) => new Date(p.createdAt) >= sevenDaysAgo
-    ).length;
 
     return {
       dailyActivity,
@@ -94,20 +99,22 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const now = new Date();
     const sixtyDaysago = subDays(now, 30);
 
+    // ⚡ Bolt: Pre-calculate training counts by date via single iteration
+    const trainingCountsByDate = {};
+    trainings.forEach((training) => {
+      if (!training.createdAt) return;
+      const dateStr = format(new Date(training.createdAt), "yyyy-MM-dd");
+      trainingCountsByDate[dateStr] = (trainingCountsByDate[dateStr] || 0) + 1;
+    });
+
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const trainingsOnDay = trainings.filter((training) => {
-        if (!training.createdAt) return false;
-        const createdDate = new Date(training.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateStr = format(date, "yyyy-MM-dd");
       return {
         date: format(date, "MMM dd"),
-        trainings: trainingsOnDay.length,
+        trainings: trainingCountsByDate[dateStr] || 0,
       };
     });
 
