@@ -1,0 +1,3 @@
+## 2024-05-22 - Admin and Training Dashboard Memoization
+**Learning:** `Admin.jsx` and `TrainingDashboard.jsx` were performing multiple O(N) filtering and reducing passes across the full `projects` and `trainings` arrays on every render, even for unrelated state changes (e.g. toggling the sidebar or typing in a search bar).
+**Action:** Always wrap computationally derived lists (`filteredProjects`, `stats`) in `useMemo` and aggregate sequential mapping/filtering tasks into a single O(N) pass (`reduce`) where possible to avoid scaling bottlenecks and input lag in high-frequency React component renders.
