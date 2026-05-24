@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,22 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
+  // ⚡ Bolt: Memoized derived state and combined multiple O(N) array filters into a single O(N) reduce pass
+  // This prevents recalculating the filtered array and counts on every unrelated re-render (like activeSection changes)
+  const filteredProjects = useMemo(() => projects.filter(
     (project) =>
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedType === "" || project.type === selectedType) &&
       (selectedCategory === "" || project.category === selectedCategory)
-  );
+  ), [projects, searchTerm, selectedType, selectedCategory]);
 
+  const { iotProjects, webProjects, automationProjects } = useMemo(() => projects.reduce((acc, p) => {
+    if (p.type === "iot") acc.iotProjects++;
+    else if (p.type === "web") acc.webProjects++;
+    else if (p.type === "automation") acc.automationProjects++;
+    return acc;
+  }, { iotProjects: 0, webProjects: 0, automationProjects: 0 }), [projects]);
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
 
   const renderSection = () => {
     switch (activeSection) {
