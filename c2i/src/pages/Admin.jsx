@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,36 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated multiple O(N) array filters into a single useMemo pass to improve render performance, especially when typing in the search bar.
+  const { filteredProjects, totalProjects, iotProjects, webProjects, automationProjects } = useMemo(() => {
+    let iot = 0;
+    let web = 0;
+    let automation = 0;
+    const filtered = [];
+    const searchLower = searchTerm.toLowerCase();
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    projects.forEach((project) => {
+      if (project.type === "iot") iot++;
+      else if (project.type === "web") web++;
+      else if (project.type === "automation") automation++;
+
+      if (
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+      ) {
+        filtered.push(project);
+      }
+    });
+
+    return {
+      filteredProjects: filtered,
+      totalProjects: projects.length,
+      iotProjects: iot,
+      webProjects: web,
+      automationProjects: automation,
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
