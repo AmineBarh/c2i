@@ -1,0 +1,3 @@
+## 2024-05-29 - Array Filter O(N) Anti-Pattern in React
+**Learning:** Found an anti-pattern in `Admin.jsx` where multiple `O(N)` array `.filter()` passes were executed unconditionally on every render, even for unrelated state changes (like sidebar toggles). Additionally, the same array was iterated multiple times for different counts (`iot`, `web`, `automation`) when a single `reduce` pass is more efficient.
+**Action:** When deriving multiple categoric counts or filtering lists based on high-frequency state (like text input), combine operations into a single `O(N)` pass using `reduce` or `forEach`, and always wrap the result in `useMemo` with strict dependency arrays to prevent cascading re-renders.
