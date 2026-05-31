@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddTraining from "./Addtraining";
 // import {
 //   fetchtrainings,
@@ -83,15 +83,19 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  const filteredTrainings = trainings.filter((training) => {
-    const matchesSearch =
-      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || training.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // ⚡ Bolt: Memoize filtered trainings to prevent O(N) recalculations on unrelated state changes
+  const filteredTrainings = useMemo(() => {
+    const lowerSearch = searchTerm.toLowerCase();
+    return trainings.filter((training) => {
+      const matchesSearch =
+        training.title.toLowerCase().includes(lowerSearch) ||
+        training.description.toLowerCase().includes(lowerSearch) ||
+        training.instructor.toLowerCase().includes(lowerSearch);
+      const matchesCategory =
+        selectedCategory === "All" || training.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [trainings, searchTerm, selectedCategory]);
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
