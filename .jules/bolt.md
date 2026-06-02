@@ -1,0 +1,3 @@
+## $(date +%Y-%m-%d) - Optimize Dashboard List Filters & Counting
+**Learning:** In highly interactive React components (like the Admin dashboard), placing multiple sequential \`O(N)\` operations (like \`.filter().length\`) in the main component body creates measurable lag as the dataset grows, especially when unrelated state (like toggling a sidebar) triggers re-renders.
+**Action:** Always combine sequential array passes over the same dataset into a single pass (e.g., using \`reduce\`) and memoize derived data lists (e.g., \`filteredProjects\`) so they only recalculate when their specific dependencies change.
