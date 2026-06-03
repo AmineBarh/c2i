@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddTraining from "./Addtraining";
 // import {
 //   fetchtrainings,
@@ -83,15 +83,18 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  const filteredTrainings = trainings.filter((training) => {
-    const matchesSearch =
-      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || training.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // ⚡ Bolt: Memoize filtered list to prevent O(N) array loops on unrelated state changes (e.g. checkbox toggles)
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) => {
+      const matchesSearch =
+        training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All" || training.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [trainings, searchTerm, selectedCategory]);
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
@@ -123,26 +126,37 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     }
   };
 
-  const stats = [
-    {
-      icon: <BookOpen className="w-6 h-6" />,
-      label: "Total Programs",
-      value: trainings.length,
-      color: "bg-blue-500",
-    },
-    {
-      icon: <Award className="w-6 h-6" />,
-      label: "Instructors",
-      value: new Set(trainings.map((t) => t.instructor)).size,
-      color: "bg-purple-500",
-    },
-    {
-      icon: <Calendar className="w-6 h-6" />,
-      label: "Categories",
-      value: new Set(trainings.map((t) => t.category)).size,
-      color: "bg-orange-500",
-    },
-  ];
+  // ⚡ Bolt: Combine O(N) loops into a single pass and memoize stats generation to avoid recreating Sets on every render
+  const stats = useMemo(() => {
+    const instructors = new Set();
+    const trainingCategories = new Set();
+
+    trainings.forEach(t => {
+      if (t.instructor) instructors.add(t.instructor);
+      if (t.category) trainingCategories.add(t.category);
+    });
+
+    return [
+      {
+        icon: <BookOpen className="w-6 h-6" />,
+        label: "Total Programs",
+        value: trainings.length,
+        color: "bg-blue-500",
+      },
+      {
+        icon: <Award className="w-6 h-6" />,
+        label: "Instructors",
+        value: instructors.size,
+        color: "bg-purple-500",
+      },
+      {
+        icon: <Calendar className="w-6 h-6" />,
+        label: "Categories",
+        value: trainingCategories.size,
+        color: "bg-orange-500",
+      },
+    ];
+  }, [trainings]);
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
