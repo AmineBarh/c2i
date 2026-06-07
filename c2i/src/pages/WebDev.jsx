@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { fetchProjects } from "../services/api";
 import {
   CircleCheckBig,
@@ -63,10 +63,12 @@ const WebDev = () => {
     loadProjects();
   }, []);
 
-  const filteredProjects =
-    selectedCategory === "All"
+  // ⚡ Bolt: Prevent O(N) recalculations of filtered arrays on unrelated state changes
+  const filteredProjects = useMemo(() => {
+    return selectedCategory === "All"
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
+  }, [projects, selectedCategory]);
 
   return (
     <div className="pt-16">
