@@ -1,0 +1,3 @@
+## 2025-02-18 - Memoizing Derived States in Top-Level Page Components
+**Learning:** Top-level page components (like `Training.jsx`, `WebDev.jsx`, `Automation.jsx`, and `Iot.jsx`) often combine both static/derived list rendering (e.g., `filteredProjects`, `stats`) and highly volatile states (e.g., modals and form inputs for `quoteRequest`). Without memoization, `O(N)` arrays are recreated on every keystroke during form filling, leading to cascading re-renders and potential input lag.
+**Action:** When working on complex top-level React components, always wrap derived array filters and configurations (`filteredProjects`, `stats`, etc.) in `useMemo` hooks. This ensures that frequent state updates (like user input) do not trigger expensive data processing loops.
