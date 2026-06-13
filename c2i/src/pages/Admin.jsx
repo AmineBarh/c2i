@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,35 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Optimize project filtering and counts calculation
+  // Memoize filteredProjects to avoid recalculation on every render and
+  // move searchTerm.toLowerCase() out of the loop for efficiency.
+  // Combine multiple O(N) filters into a single O(N) loop to calculate category counts.
+  const { filteredProjects, stats } = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    const filtered = [];
+    const newStats = { total: projects.length, iot: 0, web: 0, automation: 0 };
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    projects.forEach((project) => {
+      // Calculate stats
+      if (project.type === "iot") newStats.iot++;
+      else if (project.type === "web") newStats.web++;
+      else if (project.type === "automation") newStats.automation++;
+
+      // Filter projects
+      if (
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+      ) {
+        filtered.push(project);
+      }
+    });
+
+    return { filteredProjects: filtered, stats: newStats };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
+
+  const { total: totalProjects, iot: iotProjects, web: webProjects, automation: automationProjects } = stats;
 
   const renderSection = () => {
     switch (activeSection) {
