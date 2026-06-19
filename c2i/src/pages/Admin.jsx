@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,36 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Replace multiple sequential filter passes with a single O(N) useMemo loop
+  const { filteredProjects, iotProjects, webProjects, automationProjects } = useMemo(() => {
+    return projects.reduce(
+      (acc, project) => {
+        // Count total by type
+        if (project.type === "iot") acc.iotProjects++;
+        if (project.type === "web") acc.webProjects++;
+        if (project.type === "automation") acc.automationProjects++;
+
+        // Filter for display
+        if (
+          project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          (selectedType === "" || project.type === selectedType) &&
+          (selectedCategory === "" || project.category === selectedCategory)
+        ) {
+          acc.filteredProjects.push(project);
+        }
+
+        return acc;
+      },
+      {
+        filteredProjects: [],
+        iotProjects: 0,
+        webProjects: 0,
+        automationProjects: 0,
+      }
+    );
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
 
   const renderSection = () => {
     switch (activeSection) {
