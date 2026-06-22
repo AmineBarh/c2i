@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X, Pencil } from "lucide-react";
 import Addproject from "./Addproject"; // Make sure this path is correct
 
@@ -35,16 +35,20 @@ const Summary = ({
   const [editingProject, setEditingProject] = useState(null);
   const [selectedProjects, setSelectedProjects] = useState([]);
 
-  const displayProjects =
-    Array.isArray(filteredProjects) && filteredProjects.length
+  // ⚡ Bolt: Memoized derived states for display projects and categories extraction to prevent unnecessary array traversals on render.
+  const displayProjects = useMemo(() => {
+    return Array.isArray(filteredProjects) && filteredProjects.length
       ? filteredProjects
       : Array.isArray(projects)
         ? projects
         : [];
+  }, [filteredProjects, projects]);
 
-  const categories = Array.isArray(projects)
-    ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
-    : [];
+  const categories = useMemo(() => {
+    return Array.isArray(projects)
+      ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
+      : [];
+  }, [projects]);
 
   const toggleSelectProject = (projectId) => {
     setSelectedProjects((prevSelected) =>
