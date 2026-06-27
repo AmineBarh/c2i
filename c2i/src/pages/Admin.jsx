@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,47 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated four O(N) array passes (filtering + 3 count aggregations) into a single O(N) useMemo loop to prevent redundant calculations on every render.
+  const {
+    filteredProjects,
+    totalProjects,
+    iotProjects,
+    webProjects,
+    automationProjects,
+  } = useMemo(() => {
+    let iot = 0;
+    let web = 0;
+    let automation = 0;
+    const filtered = [];
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const searchLower = searchTerm.toLowerCase();
+
+    for (let i = 0; i < projects.length; i++) {
+      const p = projects[i];
+
+      // Update counts
+      if (p.type === "iot") iot++;
+      else if (p.type === "web") web++;
+      else if (p.type === "automation") automation++;
+
+      // Filter
+      if (
+        p.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || p.type === selectedType) &&
+        (selectedCategory === "" || p.category === selectedCategory)
+      ) {
+        filtered.push(p);
+      }
+    }
+
+    return {
+      filteredProjects: filtered,
+      totalProjects: projects.length,
+      iotProjects: iot,
+      webProjects: web,
+      automationProjects: automation,
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
