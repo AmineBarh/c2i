@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddTraining from "./Addtraining";
 // import {
 //   fetchtrainings,
@@ -83,15 +83,19 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  const filteredTrainings = trainings.filter((training) => {
-    const matchesSearch =
-      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || training.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // ⚡ Bolt: Memoize filteredTrainings to prevent O(N) array filtering and string manipulations on every render
+  const filteredTrainings = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    return trainings.filter((training) => {
+      const matchesSearch =
+        training.title.toLowerCase().includes(searchLower) ||
+        training.description.toLowerCase().includes(searchLower) ||
+        training.instructor.toLowerCase().includes(searchLower);
+      const matchesCategory =
+        selectedCategory === "All" || training.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [trainings, searchTerm, selectedCategory]);
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
@@ -123,7 +127,8 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     }
   };
 
-  const stats = [
+  // ⚡ Bolt: Memoize stats calculation to prevent creating new Set instances and running O(N) maps on every render
+  const stats = useMemo(() => [
     {
       icon: <BookOpen className="w-6 h-6" />,
       label: "Total Programs",
@@ -142,7 +147,7 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
       value: new Set(trainings.map((t) => t.category)).size,
       color: "bg-orange-500",
     },
-  ];
+  ], [trainings]);
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
