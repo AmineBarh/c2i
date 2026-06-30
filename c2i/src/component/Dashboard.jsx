@@ -50,36 +50,51 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
 
   // PROJECT DASHBOARD LOGIC
   const projectDashboardData = useMemo(() => {
+    // ⚡ Bolt: Optimize project logic to single pass (O(N) instead of O(D*N) + O(3N))
     const now = new Date();
     const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
+
+    const projectCountsByDate = new Map();
+    let recentProjects = 0;
+    const projectsByType = { iot: 0, web: 0, automation: 0 };
+
+    const startOfSixtyDaysAgo = startOfDay(sixtyDaysago);
+    const endOfToday = new Date(startOfDay(now).getTime() + 24 * 60 * 60 * 1000 - 1);
+
+    projects.forEach((project) => {
+      // Track project types
+      if (Object.prototype.hasOwnProperty.call(projectsByType, project.type)) {
+        projectsByType[project.type]++;
+      }
+
+      if (!project.createdAt) return;
+      const createdDate = new Date(project.createdAt);
+
+      // Track recent projects
+      if (createdDate >= sevenDaysAgo) {
+        recentProjects++;
+      }
+
+      // Pre-aggregate by date string for daily activity
+      if (isWithinInterval(createdDate, { start: startOfSixtyDaysAgo, end: endOfToday })) {
+        const dateKey = format(createdDate, "yyyy-MM-dd");
+        projectCountsByDate.set(dateKey, (projectCountsByDate.get(dateKey) || 0) + 1);
+      }
+    });
 
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateKey = format(date, "yyyy-MM-dd");
       return {
         date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
+        projects: projectCountsByDate.get(dateKey) || 0,
       };
     });
 
-    const projectsByType = {
-      iot: projects.filter((p) => p.type === "iot").length,
-      web: projects.filter((p) => p.type === "web").length,
-      automation: projects.filter((p) => p.type === "automation").length,
-    };
-
     const totalProjects = projects.length;
-    const recentProjects = projects.filter(
-      (p) => new Date(p.createdAt) >= sevenDaysAgo
-    ).length;
 
     return {
       dailyActivity,
@@ -91,33 +106,40 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
 
   // TRAINING DASHBOARD LOGIC
   const trainingDashboardData = useMemo(() => {
+    // ⚡ Bolt: Optimize training logic to single pass (O(N) instead of O(D*N) + O(C*N))
     const now = new Date();
-    const sixtyDaysago = subDays(now, 30);
+    const thirtyDaysago = subDays(now, 30);
 
-    const dailyActivity = eachDayOfInterval({
-      start: sixtyDaysago,
-      end: now,
-    }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const trainingsOnDay = trainings.filter((training) => {
-        if (!training.createdAt) return false;
-        const createdDate = new Date(training.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
-      return {
-        date: format(date, "MMM dd"),
-        trainings: trainingsOnDay.length,
-      };
-    });
-
+    const trainingCountsByDate = new Map();
     const categoryMap = {};
+
+    const startOfThirtyDaysAgo = startOfDay(thirtyDaysago);
+    const endOfToday = new Date(startOfDay(now).getTime() + 24 * 60 * 60 * 1000 - 1);
+
     trainings.forEach((training) => {
       const category = training.category;
       if (category) {
-        if (!categoryMap[category]) categoryMap[category] = 0;
-        categoryMap[category] += 1;
+        categoryMap[category] = (categoryMap[category] || 0) + 1;
       }
+
+      if (!training.createdAt) return;
+      const createdDate = new Date(training.createdAt);
+
+      if (isWithinInterval(createdDate, { start: startOfThirtyDaysAgo, end: endOfToday })) {
+        const dateKey = format(createdDate, "yyyy-MM-dd");
+        trainingCountsByDate.set(dateKey, (trainingCountsByDate.get(dateKey) || 0) + 1);
+      }
+    });
+
+    const dailyActivity = eachDayOfInterval({
+      start: thirtyDaysago,
+      end: now,
+    }).map((date) => {
+      const dateKey = format(date, "yyyy-MM-dd");
+      return {
+        date: format(date, "MMM dd"),
+        trainings: trainingCountsByDate.get(dateKey) || 0,
+      };
     });
 
     const trainingCategories = Object.entries(categoryMap).map(
