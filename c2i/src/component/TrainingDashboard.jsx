@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddTraining from "./Addtraining";
 // import {
 //   fetchtrainings,
@@ -83,15 +83,53 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
     setIsFormOpen(false);
   };
 
-  const filteredTrainings = trainings.filter((training) => {
-    const matchesSearch =
-      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.instructor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || training.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // ⚡ Bolt: Memoized derived states to prevent expensive recalculations during search/category updates.
+  // Combines filtering with stats calculation (unique instructors and categories) in an optimal way.
+  const { filteredTrainings, stats } = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    const instructors = new Set();
+    const uniqueCategories = new Set();
+
+    // 1. Calculate stats (requires traversing all trainings)
+    trainings.forEach(t => {
+      if (t.instructor) instructors.add(t.instructor);
+      if (t.category) uniqueCategories.add(t.category);
+    });
+
+    // 2. Filter trainings
+    const filtered = trainings.filter((training) => {
+      const titleMatch = training.title ? training.title.toLowerCase().includes(searchLower) : false;
+      const descMatch = training.description ? training.description.toLowerCase().includes(searchLower) : false;
+      const instMatch = training.instructor ? training.instructor.toLowerCase().includes(searchLower) : false;
+
+      const matchesSearch = titleMatch || descMatch || instMatch;
+      const matchesCategory = selectedCategory === "All" || training.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    const calculatedStats = [
+      {
+        icon: <BookOpen className="w-6 h-6" />,
+        label: "Total Programs",
+        value: trainings.length,
+        color: "bg-blue-500",
+      },
+      {
+        icon: <Award className="w-6 h-6" />,
+        label: "Instructors",
+        value: instructors.size,
+        color: "bg-purple-500",
+      },
+      {
+        icon: <Calendar className="w-6 h-6" />,
+        label: "Categories",
+        value: uniqueCategories.size,
+        color: "bg-orange-500",
+      },
+    ];
+
+    return { filteredTrainings: filtered, stats: calculatedStats };
+  }, [trainings, searchTerm, selectedCategory]);
 
   const toggleSelectTraining = (trainingId) => {
     setSelectedTrainings((prevSelected) =>
@@ -122,27 +160,6 @@ const TrainingDashboard = ({ trainings = [], handleCreateTraining, handleUpdateT
       setSelectedTrainings([]);
     }
   };
-
-  const stats = [
-    {
-      icon: <BookOpen className="w-6 h-6" />,
-      label: "Total Programs",
-      value: trainings.length,
-      color: "bg-blue-500",
-    },
-    {
-      icon: <Award className="w-6 h-6" />,
-      label: "Instructors",
-      value: new Set(trainings.map((t) => t.instructor)).size,
-      color: "bg-purple-500",
-    },
-    {
-      icon: <Calendar className="w-6 h-6" />,
-      label: "Categories",
-      value: new Set(trainings.map((t) => t.category)).size,
-      color: "bg-orange-500",
-    },
-  ];
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
