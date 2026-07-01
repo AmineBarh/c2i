@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,40 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated 4 O(N) array passes (1 filter, 3 counts) into a single O(N) pass
+  // and memoized to prevent expensive recalculations on every render (e.g. when typing in search or switching tabs).
+  const {
+    filteredProjects,
+    iotProjects,
+    webProjects,
+    automationProjects,
+  } = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    const result = {
+      filteredProjects: [],
+      iotProjects: 0,
+      webProjects: 0,
+      automationProjects: 0,
+    };
+
+    projects.forEach((p) => {
+      if (p.type === "iot") result.iotProjects++;
+      else if (p.type === "web") result.webProjects++;
+      else if (p.type === "automation") result.automationProjects++;
+
+      const matchesSearch = p.title.toLowerCase().includes(searchLower);
+      const matchesType = selectedType === "" || p.type === selectedType;
+      const matchesCategory = selectedCategory === "" || p.category === selectedCategory;
+
+      if (matchesSearch && matchesType && matchesCategory) {
+        result.filteredProjects.push(p);
+      }
+    });
+
+    return result;
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
 
   const renderSection = () => {
     switch (activeSection) {
