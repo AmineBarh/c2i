@@ -1,0 +1,3 @@
+## 2025-02-12 - Optimized Admin.jsx project filtering
+**Learning:** `c2i/src/pages/Admin.jsx` was calculating derived state (`filteredProjects`, `iotProjects`, `webProjects`, `automationProjects`) using 4 separate `O(N)` `.filter()` passes on the `projects` array during every render. This was optimized into a single `O(N)` loop wrapped in a `useMemo` hook to compute all statistics and filtered projects concurrently, preventing expensive recalculations and minimizing performance overhead when searching or filtering.
+**Action:** When filtering and counting distinct categories or subsets from a large list, combine the logic into a single iteration (`forEach` or `reduce`) inside `useMemo` rather than running multiple sequential `.filter()` passes.
