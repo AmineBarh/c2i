@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,27 +80,19 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  // ⚡ Bolt: Combine category counts and filter operations into a single useMemo loop
-  // rather than multiple O(N) .filter() passes, preventing unnecessary array allocations
-  // and expensive string manipulations on every unrelated render.
-  const { filteredProjects, iotProjects, webProjects, automationProjects } = useMemo(() => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    let iot = 0, web = 0, automation = 0;
-
-    const filtered = projects.filter((p) => {
-      // We calculate the global type counts concurrently
-      if (p.type === "iot") iot++;
-      else if (p.type === "web") web++;
-      else if (p.type === "automation") automation++;
-
-      return p.title.toLowerCase().includes(lowerSearchTerm) &&
-        (selectedType === "" || p.type === selectedType) &&
-        (selectedCategory === "" || p.category === selectedCategory);
-    });
-    return { filteredProjects: filtered, iotProjects: iot, webProjects: web, automationProjects: automation };
-  }, [projects, searchTerm, selectedType, selectedCategory]);
+  const filteredProjects = projects.filter(
+    (project) =>
+      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedType === "" || project.type === selectedType) &&
+      (selectedCategory === "" || project.category === selectedCategory)
+  );
 
   const totalProjects = projects.length;
+  const iotProjects = projects.filter((p) => p.type === "iot").length;
+  const webProjects = projects.filter((p) => p.type === "web").length;
+  const automationProjects = projects.filter(
+    (p) => p.type === "automation"
+  ).length;
 
   const renderSection = () => {
     switch (activeSection) {
