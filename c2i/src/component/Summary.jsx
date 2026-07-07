@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ChartNoAxesCombined, Cpu, Cog, Globe, Plus, X, Pencil } from "lucide-react";
 import Addproject from "./Addproject"; // Make sure this path is correct
 
@@ -42,9 +42,12 @@ const Summary = ({
         ? projects
         : [];
 
-  const categories = Array.isArray(projects)
-    ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
-    : [];
+  // ⚡ Bolt: Memoized categories extraction to prevent O(N) Set creation on every render during high-frequency search input state updates.
+  const categories = useMemo(() => {
+    return Array.isArray(projects)
+      ? [...new Set(projects.map((p) => p?.category).filter(Boolean))]
+      : [];
+  }, [projects]);
 
   const toggleSelectProject = (projectId) => {
     setSelectedProjects((prevSelected) =>
