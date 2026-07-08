@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,35 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated multiple O(N) array loops into a single O(N) pass inside useMemo
+  // This prevents recalculating filtered projects and category counts sequentially on every render,
+  // especially important since searchTerm triggers frequent state updates.
+  const { filteredProjects, totalProjects, iotProjects, webProjects, automationProjects } = useMemo(() => {
+    let iotCount = 0;
+    let webCount = 0;
+    let autoCount = 0;
+    const lowerSearchTerm = searchTerm.toLowerCase();
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const filtered = projects.filter((project) => {
+      if (project.type === "iot") iotCount++;
+      if (project.type === "web") webCount++;
+      if (project.type === "automation") autoCount++;
+
+      return (
+        project.title.toLowerCase().includes(lowerSearchTerm) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+      );
+    });
+
+    return {
+      filteredProjects: filtered,
+      totalProjects: projects.length,
+      iotProjects: iotCount,
+      webProjects: webCount,
+      automationProjects: autoCount,
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
