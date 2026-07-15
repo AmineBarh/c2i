@@ -104,7 +104,7 @@ const Admin = () => {
       }
     }
 
-    return { filteredProjects: filtered, totalProjects: projects.length, iotProjects: iot, webProjects: web, automationProjects: auto };
+    return { filteredProjects, totalProjects: projects.length, iotProjects: iot, webProjects: web, automationProjects: auto };
   }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
