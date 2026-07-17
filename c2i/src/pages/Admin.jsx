@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,38 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated multiple O(N) filter loops into a single O(N) pass inside useMemo to prevent redundant calculations on every render
+  const { filteredProjects, iotProjects, webProjects, automationProjects, totalProjects } = useMemo(() => {
+    const stats = {
+      filteredProjects: [],
+      iotProjects: 0,
+      webProjects: 0,
+      automationProjects: 0,
+      totalProjects: projects.length
+    };
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const searchLower = searchTerm.toLowerCase();
+
+    for (let i = 0; i < projects.length; i++) {
+      const p = projects[i];
+
+      // Calculate type counts
+      if (p.type === "iot") stats.iotProjects++;
+      else if (p.type === "web") stats.webProjects++;
+      else if (p.type === "automation") stats.automationProjects++;
+
+      // Filtered projects
+      const matchesSearch = p.title.toLowerCase().includes(searchLower);
+      const matchesType = selectedType === "" || p.type === selectedType;
+      const matchesCategory = selectedCategory === "" || p.category === selectedCategory;
+
+      if (matchesSearch && matchesType && matchesCategory) {
+        stats.filteredProjects.push(p);
+      }
+    }
+
+    return stats;
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
