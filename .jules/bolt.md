@@ -1,0 +1,3 @@
+## 2025-02-18 - Unoptimized Array Filtering in Render Paths
+**Learning:** `filteredProjects` in `Iot.jsx`, `Automation.jsx`, and `WebDev.jsx` was calculating an O(N) `.filter()` directly in the component body during every render, exacerbated by state updates on category selection. React's lack of automatic memoization for array operations causes unneeded overhead when components are visually complex (especially those rendering lists or grids of objects).
+**Action:** Consistently verify and wrap derived O(N) array loops (like `.filter()`, `.map()`, or `Set` generation) in `useMemo` hooks, specifying correct dependency arrays, to ensure complex list-rendering components don't recalculate data arrays on unrelated state/prop changes.
