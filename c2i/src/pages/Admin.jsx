@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,44 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated four separate O(N) `.filter()` iterations into a single O(N) `useMemo` pass to prevent redundant array processing on every render.
+  const {
+    filteredProjects,
+    iotProjects,
+    webProjects,
+    automationProjects
+  } = useMemo(() => {
+    let filtered = [];
+    let iotCount = 0;
+    let webCount = 0;
+    let automationCount = 0;
+    const lowerSearchTerm = searchTerm.toLowerCase();
+
+    projects.forEach((project) => {
+      // Calculate category counts
+      if (project.type === "iot") iotCount++;
+      else if (project.type === "web") webCount++;
+      else if (project.type === "automation") automationCount++;
+
+      // Filter projects for display
+      const matchesSearch = project.title.toLowerCase().includes(lowerSearchTerm);
+      const matchesType = selectedType === "" || project.type === selectedType;
+      const matchesCategory = selectedCategory === "" || project.category === selectedCategory;
+
+      if (matchesSearch && matchesType && matchesCategory) {
+        filtered.push(project);
+      }
+    });
+
+    return {
+      filteredProjects: filtered,
+      iotProjects: iotCount,
+      webProjects: webCount,
+      automationProjects: automationCount
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
 
   const renderSection = () => {
     switch (activeSection) {
