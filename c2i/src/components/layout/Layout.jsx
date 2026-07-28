@@ -1,6 +1,5 @@
 import React from 'react';
 import Navbar from '../../component/navbar';
-import Footer from '../../component/Footer'; // Assuming Footer exists or will exist, if not I'll check. Wait, App.js doesn't import Footer.
 
 const Layout = ({ children }) => {
     return (
