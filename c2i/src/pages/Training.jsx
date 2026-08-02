@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -81,37 +81,40 @@ const Training = () => {
   }, []);
 
   // Filter trainings based on category
-  const filteredTrainings = trainings.filter((training) =>
-    selectedCategory === "All" ? true : training.category === selectedCategory
-  );
+  // ⚡ Bolt: Memoize filteredTrainings to prevent O(N) recalculation on every render
+  const filteredTrainings = useMemo(() => {
+    return trainings.filter((training) =>
+      selectedCategory === "All" ? true : training.category === selectedCategory
+    );
+  }, [trainings, selectedCategory]);
 
   // Calculate stats
-  const stats = (() => {
-    return [
-      {
-        icon: <Users className="w-6 h-6" />,
-        number: "1150 +",
-        label: "Professionals Trained",
-      },
-      {
-        icon: <Award className="w-6 h-6" />,
-        number: "95%",
-        label: "Completion Rate",
-      },
-      {
-        icon: <Star className="w-6 h-6" />,
-        number: "4.1",
-        label: "Average Rating",
-      },
-      {
-        icon: <TrendingUp className="w-6 h-6" />,
-        number: "89%",
-        label: "Career Advancement",
-      },
-    ];
-  })();
+  // ⚡ Bolt: Memoize static stats to prevent array recreation on every render
+  const stats = useMemo(() => [
+    {
+      icon: <Users className="w-6 h-6" />,
+      number: "1150 +",
+      label: "Professionals Trained",
+    },
+    {
+      icon: <Award className="w-6 h-6" />,
+      number: "95%",
+      label: "Completion Rate",
+    },
+    {
+      icon: <Star className="w-6 h-6" />,
+      number: "4.1",
+      label: "Average Rating",
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6" />,
+      number: "89%",
+      label: "Career Advancement",
+    },
+  ], []);
 
-  const features = [
+  // ⚡ Bolt: Memoize static features to prevent array recreation on every render
+  const features = useMemo(() => [
     {
       icon: <Brain className="w-8 h-8" />,
       title: "Expert-Led Training",
@@ -140,7 +143,7 @@ const Training = () => {
         "Customized group training programs designed to upskill your entire team effectively.",
       color: "bg-orange-500",
     },
-  ];
+  ], []);
 
   const getCategoryIcon = (category) => {
     switch (category) {
