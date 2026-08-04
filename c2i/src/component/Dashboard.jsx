@@ -32,8 +32,6 @@ import {
   format,
   subDays,
   eachDayOfInterval,
-  startOfDay,
-  isWithinInterval,
 } from "date-fns";
 
 const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
@@ -54,19 +52,23 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
 
+    // ⚡ Bolt: Consolidated O(N*M) nested date interval loops into a single O(N) pass using a hash map
+    const projectCountsByDate = new Map();
+    projects.forEach((project) => {
+      if (project.createdAt) {
+        const dateKey = format(new Date(project.createdAt), "yyyy MMM dd");
+        projectCountsByDate.set(dateKey, (projectCountsByDate.get(dateKey) || 0) + 1);
+      }
+    });
+
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateKey = format(date, "yyyy MMM dd");
       return {
         date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
+        projects: projectCountsByDate.get(dateKey) || 0,
       };
     });
 
@@ -94,20 +96,23 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const now = new Date();
     const sixtyDaysago = subDays(now, 30);
 
+    // ⚡ Bolt: Consolidated O(N*M) nested date interval loops into a single O(N) pass using a hash map
+    const trainingCountsByDate = new Map();
+    trainings.forEach((training) => {
+      if (training.createdAt) {
+        const dateKey = format(new Date(training.createdAt), "yyyy MMM dd");
+        trainingCountsByDate.set(dateKey, (trainingCountsByDate.get(dateKey) || 0) + 1);
+      }
+    });
+
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const trainingsOnDay = trainings.filter((training) => {
-        if (!training.createdAt) return false;
-        const createdDate = new Date(training.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateKey = format(date, "yyyy MMM dd");
       return {
         date: format(date, "MMM dd"),
-        trainings: trainingsOnDay.length,
+        trainings: trainingCountsByDate.get(dateKey) || 0,
       };
     });
 
