@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   LayoutDashboard,
   Handshake,
@@ -80,19 +80,34 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Consolidated 4 O(N) array passes (filters) into a single O(N) reduce within a useMemo block.
+  // This prevents redundant recalcuations on every render, especially when user types in the search box.
+  const { filteredProjects, projectStats } = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+
+    const stats = { iot: 0, web: 0, automation: 0 };
+    const filtered = projects.reduce((acc, project) => {
+      // Tally stats for all projects
+      if (project.type === "iot") stats.iot++;
+      else if (project.type === "web") stats.web++;
+      else if (project.type === "automation") stats.automation++;
+
+      // Apply filter
+      if (
+        project.title.toLowerCase().includes(searchLower) &&
+        (selectedType === "" || project.type === selectedType) &&
+        (selectedCategory === "" || project.category === selectedCategory)
+      ) {
+        acc.push(project);
+      }
+      return acc;
+    }, []);
+
+    return { filteredProjects: filtered, projectStats: stats };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+  const { iot: iotProjects, web: webProjects, automation: automationProjects } = projectStats;
 
   const renderSection = () => {
     switch (activeSection) {
