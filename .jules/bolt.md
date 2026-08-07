@@ -1,0 +1,3 @@
+## 2024-08-07 - O(N*M) array loops in dashboard chart generation
+**Learning:** Found an anti-pattern in `c2i/src/component/Dashboard.jsx` where `eachDayOfInterval` (size M) was mapping over the full projects/trainings array (size N) every iteration to check date boundaries for chart data generation, creating an O(N*M) calculation that runs on every render despite `useMemo`. We optimized it to a single O(N) pass across the array to populate a hash map, dropping calculation time to O(N + M).
+**Action:** When calculating daily activity charts using date intervals, avoid filtering the raw data array inside the date iteration. Instead, perform a single pass over the data to group/count by date in a Map, and then build the interval array using Map lookups.
