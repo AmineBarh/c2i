@@ -33,7 +33,7 @@ import {
   subDays,
   eachDayOfInterval,
   startOfDay,
-  isWithinInterval,
+
 } from "date-fns";
 
 const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
@@ -54,37 +54,31 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
 
-    const dailyActivity = eachDayOfInterval({
-      start: sixtyDaysago,
-      end: now,
-    }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
-      return {
-        date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
-      };
+    // ⚡ Bolt: Replaced O(N*60) nested loop and multiple O(N) filters with a single O(N) pass and hash map
+    const dateCountMap = new Map();
+    const projectsByType = { iot: 0, web: 0, automation: 0 };
+    let recentProjects = 0;
+
+    projects.forEach((p) => {
+      if (p.type && Object.hasOwn(projectsByType, p.type)) projectsByType[p.type]++;
+      if (!p.createdAt) return;
+      const createdDate = new Date(p.createdAt);
+      if (createdDate >= sevenDaysAgo) recentProjects++;
+      if (createdDate >= startOfDay(sixtyDaysago)) {
+        const key = format(createdDate, "yyyy MMM dd");
+        dateCountMap.set(key, (dateCountMap.get(key) || 0) + 1);
+      }
     });
 
-    const projectsByType = {
-      iot: projects.filter((p) => p.type === "iot").length,
-      web: projects.filter((p) => p.type === "web").length,
-      automation: projects.filter((p) => p.type === "automation").length,
-    };
-
-    const totalProjects = projects.length;
-    const recentProjects = projects.filter(
-      (p) => new Date(p.createdAt) >= sevenDaysAgo
-    ).length;
+    const dailyActivity = eachDayOfInterval({ start: sixtyDaysago, end: now }).map((date) => ({
+      date: format(date, "MMM dd"),
+      projects: dateCountMap.get(format(date, "yyyy MMM dd")) || 0,
+    }));
 
     return {
       dailyActivity,
       projectsByType,
-      totalProjects,
+      totalProjects: projects.length,
       recentProjects,
     };
   }, [projects]);
@@ -92,47 +86,35 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
   // TRAINING DASHBOARD LOGIC
   const trainingDashboardData = useMemo(() => {
     const now = new Date();
-    const sixtyDaysago = subDays(now, 30);
+    const thirtyDaysAgo = subDays(now, 30);
 
-    const dailyActivity = eachDayOfInterval({
-      start: sixtyDaysago,
-      end: now,
-    }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const trainingsOnDay = trainings.filter((training) => {
-        if (!training.createdAt) return false;
-        const createdDate = new Date(training.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
-      return {
-        date: format(date, "MMM dd"),
-        trainings: trainingsOnDay.length,
-      };
-    });
-
+    // ⚡ Bolt: Replaced O(N*30) nested interval checking loop with a single O(N) pass and hash map
+    const dateCountMap = new Map();
     const categoryMap = {};
+
     trainings.forEach((training) => {
-      const category = training.category;
-      if (category) {
-        if (!categoryMap[category]) categoryMap[category] = 0;
-        categoryMap[category] += 1;
+      if (training.category) {
+        categoryMap[training.category] = (categoryMap[training.category] || 0) + 1;
+      }
+      if (!training.createdAt) return;
+      const createdDate = new Date(training.createdAt);
+      if (createdDate >= startOfDay(thirtyDaysAgo)) {
+        const key = format(createdDate, "yyyy MMM dd");
+        dateCountMap.set(key, (dateCountMap.get(key) || 0) + 1);
       }
     });
 
-    const trainingCategories = Object.entries(categoryMap).map(
-      ([name, value]) => ({
-        name,
-        value,
-      })
-    );
+    const dailyActivity = eachDayOfInterval({ start: thirtyDaysAgo, end: now }).map((date) => ({
+      date: format(date, "MMM dd"),
+      trainings: dateCountMap.get(format(date, "yyyy MMM dd")) || 0,
+    }));
 
-    const totalTrainings = trainings.length;
+    const trainingCategories = Object.entries(categoryMap).map(([name, value]) => ({ name, value }));
 
     return {
       dailyActivity,
       trainingCategories,
-      totalTrainings,
+      totalTrainings: trainings.length,
     };
   }, [trainings]);
 
