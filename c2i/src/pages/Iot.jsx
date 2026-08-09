@@ -50,10 +50,12 @@ const Iot = () => {
     loadProjects();
   }, []);
 
-  const filteredProjects =
-    selectedCategory === "All"
+  // ⚡ Bolt: Memoize filteredProjects to prevent O(N) recalculation on every render
+  const filteredProjects = React.useMemo(() => {
+    return selectedCategory === "All"
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
+  }, [selectedCategory, projects]);
 
   const navigate = useNavigate();
   const goToAndScrollToBottom = () => {
