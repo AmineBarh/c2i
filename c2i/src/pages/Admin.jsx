@@ -80,19 +80,42 @@ const Admin = () => {
     loadPartners();
   }, []);
 
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedType === "" || project.type === selectedType) &&
-      (selectedCategory === "" || project.category === selectedCategory)
-  );
+  // ⚡ Bolt: Replace multiple O(N) filters with a single useMemo + reduce loop
+  const {
+    filteredProjects,
+    totalProjects,
+    iotProjects,
+    webProjects,
+    automationProjects
+  } = React.useMemo(() => {
+    let iot = 0, web = 0, automation = 0;
+    const lowerSearch = searchTerm.toLowerCase();
 
-  const totalProjects = projects.length;
-  const iotProjects = projects.filter((p) => p.type === "iot").length;
-  const webProjects = projects.filter((p) => p.type === "web").length;
-  const automationProjects = projects.filter(
-    (p) => p.type === "automation"
-  ).length;
+    const filtered = projects.reduce((acc, p) => {
+      // Calculate counts in the same pass
+      if (p.type === "iot") iot++;
+      else if (p.type === "web") web++;
+      else if (p.type === "automation") automation++;
+
+      // Apply filters
+      const matchesSearch = p.title.toLowerCase().includes(lowerSearch);
+      const matchesType = selectedType === "" || p.type === selectedType;
+      const matchesCategory = selectedCategory === "" || p.category === selectedCategory;
+
+      if (matchesSearch && matchesType && matchesCategory) {
+        acc.push(p);
+      }
+      return acc;
+    }, []);
+
+    return {
+      filteredProjects: filtered,
+      totalProjects: projects.length,
+      iotProjects: iot,
+      webProjects: web,
+      automationProjects: automation
+    };
+  }, [projects, searchTerm, selectedType, selectedCategory]);
 
   const renderSection = () => {
     switch (activeSection) {
