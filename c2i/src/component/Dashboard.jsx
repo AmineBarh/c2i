@@ -33,7 +33,7 @@ import {
   subDays,
   eachDayOfInterval,
   startOfDay,
-  isWithinInterval,
+
 } from "date-fns";
 
 const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
@@ -53,33 +53,43 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
     const now = new Date();
     const sixtyDaysago = subDays(now, 60);
     const sevenDaysAgo = subDays(now, 7);
+    const sixtyDaysagoStart = startOfDay(sixtyDaysago);
+
+    // ⚡ Bolt: Single O(N) pass over projects to build counts instead of nested O(N*D) daily loop
+    const dailyCounts = {};
+    const projectsByType = { iot: 0, web: 0, automation: 0 };
+    let recentProjects = 0;
+
+    projects.forEach((project) => {
+      if (projectsByType[project.type] !== undefined) {
+        projectsByType[project.type]++;
+      }
+
+      if (!project.createdAt) return;
+      const createdDate = new Date(project.createdAt);
+
+      if (createdDate >= sevenDaysAgo) {
+        recentProjects++;
+      }
+
+      if (createdDate >= sixtyDaysagoStart) {
+        const dateKey = format(createdDate, "yyyy MMM dd");
+        dailyCounts[dateKey] = (dailyCounts[dateKey] || 0) + 1;
+      }
+    });
 
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const projectsOnDay = projects.filter((project) => {
-        const createdDate = new Date(project.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateKey = format(date, "yyyy MMM dd");
       return {
         date: format(date, "MMM dd"),
-        projects: projectsOnDay.length,
+        projects: dailyCounts[dateKey] || 0,
       };
     });
 
-    const projectsByType = {
-      iot: projects.filter((p) => p.type === "iot").length,
-      web: projects.filter((p) => p.type === "web").length,
-      automation: projects.filter((p) => p.type === "automation").length,
-    };
-
     const totalProjects = projects.length;
-    const recentProjects = projects.filter(
-      (p) => new Date(p.createdAt) >= sevenDaysAgo
-    ).length;
 
     return {
       dailyActivity,
@@ -93,31 +103,36 @@ const Dashboard = ({ projects = [], trainings = [], partners = [] }) => {
   const trainingDashboardData = useMemo(() => {
     const now = new Date();
     const sixtyDaysago = subDays(now, 30);
+    const sixtyDaysagoStart = startOfDay(sixtyDaysago);
+
+    // ⚡ Bolt: Single O(N) pass to gather training daily activity and categories
+    const dailyCounts = {};
+    const categoryMap = {};
+
+    trainings.forEach((training) => {
+      const category = training.category;
+      if (category) {
+        categoryMap[category] = (categoryMap[category] || 0) + 1;
+      }
+
+      if (!training.createdAt) return;
+      const createdDate = new Date(training.createdAt);
+
+      if (createdDate >= sixtyDaysagoStart) {
+        const dateKey = format(createdDate, "yyyy MMM dd");
+        dailyCounts[dateKey] = (dailyCounts[dateKey] || 0) + 1;
+      }
+    });
 
     const dailyActivity = eachDayOfInterval({
       start: sixtyDaysago,
       end: now,
     }).map((date) => {
-      const dayStart = startOfDay(date);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
-      const trainingsOnDay = trainings.filter((training) => {
-        if (!training.createdAt) return false;
-        const createdDate = new Date(training.createdAt);
-        return isWithinInterval(createdDate, { start: dayStart, end: dayEnd });
-      });
+      const dateKey = format(date, "yyyy MMM dd");
       return {
         date: format(date, "MMM dd"),
-        trainings: trainingsOnDay.length,
+        trainings: dailyCounts[dateKey] || 0,
       };
-    });
-
-    const categoryMap = {};
-    trainings.forEach((training) => {
-      const category = training.category;
-      if (category) {
-        if (!categoryMap[category]) categoryMap[category] = 0;
-        categoryMap[category] += 1;
-      }
     });
 
     const trainingCategories = Object.entries(categoryMap).map(
