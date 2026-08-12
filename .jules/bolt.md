@@ -1,0 +1,3 @@
+## 2025-02-15 - Dashboard Analytics Rendering Bottleneck
+**Learning:** Found a codebase-specific anti-pattern in `Dashboard.jsx` where multiple independent `O(N)` array `.filter()` passes and nested `O(Days * N)` loops inside `useMemo` hooks are used to compute distinct aggregations for large datasets (Projects and Trainings). This creates redundant work during render cycles.
+**Action:** Combined multiple iteration passes into a single `O(N)` `.forEach()` loop leveraging Hash Maps (`Map` and plain objects) to aggregate data simultaneously. This technique should be applied whenever we need multiple distinct statistics from the same large array.
