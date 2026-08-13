@@ -1,0 +1,3 @@
+## 2024-08-13 - Dashboard and Search Optimization
+**Learning:** Found multiple instances of O(N*D) nested iterations for derived states (e.g. `eachDayOfInterval` filtering `projects` or `trainings` multiple times within `useMemo`) as well as unmemoized, frequently changing derived states like search filtering.
+**Action:** Replaced O(N*D) complexity with single O(N) grouping operations (hashmaps by date and category), and wrapped expensive calculations (e.g., search text processing, Set instantiations) in `useMemo` to significantly reduce unnecessary React re-renders and CPU overhead during frequent state updates like keystrokes.
